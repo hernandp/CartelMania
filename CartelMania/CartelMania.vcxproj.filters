@@ -14,4 +14,46 @@
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="font.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="banner.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cmania.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="gdipeng.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="textrend.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="textutil.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="CartelMania.rc">
+      <Filter>Resource Files</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="cmania.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="banner.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="textfx_block.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="textfx_solid.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
 </Project>
