@@ -16,8 +16,15 @@ void TextFxSolid::Draw(const Banner& banner, Graphics& gr, RectF& rc)
 	format.SetTrimming(StringTrimmingNone);
 	format.SetFormatFlags(StringFormatFlagsNoWrap);
 
-	unique_ptr<Font> font = FindFontToFillTextInRect(gr, rc, banner.GetFont(), banner.GetText1(), format);
+	REAL fontSize;
+	FontFamily family(banner.GetFont().c_str());
+	unique_ptr<Font> font = FindFontToFillTextInRect(gr, rc, family, banner.GetText1(), format, &fontSize);
 	
-	gr.DrawString(banner.GetText1().c_str(), -1, font.get(), rc, &format, &SolidBrush(Color::Black));
+	GraphicsPath path;
+	Pen pen(Color::Black, 2); // should get from current Colorset
+	HatchBrush brush(HatchStyle25Percent, Color::White, Color::Red);
+	path.AddString(banner.GetText1().c_str(), -1, &family, FontStyleRegular, fontSize, rc, &format);
+	gr.FillPath(&brush, &path);
+	gr.DrawPath(&pen, &path);
 
 }
