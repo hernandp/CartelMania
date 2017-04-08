@@ -144,12 +144,26 @@ static void OnCommand(HWND hWnd, int id, HWND hwndCtl, UINT codeNotify)
 			}
 
 			case ID_FX_SOLID:
-				g_curBanner.SetTextRenderer(new TextFxSolid);
+				g_curBanner.SetTextRenderer(make_unique<TextFxSolid>());
 				InvalidateRect(hWnd, NULL, TRUE);
 				break;
 
+			case ID_FX_THICK:
+			{
+				auto textR = make_unique<TextFxSolid>();
+				textR->SetOutlineWidth(6.0f);
+				g_curBanner.SetTextRenderer(move(textR));
+				InvalidateRect(hWnd, NULL, TRUE);
+				break;
+			}
+
 			case ID_FX_BLOCK:
-				g_curBanner.SetTextRenderer(new TextFxBlock);
+				g_curBanner.SetTextRenderer(make_unique<TextFxBlock>());
+				InvalidateRect(hWnd, NULL, TRUE);
+				break;
+
+			case ID_FX_SHADOWREAR:
+				g_curBanner.SetTextRenderer(make_unique<TextFxShadowRear>());
 				InvalidateRect(hWnd, NULL, TRUE);
 				break;
 		}

@@ -9,5 +9,7 @@
 #include "banner.h"
 #include "font.h"
 #include "gdipeng.h"
+#include "colorset.h"
 #include "textrend.h"
+#include "colors.h"
 #endif //_CARTELMANIA_H_

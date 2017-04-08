@@ -1,4 +1,6 @@
 #pragma once
+#include <comutil.h>
+#include <map>
 
 //----------------------------------------------------------------------------
 //
@@ -6,10 +8,20 @@
 //
 //----------------------------------------------------------------------------
 #define DECLARE_TEXTFX(_class_name_) \
-	class _class_name_ : public ITextFXRenderer \
+	class _class_name_ : public TextFXRenderer \
 	{											\
-	public: void Draw(const Banner& banner, Gdiplus::Graphics& gr, Gdiplus::RectF& rc); \
+	public: void Draw(const Banner& banner, Gdiplus::Graphics& gr, const Gdiplus::RectF& bannerRect); \
     };											\
+
+//----------------------------------------------------------------------------
+//
+// Available properties
+//
+//----------------------------------------------------------------------------
+enum class TextProp
+{
+	//OutlineWidth
+};
 
 //----------------------------------------------------------------------------
 //
@@ -25,14 +37,21 @@ class RectF;
 
 //----------------------------------------------------------------------------
 
-class ITextFXRenderer
+class TextFXRenderer
 {
 public:
 	//
 	// Renders text on target graphics object.
 	//
+	virtual void Draw(const Banner& banner, Gdiplus::Graphics& gr, const Gdiplus::RectF& bannerRect) = 0;
 	
-	virtual void Draw(const Banner& banner, Gdiplus::Graphics& gr, Gdiplus::RectF& rc) = 0;
+	//
+	// Common members to all text renderers 
+	//
+	void SetOutlineWidth(float w) { m_outlineWidth = w; }
+
+protected:
+	float		m_outlineWidth = 1.0f;
 };
 
 //----------------------------------------------------------------------------
@@ -44,3 +63,4 @@ public:
 
 DECLARE_TEXTFX(TextFxSolid);
 DECLARE_TEXTFX(TextFxBlock);
+DECLARE_TEXTFX(TextFxShadowRear);

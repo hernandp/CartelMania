@@ -3,29 +3,75 @@
 #include <gdiplus.h>
 #include <string>
 #include <memory>
+#include "colors.h"
 
-inline std::unique_ptr<Gdiplus::Font> FindFontToFillTextInRect(
+namespace Cartelmania
+{
+//----------------------------------------------------------------------------
+//
+// Structure and type definitions
+//
+//----------------------------------------------------------------------------
+struct DrawStringInfo
+{
+	Gdiplus::Graphics*		gr				= nullptr;
+	Color 					faceColor;
+	Color 					outlineColor;
+	float					outlineWidth;
+	std::wstring 			text;
+	Gdiplus::RectF*			rect			= nullptr;
+	Gdiplus::StringFormat*	stringFormat	= nullptr;
+	Gdiplus::Font*			font			= nullptr;
+	Gdiplus::Matrix*		xForm			= nullptr;
+};
+
+//----------------------------------------------------------------------------
+//
+// Functions to assist in calculation, approximations, not involved directly
+// in drawing text.
+//
+//----------------------------------------------------------------------------
+
+Gdiplus::REAL PointToPixels(const Gdiplus::Graphics& gr,
+	Gdiplus::REAL pointSize);
+
+//----------------------------------------------------------------------------
+
+std::unique_ptr<Gdiplus::Font> FindFontToFillTextInRect(
 	const Gdiplus::Graphics& gr,
 	const Gdiplus::RectF& rc,
 	const Gdiplus::FontFamily& fontFamily,
 	const std::wstring& text,
 	const Gdiplus::StringFormat& format,
-	OUT Gdiplus::REAL* outFontSize = nullptr)
-{
-	// This iterative approximation method is a *total Hack* 
-	// better solution? 
+	OUT Gdiplus::RectF* rcBound = nullptr);
 
-	Gdiplus::RectF boundingBox{};
-	Gdiplus::REAL fontSize = 10.0f;
-	while (boundingBox.Height < rc.Height && boundingBox.Width < rc.Width)
-	{
-		fontSize += 1.0f;
-		Gdiplus::Font tryFont(&fontFamily, fontSize, 0, Gdiplus::Unit::UnitPoint);
-		gr.MeasureString(text.c_str(), -1, &tryFont, rc, &format, &boundingBox);
-	}
 
-	if (outFontSize)
-		*outFontSize = fontSize;
+//----------------------------------------------------------------------------
 
-	return std::make_unique<Gdiplus::Font>(&fontFamily, fontSize, 0, Gdiplus::Unit::UnitPoint);
+Gdiplus::RectF QueryStringPathBounds(
+	const Gdiplus::Graphics& gr,
+	const std::wstring& text,
+	const Gdiplus::Font& font,
+	const Gdiplus::RectF& rc,
+	const Gdiplus::StringFormat& format);
+
+//----------------------------------------------------------------------------
+//
+// Functions for drawing common objects in a surface
+//
+//----------------------------------------------------------------------------
+void DrawStringPath(const DrawStringInfo& di);
+
+//----------------------------------------------------------------------------
+
+void DrawStringPathShear(Gdiplus::Graphics& gr,
+	const Color& color,
+	const std::wstring& text,
+	const Gdiplus::RectF& rc,
+	const Gdiplus::StringFormat& format,
+	const Gdiplus::Font& font,
+	const Gdiplus::PointF& shear,
+	const Gdiplus::Matrix* xForm = nullptr);
+
+//----------------------------------------------------------------------------
 }

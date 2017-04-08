@@ -147,12 +147,17 @@
   <ItemGroup>
     <ClCompile Include="banner.cxx" />
     <ClCompile Include="cmania.cxx" />
+    <ClCompile Include="colors.cxx" />
     <ClCompile Include="textfx_block.cxx" />
+    <ClCompile Include="textfx_shadowrear.cxx" />
     <ClCompile Include="textfx_solid.cxx" />
+    <ClCompile Include="textutil.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="banner.h" />
     <ClInclude Include="cmania.h" />
+    <ClInclude Include="colors.h" />
+    <ClInclude Include="colorset.h" />
     <ClInclude Include="textrend.h" />
     <ClInclude Include="font.h" />
     <ClInclude Include="gdipeng.h" />

@@ -36,6 +36,12 @@
     <ClInclude Include="textutil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="colorset.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="colors.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc">
@@ -53,6 +59,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="textfx_solid.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="textfx_shadowrear.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="colors.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="textutil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
