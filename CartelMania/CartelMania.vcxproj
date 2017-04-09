@@ -151,6 +151,7 @@
     <ClCompile Include="textfx_block.cxx" />
     <ClCompile Include="textfx_shadowrear.cxx" />
     <ClCompile Include="textfx_solid.cxx" />
+    <ClCompile Include="textfx_twooutl.cxx" />
     <ClCompile Include="textutil.cpp" />
   </ItemGroup>
   <ItemGroup>

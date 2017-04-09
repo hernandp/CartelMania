@@ -157,6 +157,21 @@ static void OnCommand(HWND hWnd, int id, HWND hwndCtl, UINT codeNotify)
 				break;
 			}
 
+			case ID_FX_TWOOUTLINES:
+			{
+				auto textR = make_unique<TextFxTwoOutlines>();
+				textR->SetOutlineWidth(6.0f);
+				textR->SetOutline2Width(6.0f);
+				g_curBanner.SetTextRenderer(move(textR));
+				InvalidateRect(hWnd, NULL, TRUE);
+				break;
+			}
+
+			case ID_FX_VERTICAL:
+				break;
+
+			
+
 			case ID_FX_BLOCK:
 				g_curBanner.SetTextRenderer(make_unique<TextFxBlock>());
 				InvalidateRect(hWnd, NULL, TRUE);

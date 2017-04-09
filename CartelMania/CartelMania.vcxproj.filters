@@ -70,5 +70,8 @@
     <ClCompile Include="textutil.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="textfx_twooutl.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

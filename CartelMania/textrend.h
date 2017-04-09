@@ -4,7 +4,7 @@
 
 //----------------------------------------------------------------------------
 //
-// Handy macro for nicer code
+// Handy macros for nicer code
 //
 //----------------------------------------------------------------------------
 #define DECLARE_TEXTFX(_class_name_) \
@@ -56,7 +56,8 @@ protected:
 
 //----------------------------------------------------------------------------
 //
-// All renderers are declared here. See proper .CXX source for definition.
+// All renderers without additional private members are declared here. 
+// See proper .CXX source for definition.
 // (start with textfx_ )
 //
 //----------------------------------------------------------------------------
@@ -64,3 +65,14 @@ protected:
 DECLARE_TEXTFX(TextFxSolid);
 DECLARE_TEXTFX(TextFxBlock);
 DECLARE_TEXTFX(TextFxShadowRear);
+
+//----------------------------------------------------------------------------
+
+class TextFxTwoOutlines : public TextFXRenderer
+{
+public:
+	virtual void Draw(const Banner& banner, Gdiplus::Graphics& gr, const Gdiplus::RectF& bannerRect);
+	void SetOutline2Width(float f) { m_outlineWidth2 = f; }
+private:
+	float		m_outlineWidth2 = 1.0f;
+};

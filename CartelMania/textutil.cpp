@@ -21,12 +21,12 @@ std::unique_ptr<Gdiplus::Font> Cartelmania::FindFontToFillTextInRect(const Gdipl
 	// better solution? 
 
 	Gdiplus::RectF boundingBox{};
-	Gdiplus::REAL fontSize = 10.0f;
+	Gdiplus::REAL fontSize{ 10.0f };
 	const auto textLen = text.size();
 	while (boundingBox.Height < rc.Height && boundingBox.Width < rc.Width)
 	{
 		Gdiplus::Font tryFont(&fontFamily, fontSize, 0, Gdiplus::Unit::UnitPoint);
-		gr.MeasureString(text.c_str(), textLen, &tryFont, rc, &format, &boundingBox);
+		gr.MeasureString(text.c_str(), int(textLen), &tryFont, rc, &format, &boundingBox);
 		fontSize += 1.0f;
 	}
 
