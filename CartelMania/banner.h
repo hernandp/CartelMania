@@ -2,7 +2,7 @@
 #define _BANNER_H_
 
 #include "textrend.h"
-
+#include "bannerline.h"
 #include <windows.h>
 #include <string>
 #include <memory>
@@ -36,52 +36,23 @@ enum class BannerLayout
 	LargeOverSmall3
 };
 
+// 
+// Approximate "empirical" calculation from Bannermania
+// Prop1: 25% / 75 %
+// Prop2: 33.3% / 66.6 %
+// Prop3: 40% / 60 %
+
 const std::map<BannerLayout, std::pair<float, float>> g_proportionTable =
 {
-	{BannerLayout::LargeOverSmall1, std::make_pair(0.625f, 0.375f)},
-	{BannerLayout::LargeOverSmall2, std::make_pair(0.750f, 0.250f)},
-	{BannerLayout::LargeOverSmall3, std::make_pair(0.875f, 0.125f)},
+	{BannerLayout::LargeOverSmall1, std::make_pair(0.25f, 0.75f)},
+	{BannerLayout::LargeOverSmall2, std::make_pair(0.333333f, 0.666666f)},
+	{BannerLayout::LargeOverSmall3, std::make_pair(0.4f, 0.6f)},
 	{BannerLayout::MediumMedium,    std::make_pair(0.5f, 0.5f)},
 	{BannerLayout::SingleLine,      std::make_pair(1.0f, 0.0f)},
-	{BannerLayout::SmallOverLarge1, std::make_pair(0.375f, 0.625f)},
-	{BannerLayout::SmallOverLarge2, std::make_pair(0.250f, 0.750f)},
-	{BannerLayout::SmallOverLarge3, std::make_pair(0.125f, 0.875f)}
+	{BannerLayout::SmallOverLarge1, std::make_pair(0.4f, 0.6f)},
+	{BannerLayout::SmallOverLarge2, std::make_pair(0.333333f, 0.666666f)},
+	{BannerLayout::SmallOverLarge3, std::make_pair(0.25f, 0.75f)}
 };
-
-// ----------------------------------------------------------------------------
-
-class BannerLine
-{
-public:
-	BannerLine(const std::wstring& text,
-		const std::wstring& fontName,
-		std::unique_ptr<TextFXRenderer> effect) :
-		m_textFx(std::move(effect)),
-		m_text(text),
-		m_fontName(fontName)
-	{
-	}
-
-	void SetTextFx(std::unique_ptr<TextFXRenderer> newFx)
-	{
-		m_textFx = move(newFx);
-	}
-
-	void DrawOn(Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) const
-	{
-		m_textFx->DrawLine(*this, gr, rect);
-	}
-
-	const std::wstring& GetText() const { return m_text;  }
-	const std::wstring& GetFontName() const { return m_fontName; }
-
-private:
-	std::unique_ptr<TextFXRenderer> m_textFx;
-	std::wstring					m_text;
-	std::wstring					m_fontName;
-};
-
-// ----------------------------------------------------------------------------
 
 class Banner
 {

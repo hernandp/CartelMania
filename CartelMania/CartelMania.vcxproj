@@ -150,6 +150,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="banner.cxx" />
+    <ClCompile Include="bannerline.cxx" />
     <ClCompile Include="cmania.cxx" />
     <ClCompile Include="colors.cxx" />
     <ClCompile Include="execmenu.cxx" />
@@ -162,6 +163,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="banner.h" />
+    <ClInclude Include="bannerline.h" />
     <ClInclude Include="cmania.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="colorset.h" />
