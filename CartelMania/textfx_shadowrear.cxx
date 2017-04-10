@@ -9,7 +9,7 @@ using namespace Gdiplus;
 using namespace std;
 using namespace Cartelmania;
 
-void TextFxShadowRear::DrawLine(const BannerLine& line, Graphics& gr, const RectF& bannerRect)
+void TextFxShadowRear::DrawLine(const BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
 	StringFormat format;
 	format.SetTrimming(StringTrimmingNone);
@@ -17,9 +17,9 @@ void TextFxShadowRear::DrawLine(const BannerLine& line, Graphics& gr, const Rect
 
 	RectF boundingBox;
 	FontFamily family(line.GetFontName().c_str());
-	unique_ptr<Font> font = FindFontToFillTextInRect(gr, bannerRect, family, line.GetText(), format, &boundingBox);
+	unique_ptr<Font> font = FindFontToFillTextInRect(gr, lineRect, family, line.GetText(), format, &boundingBox);
 
-	RectF rcBounds = QueryStringPathBounds(gr, line.GetText(), *font, bannerRect, format);
+	RectF rcBounds = QueryStringPathBounds(gr, line.GetText(), *font, lineRect, format);
 		
 	// Shear matrix by K units yields for (x,y):
 	// x' = x + Ky

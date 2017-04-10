@@ -2,9 +2,13 @@
 #include "textrend.h"
 #include <memory.h>
 #include <gdiplus.h>
+#include <assert.h>
+#include <map>
 
 using namespace Gdiplus;
 using namespace std;
+
+//----------------------------------------------------------------------------
 
 Banner::Banner() : m_layout(BannerLayout::SingleLine)
 {
@@ -16,11 +20,13 @@ Banner::Banner() : m_layout(BannerLayout::SingleLine)
 	m_lines.push_back(move(line1));
 	m_lines.push_back(move(line2));
 }
+//----------------------------------------------------------------------------
 
 Banner::~Banner()
 {
 }
 
+//----------------------------------------------------------------------------
 void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 {
 	Graphics gr(hdc);
@@ -53,15 +59,24 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	gr.FillRectangle(&SolidBrush(Color::White), bannerRect);
 	gr.DrawRectangle(&Pen(Color::Black), bannerRect);
 	
-	// The banner coordinate space is divided by number of lines.
+	// The banner coordinate space is divided by number of lines, considering the current layout.
 	// Each line has it's own local space with x+/y+ pointing left and down in display.
+	
+	const REAL line1Height = g_proportionTable.at(m_layout).first * bannerRect.Height;
+	const RectF line1Rect(0, 0, bannerRect.Width, line1Height);
 
-	int nLine = 0;
-	const REAL lineHeight = bannerRect.Height / 2.0f;
-	const RectF lineRect(0, 0, bannerRect.Width, lineHeight);
-	for (const auto& line : m_lines)
+	m_lines[0].DrawOn(gr, line1Rect);
+
+	if (m_layout != BannerLayout::SingleLine)
 	{
-		gr.TranslateTransform(0, lineHeight * nLine++);
-		line.DrawOn(gr, lineRect);
-	}
+		// Render second line
+
+		const REAL line2Height = g_proportionTable.at(m_layout).second * bannerRect.Height;
+		const RectF line2Rect(0, 0, bannerRect.Width, line2Height);
+
+		gr.TranslateTransform(0, line1Rect.Height);
+		m_lines[1].DrawOn(gr, line2Rect);
+	}	
 }
+
+//----------------------------------------------------------------------------

@@ -45,6 +45,26 @@ void UpdateMenu(HWND hwnd)
 
 void ExecMenu(HWND hWnd, int id)
 {
+	static const map<int, BannerLayout> menuToLayoutMap{
+		{ ID_LAYOUT_SINGLELINE, BannerLayout::SingleLine },
+		{ ID_LAYOUT_LARGEOVERSMALL1, BannerLayout::LargeOverSmall1},
+		{ ID_LAYOUT_LARGEOVERSMALL2, BannerLayout::LargeOverSmall2},
+		{ ID_LAYOUT_LARGEOVERSMALL3, BannerLayout::LargeOverSmall3},
+		{ ID_LAYOUT_MEDIUMOVERMEDIUM, BannerLayout::MediumMedium },
+		{ ID_LAYOUT_SMALLOVERLARGE1, BannerLayout::SmallOverLarge1 },
+		{ ID_LAYOUT_SMALLOVERLARGE2, BannerLayout::SmallOverLarge2 },
+		{ ID_LAYOUT_SMALLOVERLARGE3, BannerLayout::SmallOverLarge3 }
+	};
+
+	// Handle layouts menu
+
+	if (menuToLayoutMap.find(id) != menuToLayoutMap.end())
+	{
+		g_curBanner.SetLayout(menuToLayoutMap.at(id));
+		InvalidateRect(hWnd, nullptr, TRUE);
+		return;
+	}
+
 	switch (id)
 	{
 		// File 
@@ -78,6 +98,10 @@ void ExecMenu(HWND hWnd, int id)
 			g_lineSelState[1] = true;
 			UpdateMenu(hWnd);
 			break;
+
+		// Layout
+
+		// (see above)
 
 		// Effect
 

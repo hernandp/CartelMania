@@ -1,12 +1,14 @@
 #ifndef _BANNER_H_
 #define _BANNER_H_
 
+#include "textrend.h"
+
 #include <windows.h>
 #include <string>
 #include <memory>
 #include <vector>
 #include <gdiplus.h>
-#include "textrend.h"
+#include <map>
 
 // ----------------------------------------------------------------------------
 //
@@ -34,10 +36,22 @@ enum class BannerLayout
 	LargeOverSmall3
 };
 
+const std::map<BannerLayout, std::pair<float, float>> g_proportionTable =
+{
+	{BannerLayout::LargeOverSmall1, std::make_pair(0.625f, 0.375f)},
+	{BannerLayout::LargeOverSmall2, std::make_pair(0.750f, 0.250f)},
+	{BannerLayout::LargeOverSmall3, std::make_pair(0.875f, 0.125f)},
+	{BannerLayout::MediumMedium,    std::make_pair(0.5f, 0.5f)},
+	{BannerLayout::SingleLine,      std::make_pair(1.0f, 0.0f)},
+	{BannerLayout::SmallOverLarge1, std::make_pair(0.375f, 0.625f)},
+	{BannerLayout::SmallOverLarge2, std::make_pair(0.250f, 0.750f)},
+	{BannerLayout::SmallOverLarge3, std::make_pair(0.125f, 0.875f)}
+};
+
 // ----------------------------------------------------------------------------
 
 class BannerLine
-{	
+{
 public:
 	BannerLine(const std::wstring& text,
 		const std::wstring& fontName,
@@ -84,6 +98,5 @@ private:
 	BannerLayout				m_layout;
 	std::vector<BannerLine>		m_lines;
 };
-
 
 #endif //_BANNER_H_

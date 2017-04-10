@@ -8,7 +8,7 @@ using namespace Gdiplus;
 using namespace std;
 using namespace Cartelmania;
 
-void TextFxBlock::DrawLine(const BannerLine& line, Graphics& gr, const RectF& rc)
+void TextFxBlock::DrawLine(const BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
 	StringFormat format;
 	format.SetAlignment(StringAlignmentCenter);
@@ -17,7 +17,7 @@ void TextFxBlock::DrawLine(const BannerLine& line, Graphics& gr, const RectF& rc
 	format.SetFormatFlags(StringFormatFlagsNoWrap);
 
 	FontFamily family(line.GetFontName().c_str());
-	unique_ptr<Font> fillFont = FindFontToFillTextInRect(gr, rc, family, line.GetText(), format);
+	unique_ptr<Font> fillFont = FindFontToFillTextInRect(gr, lineRect, family, line.GetText(), format);
 
 	// Cheap block effect
 
@@ -25,7 +25,7 @@ void TextFxBlock::DrawLine(const BannerLine& line, Graphics& gr, const RectF& rc
 
 	for (int i = 0; i < BLOCKDEPTH; ++i)
 	{
-		RectF rcBlock = rc;
+		RectF rcBlock = lineRect;
 		const BYTE layerColorComp = BYTE(255.0f * ((BLOCKDEPTH - i) / REAL(BLOCKDEPTH)));
 		rcBlock.Offset(REAL(BLOCKDEPTH - i), REAL(BLOCKDEPTH - i));
 
@@ -36,6 +36,6 @@ void TextFxBlock::DrawLine(const BannerLine& line, Graphics& gr, const RectF& rc
 	// Draw at the choosen font size
 	//
 
-	gr.DrawString(line.GetText().c_str(), -1, fillFont.get(), rc, &format,
+	gr.DrawString(line.GetText().c_str(), -1, fillFont.get(), lineRect, &format,
 		&HatchBrush(HatchStyle20Percent, Gdiplus::Color::Blue, Gdiplus::Color::Red));
 }
