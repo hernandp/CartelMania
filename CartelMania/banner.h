@@ -58,8 +58,8 @@ public:
 		m_textFx->DrawLine(*this, gr, rect);
 	}
 
-	std::wstring GetText() const { return m_text;  }
-	std::wstring GetFontName() const { return m_fontName; }
+	const std::wstring& GetText() const { return m_text;  }
+	const std::wstring& GetFontName() const { return m_fontName; }
 
 private:
 	std::unique_ptr<TextFXRenderer> m_textFx;

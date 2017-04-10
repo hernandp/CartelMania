@@ -1,16 +1,54 @@
 #include <memory>
 #include "cmania.h"
 #include "resource.h"
+//----------------------------------------------------------------------------
 
 extern Banner g_curBanner;
 extern bool g_lineSelState[2];
 
 using namespace std;
 
+//----------------------------------------------------------------------------
+
+void UpdateMenu(HWND hwnd)
+{
+	HMENU hMenu = GetMenu(hwnd);
+
+	if (hMenu)
+	{
+		HMENU hEditMenu = GetSubMenu(hMenu, 1);
+		if (hEditMenu)
+		{
+			if (g_lineSelState[0] && g_lineSelState[1])
+			{
+				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_UNCHECKED);
+				CheckMenuItem(hEditMenu, ID_EDIT_SEL2, MF_UNCHECKED);
+				CheckMenuItem(hEditMenu, ID_EDIT_SELECTBOTH, MF_CHECKED);
+			}
+			else if (g_lineSelState[0])
+			{
+				CheckMenuItem(hEditMenu, ID_EDIT_SELECTBOTH, MF_UNCHECKED);
+				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_CHECKED);
+				CheckMenuItem(hEditMenu, ID_EDIT_SEL2, MF_UNCHECKED);
+			}
+			else if (g_lineSelState[1])
+			{
+				CheckMenuItem(hEditMenu, ID_EDIT_SELECTBOTH, MF_UNCHECKED);
+				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_UNCHECKED);
+				CheckMenuItem(hEditMenu, ID_EDIT_SEL2, MF_CHECKED);
+			}
+		}
+	}
+}
+
+//----------------------------------------------------------------------------
+
 void ExecMenu(HWND hWnd, int id)
 {
 	switch (id)
 	{
+		// File 
+
 		case ID_FILE_EXIT:
 			if (IDOK == (
 				MessageBox(hWnd, L"Do you want to exit CartelMania?", L"Exit", MB_ICONQUESTION | MB_OKCANCEL)))
@@ -20,6 +58,28 @@ void ExecMenu(HWND hWnd, int id)
 			}
 
 			break;
+
+		// Edit
+
+		case ID_EDIT_SEL1:
+			g_lineSelState[0] = true;
+			g_lineSelState[1] = false;
+			UpdateMenu(hWnd);
+			break;
+
+		case ID_EDIT_SEL2:
+			g_lineSelState[0] = false;
+			g_lineSelState[1] = true;
+			UpdateMenu(hWnd);
+			break;
+
+		case ID_EDIT_SELECTBOTH:
+			g_lineSelState[0] = true;
+			g_lineSelState[1] = true;
+			UpdateMenu(hWnd);
+			break;
+
+		// Effect
 
 		case ID_CHOOSEFONT:
 		{
@@ -66,8 +126,6 @@ void ExecMenu(HWND hWnd, int id)
 
 		case ID_FX_VERTICAL:
 			break;
-
-
 
 		case ID_FX_BLOCK:
 			g_curBanner.GetLine(0).SetTextFx(make_unique<TextFxBlock>());

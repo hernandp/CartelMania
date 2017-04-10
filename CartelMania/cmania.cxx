@@ -5,6 +5,10 @@
 #include <string>
 #include "resource.h"
 #include "cmania.h"
+
+// Use VisualLeak Detector 
+#include <vld.h>
+
 #pragma comment(lib, "gdiplus.lib")
 
 using namespace std;
@@ -29,6 +33,7 @@ bool g_lineSelState[2]{ true,true };
 static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static void FatalMsg(HWND hWnd, DWORD dwErrCode, LPCWSTR lpMessage);
 void ExecMenu(HWND, int);
+void UpdateMenu(HWND);
 
 //----------------------------------------------------------------------------
 // 
@@ -98,12 +103,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
-	HMENU hMenu = GetMenu(hwnd);
-	if (hMenu)
-	{
-		
-	}
-
+	UpdateMenu(hwnd);
 	return TRUE;
 }
 
