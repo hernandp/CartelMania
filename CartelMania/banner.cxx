@@ -11,7 +11,6 @@ Banner::Banner() : m_layout(BannerLayout::SingleLine)
 	// Create the two default lines, cloning Bannermania behavior
 	// (for future expansion, we could add more lines)
 
-
 	BannerLine line1(DEFAULT_LINE1_TEXT, DEFAULT_FONT_NAME, make_unique<TextFxSolid>());
 	BannerLine line2(DEFAULT_LINE2_TEXT, DEFAULT_FONT_NAME, make_unique<TextFxSolid>());
 	m_lines.push_back(move(line1));
@@ -37,7 +36,7 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	
 	// Transform coordinate space.
 	// Banner area spans over 100% width minus borders, and 50% height, of the window client area.
-	// Origin of drawing is set to the upper-left corner of the banner, with X+ pointing down, Y+ pointing left.
+	// Origin of drawing is set to the upper-left corner of the banner, with Y+ pointing down, X+ pointing left.
 	// We still use pixel units, however.
 	//
 	const RectF bannerRect(0, 0, rcClientArea.Width - BANNER_MARGIN_PX, 
@@ -53,9 +52,16 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	gr.FillRectangle(&SolidBrush(Color::Black), bannerShadowRect);
 	gr.FillRectangle(&SolidBrush(Color::White), bannerRect);
 	gr.DrawRectangle(&Pen(Color::Black), bannerRect);
+	
+	// The banner coordinate space is divided by number of lines.
+	// Each line has it's own local space with x+/y+ pointing left and down in display.
 
-	// Render text 
-
+	int nLine = 0;
+	const REAL lineHeight = bannerRect.Height / 2.0f;
+	const RectF lineRect(0, 0, bannerRect.Width, lineHeight);
 	for (const auto& line : m_lines)
-		line.DrawOn(gr, bannerRect);
+	{
+		gr.TranslateTransform(0, lineHeight * nLine++);
+		line.DrawOn(gr, lineRect);
+	}
 }
