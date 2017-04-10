@@ -117,6 +117,10 @@
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
+      <OmitFramePointers>false</OmitFramePointers>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <FloatingPointModel>Fast</FloatingPointModel>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,11 +152,13 @@
     <ClCompile Include="banner.cxx" />
     <ClCompile Include="cmania.cxx" />
     <ClCompile Include="colors.cxx" />
+    <ClCompile Include="execmenu.cxx" />
+    <ClCompile Include="textfx_blend.cxx" />
     <ClCompile Include="textfx_block.cxx" />
     <ClCompile Include="textfx_shadowrear.cxx" />
     <ClCompile Include="textfx_solid.cxx" />
     <ClCompile Include="textfx_twooutl.cxx" />
-    <ClCompile Include="textutil.cpp" />
+    <ClCompile Include="textutil.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="banner.h" />
@@ -160,7 +166,6 @@
     <ClInclude Include="colors.h" />
     <ClInclude Include="colorset.h" />
     <ClInclude Include="textrend.h" />
-    <ClInclude Include="font.h" />
     <ClInclude Include="gdipeng.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="textutil.h" />

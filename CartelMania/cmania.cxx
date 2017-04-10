@@ -19,6 +19,7 @@ const WCHAR g_WindowClassName[] = L"CartelManiaWindowClass";
 const WCHAR g_WindowTitle[] = L"CartelMania for Windows";
 GdiPlusEngine g_gdipEng;
 Banner g_curBanner;
+bool g_lineSelState[2]{ true,true };
 
 //----------------------------------------------------------------------------
 // 
@@ -27,6 +28,7 @@ Banner g_curBanner;
 //----------------------------------------------------------------------------
 static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
 static void FatalMsg(HWND hWnd, DWORD dwErrCode, LPCWSTR lpMessage);
+void ExecMenu(HWND, int);
 
 //----------------------------------------------------------------------------
 // 
@@ -92,6 +94,18 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 	return (int) msg.wParam;
 }
+//----------------------------------------------------------------------------
+
+static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
+{
+	HMENU hMenu = GetMenu(hwnd);
+	if (hMenu)
+	{
+		
+	}
+
+	return TRUE;
+}
 
 //----------------------------------------------------------------------------
 
@@ -112,76 +126,7 @@ static void OnCommand(HWND hWnd, int id, HWND hwndCtl, UINT codeNotify)
 {
 	if (codeNotify == 0)
 	{
-		switch (id)
-		{
-			case ID_FILE_EXIT:
-				if (IDOK == (
-					MessageBox(hWnd, L"Do you want to exit CartelMania?", L"Exit", MB_ICONQUESTION | MB_OKCANCEL)))
-				{
-					CloseWindow(hWnd);
-					DestroyWindow(hWnd);
-				}
-				
-				break;
-
-			case ID_STYLE_CHOOSEFONT:
-			{
-				CHOOSEFONT cf;
-				LOGFONT lf;
-				ZeroMemory(&cf, sizeof(CHOOSEFONT));
-				ZeroMemory(&lf, sizeof(LOGFONT));
-
-				cf.lStructSize = sizeof(CHOOSEFONT);
-				cf.hwndOwner = hWnd;
-				cf.lpLogFont = &lf;
-				cf.Flags = CF_TTONLY | CF_APPLY | CF_FORCEFONTEXIST | CF_NOSCRIPTSEL | CF_NOSIZESEL;
-				if (ChooseFont(&cf))
-				{
-					g_curBanner.SetFont(cf.lpLogFont->lfFaceName);
-					InvalidateRect(hWnd, NULL, TRUE);
-				}
-				break;
-			}
-
-			case ID_FX_SOLID:
-				g_curBanner.SetTextRenderer(make_unique<TextFxSolid>());
-				InvalidateRect(hWnd, NULL, TRUE);
-				break;
-
-			case ID_FX_THICK:
-			{
-				auto textR = make_unique<TextFxSolid>();
-				textR->SetOutlineWidth(6.0f);
-				g_curBanner.SetTextRenderer(move(textR));
-				InvalidateRect(hWnd, NULL, TRUE);
-				break;
-			}
-
-			case ID_FX_TWOOUTLINES:
-			{
-				auto textR = make_unique<TextFxTwoOutlines>();
-				textR->SetOutlineWidth(6.0f);
-				textR->SetOutline2Width(6.0f);
-				g_curBanner.SetTextRenderer(move(textR));
-				InvalidateRect(hWnd, NULL, TRUE);
-				break;
-			}
-
-			case ID_FX_VERTICAL:
-				break;
-
-			
-
-			case ID_FX_BLOCK:
-				g_curBanner.SetTextRenderer(make_unique<TextFxBlock>());
-				InvalidateRect(hWnd, NULL, TRUE);
-				break;
-
-			case ID_FX_SHADOWREAR:
-				g_curBanner.SetTextRenderer(make_unique<TextFxShadowRear>());
-				InvalidateRect(hWnd, NULL, TRUE);
-				break;
-		}
+		ExecMenu(hWnd, id);
 	}
 }
 
@@ -208,6 +153,7 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 {
 	switch (uMsg)
 	{
+		HANDLE_MSG(hWnd, WM_CREATE, OnCreate);
 		HANDLE_MSG(hWnd, WM_PAINT, OnPaint);
 		HANDLE_MSG(hWnd, WM_COMMAND, OnCommand);
 		HANDLE_MSG(hWnd, WM_CLOSE, OnClose);

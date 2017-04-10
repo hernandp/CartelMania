@@ -8,7 +8,7 @@ using namespace Gdiplus;
 using namespace std;
 using namespace Cartelmania;
 
-void TextFxBlock::Draw(const Banner& banner, Graphics& gr, const RectF& rc)
+void TextFxBlock::DrawLine(const BannerLine& line, Graphics& gr, const RectF& rc)
 {
 	StringFormat format;
 	format.SetAlignment(StringAlignmentCenter);
@@ -16,8 +16,8 @@ void TextFxBlock::Draw(const Banner& banner, Graphics& gr, const RectF& rc)
 	format.SetTrimming(StringTrimmingNone);
 	format.SetFormatFlags(StringFormatFlagsNoWrap);
 
-	FontFamily family(banner.GetFont().c_str());
-	unique_ptr<Font> fillFont = FindFontToFillTextInRect(gr, rc, family, banner.GetText1(), format);
+	FontFamily family(line.GetFontName().c_str());
+	unique_ptr<Font> fillFont = FindFontToFillTextInRect(gr, rc, family, line.GetText(), format);
 
 	// Cheap block effect
 
@@ -29,13 +29,13 @@ void TextFxBlock::Draw(const Banner& banner, Graphics& gr, const RectF& rc)
 		const BYTE layerColorComp = BYTE(255.0f * ((BLOCKDEPTH - i) / REAL(BLOCKDEPTH)));
 		rcBlock.Offset(REAL(BLOCKDEPTH - i), REAL(BLOCKDEPTH - i));
 
-		gr.DrawString(banner.GetText1().c_str(), -1, fillFont.get(), rcBlock, &format,
+		gr.DrawString(line.GetText().c_str(), -1, fillFont.get(), rcBlock, &format,
 			&SolidBrush(Gdiplus::Color(layerColorComp, layerColorComp, layerColorComp)));
 	}
 
 	// Draw at the choosen font size
 	//
 
-	gr.DrawString(banner.GetText1().c_str(), -1, fillFont.get(), rc, &format,
+	gr.DrawString(line.GetText().c_str(), -1, fillFont.get(), rc, &format,
 		&HatchBrush(HatchStyle20Percent, Gdiplus::Color::Blue, Gdiplus::Color::Red));
 }

@@ -7,7 +7,6 @@
 #ifndef _CARTELMANIA_H_
 #define _CARTELMANIA_H_
 #include "banner.h"
-#include "font.h"
 #include "gdipeng.h"
 #include "colorset.h"
 #include "textrend.h"

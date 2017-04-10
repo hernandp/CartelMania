@@ -10,7 +10,7 @@ using namespace Gdiplus;
 using namespace std;
 using namespace Cartelmania;
 
-void TextFxSolid::Draw(const Banner& banner, Graphics& gr, const RectF& bannerRect)
+void TextFxSolid::DrawLine(const BannerLine& line, Graphics& gr, const RectF& rect)
 {
 	StringFormat format;
 	format.SetTrimming(StringTrimmingNone);
@@ -18,17 +18,17 @@ void TextFxSolid::Draw(const Banner& banner, Graphics& gr, const RectF& bannerRe
 	format.SetAlignment(StringAlignmentCenter);
 
 	RectF boundingBox;
-	FontFamily family(banner.GetFont().c_str());
-	unique_ptr<Font> font = FindFontToFillTextInRect(gr, bannerRect, family, banner.GetText1(), format, &boundingBox);
+	FontFamily family(line.GetFontName().c_str());
+	unique_ptr<Font> font = FindFontToFillTextInRect(gr, rect, family, line.GetText(), format, &boundingBox);
 
 	// Center vertically [ user could choose other alignments ]
 	//
 	Matrix mtx;
-	mtx.Translate(0.0f, (bannerRect.Height / 2) - (boundingBox.Height / 2));
+	mtx.Translate(0.0f, (rect.Height / 2) - (boundingBox.Height / 2));
 
 	DrawStringInfo di;
 	di.gr				= &gr;
-	di.text				= banner.GetText1();
+	di.text				= line.GetText();
 	di.rect				= &boundingBox;
 	di.stringFormat		= &format;
 	di.faceColor		= g_Colors[2];

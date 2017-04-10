@@ -1,42 +1,37 @@
 #include "banner.h"
 #include "textrend.h"
+#include <memory.h>
 #include <gdiplus.h>
 
 using namespace Gdiplus;
+using namespace std;
 
-
-// ----------------------------------------------------------------------------
-//
-// Constants for banner display, size and placement on display area
-//
-// ----------------------------------------------------------------------------
-
-Banner::Banner() : m_fontName(L"Arial"), m_textRenderer(std::make_unique<TextFxSolid>())
+Banner::Banner() : m_layout(BannerLayout::SingleLine)
 {
+	// Create the two default lines, cloning Bannermania behavior
+	// (for future expansion, we could add more lines)
 
+
+	BannerLine line1(DEFAULT_LINE1_TEXT, DEFAULT_FONT_NAME, make_unique<TextFxSolid>());
+	BannerLine line2(DEFAULT_LINE2_TEXT, DEFAULT_FONT_NAME, make_unique<TextFxSolid>());
+	m_lines.push_back(move(line1));
+	m_lines.push_back(move(line2));
 }
 
 Banner::~Banner()
 {
 }
 
-void Banner::SetTextRenderer(ITextFXRendererPtr textRenderer)
-{
-	m_textRenderer = std::move(textRenderer);
-}
-
 void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 {
 	Graphics gr(hdc);
-
-	m_text[0] = L"CartelMania";
 	
 	const RectF rcClientArea((REAL) rcClient->left, 
 		(REAL) rcClient->top, 
 		(REAL) (rcClient->right - rcClient->left),
 		(REAL) (rcClient->bottom - rcClient->top));
 
-	// Draw background
+	// Draw client window background
 	//
 	gr.FillRectangle(&HatchBrush(HatchStyle10Percent, Color::Blue, Color::DarkCyan), rcClientArea);
 	
@@ -58,6 +53,9 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	gr.FillRectangle(&SolidBrush(Color::Black), bannerShadowRect);
 	gr.FillRectangle(&SolidBrush(Color::White), bannerRect);
 	gr.DrawRectangle(&Pen(Color::Black), bannerRect);
-	
-	m_textRenderer->Draw(*this, gr, bannerRect);
+
+	// Render text 
+
+	for (const auto& line : m_lines)
+		line.DrawOn(gr, bannerRect);
 }

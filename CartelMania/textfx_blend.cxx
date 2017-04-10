@@ -10,7 +10,7 @@ using namespace Gdiplus;
 using namespace std;
 using namespace Cartelmania;
 
-void TextFxTwoOutlines::DrawLine(const BannerLine& line, Graphics& gr, const RectF& bannerRect)
+void TextFxBlend::DrawLine(const BannerLine& line, Graphics& gr, const RectF& bannerRect)
 {
 	StringFormat format;
 	format.SetTrimming(StringTrimmingNone);
@@ -35,7 +35,7 @@ void TextFxTwoOutlines::DrawLine(const BannerLine& line, Graphics& gr, const Rec
 	HatchBrush brush(g_Colors[2].m_hatch, g_Colors[2].m_fg, g_Colors[2].m_bg);
 	path.AddString(line.GetText().c_str(), -1, &family, fontStyle, fontSize, boundingBox, &format);
 	path.Transform(&mtx);
-	
+
 	gr.DrawPath(&penOut, &path);
 	gr.DrawPath(&penIn, &path);
 	gr.FillPath(&brush, &path);
