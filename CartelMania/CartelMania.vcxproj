@@ -167,6 +167,7 @@
     <ClInclude Include="cmania.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="colorset.h" />
+    <ClInclude Include="debug.h" />
     <ClInclude Include="textrend.h" />
     <ClInclude Include="gdipeng.h" />
     <ClInclude Include="resource.h" />

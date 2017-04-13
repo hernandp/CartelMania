@@ -5,6 +5,7 @@
 #include <string>
 #include "resource.h"
 #include "cmania.h"
+#include "debug.h"
 
 // Use VisualLeak Detector 
 #include <vld.h>
@@ -31,7 +32,6 @@ bool g_lineSelState[2]{ true,true };
 //
 //----------------------------------------------------------------------------
 static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam);
-static void FatalMsg(HWND hWnd, DWORD dwErrCode, LPCWSTR lpMessage);
 void ExecMenu(HWND, int);
 void UpdateMenu(HWND);
 
@@ -42,11 +42,7 @@ void UpdateMenu(HWND);
 //----------------------------------------------------------------------------
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-	if (!g_gdipEng.IsInitOk())
-	{
-		FatalMsg(NULL, 0, L"GDI+ initialization error");
-		return -1;
-	}
+	XASSERT(g_gdipEng.IsInitOk());
 
 	WNDCLASSEX wcex;
 	RtlZeroMemory(&wcex, sizeof(WNDCLASSEX));
@@ -60,14 +56,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	wcex.lpszClassName	= g_WindowClassName;
 	wcex.style			= CS_HREDRAW | CS_VREDRAW | CS_OWNDC;
 
-	if (!RegisterClassEx(&wcex))
-	{
-		FatalMsg(NULL, GetLastError(), L"Initialization error registering window class");
-		return -1;
-	}
+	XASSERT(RegisterClassEx(&wcex));
 
-	HWND hWnd = CreateWindowEx(0, g_WindowClassName, g_WindowTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT, 
-		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, 0);
+	HWND hWnd = NULL;
+	XASSERT(hWnd = CreateWindowEx(0, g_WindowClassName, g_WindowTitle, WS_OVERLAPPEDWINDOW, CW_USEDEFAULT,
+		CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, NULL, NULL, hInstance, 0));
 
 	MSG msg;
 	RtlZeroMemory(&msg, sizeof(MSG));
@@ -81,20 +74,11 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 		
 		while ((bRet = GetMessage(&msg, 0, 0, 0)) != 0)
 		{
-			if (bRet == -1)
-			{
-				FatalMsg(hWnd, GetLastError(), L"Unexpected message loop error");
-			}
-			else
-			{
-				TranslateMessage(&msg);
-				DispatchMessage(&msg);
-			}
+			XASSERT(bRet != -1);
+
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
 		}
-	}
-	else
-	{
-		FatalMsg(hWnd, GetLastError(), L"Initialization error creating window");
 	}
 
 	return (int) msg.wParam;
@@ -164,10 +148,3 @@ static LRESULT CALLBACK WindowProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM l
 }
 
 //----------------------------------------------------------------------------
-
-static void FatalMsg(HWND hWnd, DWORD dwErrCode, LPCWSTR lpMessage)
-{
-	WCHAR wMsg[1024] = { 0 };
-	swprintf_s(wMsg, L"%s\n\n(Code=%d)", lpMessage, dwErrCode);
-	MessageBox(hWnd, wMsg, L"Fatal Error", MB_ICONERROR | MB_OK);
-}
