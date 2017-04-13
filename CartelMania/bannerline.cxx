@@ -23,10 +23,10 @@ void BannerLine::SetTextFx(unique_ptr<TextFXRenderer> newFx)
 void BannerLine::DrawOn(Graphics & gr, const RectF & rect) const
 {	
 // Random background for debugging purposes!
-
+/*
 	gr.FillRectangle(&HatchBrush(Gdiplus::HatchStyle50Percent,
 		Color(rand() % 255, rand() % 255, rand() % 255),
-		Color(rand() % 255, rand() % 255, rand() % 255)), rect);
+		Color(rand() % 255, rand() % 255, rand() % 255)), rect);*/
 
 	m_textFx->DrawLine(*this, gr, rect);
 }

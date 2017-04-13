@@ -44,9 +44,9 @@ enum class BannerLayout
 
 const std::map<BannerLayout, std::pair<float, float>> g_proportionTable =
 {
-	{BannerLayout::LargeOverSmall1, std::make_pair(0.25f, 0.75f)},
-	{BannerLayout::LargeOverSmall2, std::make_pair(0.333333f, 0.666666f)},
-	{BannerLayout::LargeOverSmall3, std::make_pair(0.4f, 0.6f)},
+	{BannerLayout::LargeOverSmall1, std::make_pair(0.6f, 0.4f)},
+	{BannerLayout::LargeOverSmall2, std::make_pair(0.666666f, 0.3333333f)},
+	{BannerLayout::LargeOverSmall3, std::make_pair(0.75f, 0.25f)},
 	{BannerLayout::MediumMedium,    std::make_pair(0.5f, 0.5f)},
 	{BannerLayout::SingleLine,      std::make_pair(1.0f, 0.0f)},
 	{BannerLayout::SmallOverLarge1, std::make_pair(0.4f, 0.6f)},
