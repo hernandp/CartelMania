@@ -61,7 +61,7 @@ void ExecMenu(HWND hWnd, int id)
 	if (menuToLayoutMap.find(id) != menuToLayoutMap.end())
 	{
 		g_curBanner.SetLayout(menuToLayoutMap.at(id));
-		InvalidateRect(hWnd, nullptr, TRUE);
+		InvalidateRect(hWnd, nullptr, FALSE);
 		return;
 	}
 
@@ -119,14 +119,14 @@ void ExecMenu(HWND hWnd, int id)
 			if (ChooseFont(&cf))
 			{
 				//g_curBanner.SetFont(cf.lpLogFont->lfFaceName);
-				InvalidateRect(hWnd, NULL, TRUE);
+				InvalidateRect(hWnd, NULL, FALSE);
 			}
 			break;
 		}
 
 		case ID_FX_SOLID:
 			g_curBanner.GetLine(0).SetTextFx(make_unique<TextFxSolid>());
-			InvalidateRect(hWnd, NULL, TRUE);
+			InvalidateRect(hWnd, NULL, FALSE);
 			break;
 
 		case ID_FX_THICK:
@@ -134,7 +134,7 @@ void ExecMenu(HWND hWnd, int id)
 			auto textR = make_unique<TextFxSolid>();
 			textR->SetOutlineWidth(6.0f);
 			g_curBanner.GetLine(0).SetTextFx(move(textR));
-			InvalidateRect(hWnd, NULL, TRUE);
+			InvalidateRect(hWnd, NULL, FALSE);
 			break;
 		}
 
@@ -144,7 +144,7 @@ void ExecMenu(HWND hWnd, int id)
 			textR->SetOutlineWidth(6.0f);
 			textR->SetOutline2Width(6.0f);
 			g_curBanner.GetLine(0).SetTextFx(move(textR));
-			InvalidateRect(hWnd, NULL, TRUE);
+			InvalidateRect(hWnd, NULL, FALSE);
 			break;
 		}
 
@@ -153,12 +153,16 @@ void ExecMenu(HWND hWnd, int id)
 
 		case ID_FX_BLOCK:
 			g_curBanner.GetLine(0).SetTextFx(make_unique<TextFxBlock>());
-			InvalidateRect(hWnd, NULL, TRUE);
+			InvalidateRect(hWnd, NULL, FALSE);
 			break;
 
 		case ID_FX_SHADOWREAR:
 			g_curBanner.GetLine(0).SetTextFx(make_unique<TextFxShadowRear>());
-			InvalidateRect(hWnd, NULL, TRUE);
+			InvalidateRect(hWnd, NULL, FALSE);
 			break;
+
+		// Shape
+
+			
 	}
 }
