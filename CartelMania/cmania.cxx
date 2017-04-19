@@ -2,6 +2,7 @@
 #include <windowsx.h>
 #include <strsafe.h>
 #include <gdiplus.h>
+#include <CommCtrl.h>
 #include <string>
 #include "resource.h"
 #include "cmania.h"
@@ -11,6 +12,7 @@
 #include <vld.h>
 
 #pragma comment(lib, "gdiplus.lib")
+#pragma comment(lib, "comctl32.lib")
 
 using namespace std;
 using namespace Gdiplus;
@@ -42,6 +44,11 @@ void UpdateMenu(HWND);
 //----------------------------------------------------------------------------
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+	INITCOMMONCONTROLSEX icex;
+	icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
+	icex.dwICC = ICC_WIN95_CLASSES;
+	XASSERT(InitCommonControlsEx(&icex));
+
 	XASSERT(g_gdipEng.IsInitOk());
 
 	WNDCLASSEX wcex;
@@ -87,6 +94,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 
 static BOOL OnCreate(HWND hwnd, LPCREATESTRUCT lpCreateStruct)
 {
+	
 	UpdateMenu(hwnd);
 	return TRUE;
 }
