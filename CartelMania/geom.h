@@ -2,11 +2,16 @@
 #include <windows.h>
 #include <gdiplus.h>
 #include <vector>
-
+#include <memory>
 // ---------------------------------------------------------------------------
 
 Gdiplus::REAL Length(Gdiplus::REAL x0, Gdiplus::REAL y0, 
 	Gdiplus::REAL x1, Gdiplus::REAL y1);
+
+// ---------------------------------------------------------------------------
+
+int GetAdaptiveSubdivCount(Gdiplus::REAL x0, Gdiplus::REAL y0,
+	Gdiplus::REAL x1, Gdiplus::REAL y1, Gdiplus::REAL interval);
 
 // ---------------------------------------------------------------------------
 
@@ -22,6 +27,9 @@ void SubdivideLineAddTo(Gdiplus::REAL x0, Gdiplus::REAL y0, Gdiplus::REAL x1, Gd
 // ---------------------------------------------------------------------------
 
 void SubdividePath(const Gdiplus::GraphicsPath& path, Gdiplus::GraphicsPath& newPath);
+// ---------------------------------------------------------------------------
+
+Gdiplus::GraphicsPath* WarpPath(const Gdiplus::GraphicsPath& path);
 
 // ---------------------------------------------------------------------------
 
@@ -29,6 +37,6 @@ void DumpPathData(const Gdiplus::GraphicsPath& path);
 
 // ---------------------------------------------------------------------------
 
-void DrawPathDebug(Gdiplus::Graphics& gr, const Gdiplus::GraphicsPath& path);
+void DrawPathVertices(Gdiplus::Graphics& gr, const Gdiplus::GraphicsPath& path);
 
 // ---------------------------------------------------------------------------

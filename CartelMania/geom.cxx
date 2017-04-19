@@ -4,6 +4,7 @@
 #include "debug.h"
 #include "colors.h"
 #include <algorithm>
+#include <memory>
 
 using namespace Gdiplus;
 using namespace std;
@@ -13,6 +14,12 @@ using namespace std;
 REAL Length(REAL x0, REAL y0, REAL x1, REAL y1)
 {
 	return sqrtf((x1 - x0)*(x1 - x0) + (y1 - y0)*(y1 - y0));
+}
+
+int GetAdaptiveSubdivCount(Gdiplus::REAL x0, Gdiplus::REAL y0, Gdiplus::REAL x1, Gdiplus::REAL y1, Gdiplus::REAL interval)
+{
+	const REAL iv = Length(x0, y0, x1, y1) / interval;
+	return (iv < 1.0f) ? 1 : static_cast<int>(iv);
 }
 
 // ---------------------------------------------------------------------------
@@ -76,7 +83,9 @@ void SubdividePath(const GraphicsPath& path, GraphicsPath& newPath)
 		const REAL px1 = pathData.Points[i].X;
 		const REAL py1 = pathData.Points[i].Y;
 
-		SubdivideLineAddTo(px0, py0, px1, py1, 4, newPath);
+		const int subdivCount = GetAdaptiveSubdivCount(px0, py0, px1, py1, 16.0f);
+		
+		SubdivideLineAddTo(px0, py0, px1, py1, subdivCount, newPath);
 
 		if (pathData.Types[i] & 0x20) // marker?
 			newPath.SetMarker();
@@ -90,10 +99,14 @@ void SubdividePath(const GraphicsPath& path, GraphicsPath& newPath)
 			// 
 
 			XASSERT(lastStartIndex != -1);
+			const REAL x0 = pathData.Points[i].X;
+			const REAL y0 = pathData.Points[i].Y;
+			const REAL x1 = pathData.Points[lastStartIndex].X;
+			const REAL y1 = pathData.Points[lastStartIndex].Y;
 
-			auto lines = SubdivideLine(pathData.Points[i].X, pathData.Points[i].Y,
-				pathData.Points[lastStartIndex].X, pathData.Points[lastStartIndex].Y,
-				4);
+			const int subdivCount = GetAdaptiveSubdivCount(x0, y0, x1, y1, 16.0f);
+
+			auto lines = SubdivideLine(x0, y0, x1, y1,	subdivCount);
 
 			lines.pop_back();
 			for (const auto& line : lines)
@@ -103,6 +116,21 @@ void SubdividePath(const GraphicsPath& path, GraphicsPath& newPath)
 			i++;
 		}
 	}
+}
+
+// ---------------------------------------------------------------------------
+
+GraphicsPath* WarpPath(const GraphicsPath& path)
+{
+	PathData pd;
+	path.GetPathData(&pd);
+
+	/*for (int i = 0; i < pd.Count; ++i)
+	{
+		pd.Points[i].Y += 10.0f * sinf(float(i));
+	}	*/
+
+	return new GraphicsPath(pd.Points, pd.Types, pd.Count);
 }
 
 // ---------------------------------------------------------------------------
@@ -122,9 +150,9 @@ void DumpPathData(const  GraphicsPath& path)
 
 // ---------------------------------------------------------------------------
 
-void DrawPathDebug(Graphics& gr, const GraphicsPath& path)
+void DrawPathVertices(Graphics& gr, const GraphicsPath& path)
 {
-	gr.DrawPath(&Pen(Color::Black, 2), &path);
+	//gr.DrawPath(&Pen(Color::Black, 2), &path);
 	
 	PathData pd;
 	path.GetPathData(&pd);
