@@ -6,7 +6,7 @@
 #include <windows.h>
 #include <string>
 #include <memory>
-#include <vector>
+#include <array>
 #include <gdiplus.h>
 #include <map>
 
@@ -18,8 +18,8 @@
 
 const float BANNER_MARGIN_PX = 20;
 const float BANNER_HEIGHT_PCT = 50;
-const auto  DEFAULT_LINE1_TEXT{ L"Line 1" };
-const auto  DEFAULT_LINE2_TEXT{ L"Line 2" };
+const auto  DEFAULT_TOPLINE_TEXT{ L"MEFA" };
+const auto  DEFAULT_BOTTOMLINE_TEXT{ L"Line 2" };
 const auto  DEFAULT_FONT_NAME{ L"Arial" };
 
 // ----------------------------------------------------------------------------
@@ -60,14 +60,19 @@ public:
 	Banner();
 	~Banner();
 	
-	BannerLine& GetLine(int index) { return m_lines.at(index);  }
+	BannerLine* GetTopLine() const {	return m_topLine.get();	}
+	BannerLine* GetBottomLine() const { return m_bottomLine.get(); }
 	BannerLayout GetLayout() const { return m_layout;  }
 	void SetLayout(BannerLayout layout) { m_layout = layout;  }
 	void PaintOn(HDC hdc, const LPRECT rcClient);
 
 private:
-	BannerLayout				m_layout;
-	std::vector<BannerLine>		m_lines;
+
+	void BuildPaths();
+
+	BannerLayout								m_layout;
+	std::unique_ptr<BannerLine>					m_topLine;
+	std::unique_ptr<BannerLine>					m_bottomLine;
 };
 
 #endif //_BANNER_H_

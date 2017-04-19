@@ -4,6 +4,7 @@
 #include <gdiplus.h>
 #include <assert.h>
 #include <map>
+#include "geom.h"
 
 using namespace Gdiplus;
 using namespace std;
@@ -13,12 +14,9 @@ using namespace std;
 Banner::Banner() : m_layout(BannerLayout::SingleLine)
 {
 	// Create the two default lines, cloning Bannermania behavior
-	// (for future expansion, we could add more lines)
 
-	BannerLine line1(DEFAULT_LINE1_TEXT, DEFAULT_FONT_NAME, make_unique<TextFxSolid>());
-	BannerLine line2(DEFAULT_LINE2_TEXT, DEFAULT_FONT_NAME, make_unique<TextFxSolid>());
-	m_lines.push_back(move(line1));
-	m_lines.push_back(move(line2));
+	m_topLine    = make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>());
+	m_bottomLine = make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>());
 }
 //----------------------------------------------------------------------------
 
@@ -58,6 +56,12 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	gr.FillRectangle(&SolidBrush(Color::Black), bannerShadowRect);
 	gr.FillRectangle(&SolidBrush(Color::White), bannerRect);
 	gr.DrawRectangle(&Pen(Color::Black), bannerRect);
+
+
+	// Step1: Build paths from the text lines
+
+	const GraphicsPath* gp0 = m_topLine->GetPath();
+	const GraphicsPath* gp1 = m_bottomLine->GetPath();
 	
 	// The banner coordinate space is divided by number of lines, considering the current layout.
 	// Each line has it's own local space with x+/y+ pointing left and down in display.
@@ -65,7 +69,7 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	const REAL line1Height = g_proportionTable.at(m_layout).first * bannerRect.Height;
 	const RectF line1Rect(0, 0, bannerRect.Width, line1Height);
 
-	m_lines[0].DrawOn(gr, line1Rect);
+	m_topLine->DrawOn(gr, line1Rect);
 
 	if (m_layout != BannerLayout::SingleLine)
 	{
@@ -75,8 +79,14 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 		const RectF line2Rect(0, 0, bannerRect.Width, line2Height);
 
 		gr.TranslateTransform(0, line1Rect.Height);
-		m_lines[1].DrawOn(gr, line2Rect);
+		m_bottomLine->DrawOn(gr, line2Rect);
 	}	
+}
+
+void Banner::BuildPaths()
+{
+	/*GraphicsPath path1, path2;
+	path1.AddString(m_lines[0].)*/
 }
 
 //----------------------------------------------------------------------------

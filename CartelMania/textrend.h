@@ -21,7 +21,7 @@ public:
 	//
 	// Renders text on target graphics object.
 	//
-	virtual void DrawLine(const BannerLine& line, Gdiplus::Graphics& gr, 
+	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, 
 		const Gdiplus::RectF& rect) = 0;
 	
 	//
@@ -41,21 +41,21 @@ protected:
 class TextFxSolid : public TextFXRenderer
 {
 public:
-	virtual void DrawLine(const BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
+	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 };
 //----------------------------------------------------------------------------
 
 class TextFxBlock : public TextFXRenderer
 {
 public:
-	virtual void DrawLine(const BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
+	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 };
 //----------------------------------------------------------------------------
 
 class TextFxShadowRear : public TextFXRenderer
 {
 public:
-	virtual void DrawLine(const BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
+	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 };
 
 //----------------------------------------------------------------------------
@@ -63,7 +63,7 @@ public:
 class TextFxBlend : public TextFXRenderer
 {
 public:
-	virtual void DrawLine(const BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
+	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 };
 
 //----------------------------------------------------------------------------
@@ -71,7 +71,7 @@ public:
 class TextFxTwoOutlines : public TextFXRenderer
 {
 public:
-	virtual void DrawLine(const BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
+	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 	void SetOutline2Width(float f) { m_outlineWidth2 = f; }
 private:
 	float		m_outlineWidth2 = 1.0f;
