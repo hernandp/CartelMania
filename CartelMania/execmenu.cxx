@@ -1,9 +1,11 @@
 #include <memory>
 #include "cmania.h"
 #include "resource.h"
+
 //----------------------------------------------------------------------------
 
 extern Banner g_curBanner;
+extern GlobalSettings g_globalSettings;
 extern bool g_lineSelState[2];
 
 using namespace std;
@@ -37,6 +39,14 @@ void UpdateMenu(HWND hwnd)
 				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_UNCHECKED);
 				CheckMenuItem(hEditMenu, ID_EDIT_SEL2, MF_CHECKED);
 			}
+		}
+
+		HMENU hDebugMenu = GetSubMenu(hMenu, 6);
+		if (hDebugMenu)
+		{
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, g_globalSettings.m_fDebugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL, g_globalSettings.m_fDebugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, g_globalSettings.m_fDisableSubdiv ? MF_CHECKED : MF_UNCHECKED);
 		}
 	}
 }
@@ -163,6 +173,25 @@ void ExecMenu(HWND hWnd, int id)
 
 		// Shape
 
-			
+		// Debug
+
+		case ID_DEBUG_DRAWVERTICES:
+			g_globalSettings.m_fDebugDrawVertices = !g_globalSettings.m_fDebugDrawVertices;
+			InvalidateRect(hWnd, NULL, FALSE);
+			UpdateMenu(hWnd);
+			break;	
+
+		case ID_DEBUG_DISABLEPATHFILL:
+			g_globalSettings.m_fDebugDisableFillPath = !g_globalSettings.m_fDebugDisableFillPath;
+			InvalidateRect(hWnd, NULL, FALSE);
+			UpdateMenu(hWnd);
+			break;
+
+		case ID_DEBUG_DISABLEPATHSUBDIVISION:
+			g_globalSettings.m_fDisableSubdiv = !g_globalSettings.m_fDisableSubdiv;
+			//g_curBanner.Invalidate();
+			InvalidateRect(hWnd, NULL, FALSE);
+			UpdateMenu(hWnd);
+			break;
 	}
 }

@@ -11,4 +11,6 @@
 #include "colorset.h"
 #include "textrend.h"
 #include "colors.h"
+#include "globset.h"
+#include "debug.h"
 #endif //_CARTELMANIA_H_
