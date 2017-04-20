@@ -11,6 +11,7 @@ namespace  Gdiplus
 {
 class Graphics;
 class RectF;
+class GraphicsPath;
 }
 
 //----------------------------------------------------------------------------
@@ -30,6 +31,8 @@ public:
 	void SetOutlineWidth(float w) { m_outlineWidth = w; }
 
 protected:
+	void AlignScalePath(Gdiplus::GraphicsPath* path, const Gdiplus::RectF& lineRect);
+
 	float				m_outlineWidth = 1.0f;
 };
 
