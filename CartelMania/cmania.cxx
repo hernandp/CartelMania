@@ -1,8 +1,6 @@
 #include <atlbase.h>
 #include <atlwin.h>
-#include <strsafe.h>
 #include <gdiplus.h>
-#include <string>
 #include "resource.h"
 #include "cmania.h"
 #include "mainwnd.h"
@@ -34,11 +32,6 @@ bool g_lineSelState[2]{ true,true };
 //----------------------------------------------------------------------------
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
-	//INITCOMMONCONTROLSEX icex;
-	//icex.dwSize = sizeof(INITCOMMONCONTROLSEX);
-	//icex.dwICC = ICC_WIN95_CLASSES;
-	//XASSERT(InitCommonControlsEx(&icex));
-
 	XASSERT(g_gdipEng.IsInitOk());
 	
 	CManiaMainWnd mainWindow;
@@ -59,7 +52,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 			TranslateMessage(&msg);
 			DispatchMessage(&msg);
 		}
-	}
-	
+	}	
 	return (int) msg.wParam;
 }

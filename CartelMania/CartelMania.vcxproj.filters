@@ -15,9 +15,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="banner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -54,6 +51,12 @@
     <ClInclude Include="mainwnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="txtedit_dialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc">
@@ -67,28 +70,10 @@
     <ClCompile Include="banner.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textfx_block.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="textfx_solid.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="textfx_shadowrear.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="colors.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textfx_twooutl.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="textutil.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="textfx_blend.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="execmenu.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bannerline.cxx">
@@ -100,5 +85,13 @@
     <ClCompile Include="mainwnd.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="textrend.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="toolbar1.bmp">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

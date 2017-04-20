@@ -23,6 +23,7 @@
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>CartelMania</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+    <ProjectName>CartelMania</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -160,14 +161,9 @@
     <ClCompile Include="bannerline.cxx" />
     <ClCompile Include="cmania.cxx" />
     <ClCompile Include="colors.cxx" />
-    <ClCompile Include="execmenu.cxx" />
     <ClCompile Include="geom.cxx" />
     <ClCompile Include="mainwnd.cxx" />
-    <ClCompile Include="textfx_blend.cxx" />
-    <ClCompile Include="textfx_block.cxx" />
-    <ClCompile Include="textfx_shadowrear.cxx" />
-    <ClCompile Include="textfx_solid.cxx" />
-    <ClCompile Include="textfx_twooutl.cxx" />
+    <ClCompile Include="textrend.cxx" />
     <ClCompile Include="textutil.cxx" />
   </ItemGroup>
   <ItemGroup>
@@ -180,15 +176,24 @@
     <ClInclude Include="debug.h" />
     <ClInclude Include="geom.h" />
     <ClInclude Include="mainwnd.h" />
+    <ClInclude Include="resource.h" />
     <ClInclude Include="textrend.h" />
     <ClInclude Include="gdipeng.h" />
-    <ClInclude Include="resource.h" />
     <ClInclude Include="textutil.h" />
+    <ClInclude Include="txtedit_dialog.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="toolbar1.bmp" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties RESOURCE_FILE="CartelMania.rc" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
