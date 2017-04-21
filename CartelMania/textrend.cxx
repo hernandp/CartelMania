@@ -4,6 +4,7 @@
 #include "bannerline.h"
 #include "globset.h"
 #include "geom.h"
+#include "colors.h"
 
 using namespace Gdiplus;
 
@@ -40,7 +41,7 @@ void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF
 	GraphicsPath* path = line.GetPath();
 	//auto path = unique_ptr<GraphicsPath>(WarpPath(*origPath));
 
-	__super::AlignScalePath(path, lineRect);
+	AlignScalePath(path, lineRect);
 
 	// Draw to output device
 
@@ -60,17 +61,15 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 	GraphicsPath* path = line.GetPath();
 	//auto path = unique_ptr<GraphicsPath>(WarpPath(*origPath));
 
-	__super::AlignScalePath(path, lineRect);
+	AlignScalePath(path, lineRect);
 	
 	Pen penIn(Gdiplus::Color::Yellow, m_outlineWidth);
 	Pen penOut(Gdiplus::Color::Blue, m_outlineWidth * 2);
-	/*HatchBrush brush(g_Colors[2].m_hatch, g_Colors[2].m_fg, g_Colors[2].m_bg);
-	path.AddString(line.GetText().c_str(), -1, &family, fontStyle, fontSize, boundingBox, &format);
-	path.Transform(&mtx);
-
-	gr.DrawPath(&penOut, &path);
-	gr.DrawPath(&penIn, &path);
-	gr.FillPath(&brush, &path);*/
+	const Brush* brush = g_bmColors[2].GetBrush();
+	
+	gr.DrawPath(&penOut, path);
+	gr.DrawPath(&penIn, path);
+	gr.FillPath(brush, path);
 }
 
 //-----------------------------------------------------------------------------
