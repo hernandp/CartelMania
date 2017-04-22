@@ -32,6 +32,7 @@ bool g_lineSelState[2]{ true,true };
 //----------------------------------------------------------------------------
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+	AtlInitCommonControls(ICC_WIN95_CLASSES);
 	XASSERT(g_gdipEng.IsInitOk());
 	
 	CManiaMainWnd mainWindow;

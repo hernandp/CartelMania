@@ -28,5 +28,6 @@ private:
 // The classic Bannermania Colors
 
 extern const CmBrush g_bmColors[];
+extern const int g_bmColorsCount;
 
 

@@ -1,10 +1,12 @@
 #pragma once
+
 #include <atlbase.h>
 #include <atlwin.h>
-#include "atlapp.h"
-#include "atlctrls.h"
-#include "atldlgs.h"
+#include <atlapp.h>
+#include <atlctrls.h>
+#include <atldlgs.h>
 #include "resource.h"
+#include "rebar.h"
 
 class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits>
 {
@@ -65,7 +67,6 @@ private:
 
 	void UpdateMenu();
 
-	CWindow			m_cwnd;
-	CToolBarCtrl	m_toolbar;
-	CEdit			m_edit1;
+	CmRebar		m_rebar;
+	CWindow		m_cwnd;
 };

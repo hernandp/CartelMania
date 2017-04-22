@@ -159,16 +159,19 @@
   <ItemGroup>
     <ClCompile Include="banner.cxx" />
     <ClCompile Include="bannerline.cxx" />
+    <ClCompile Include="clrcombo.cxx" />
     <ClCompile Include="cmania.cxx" />
     <ClCompile Include="colors.cxx" />
     <ClCompile Include="geom.cxx" />
     <ClCompile Include="mainwnd.cxx" />
+    <ClCompile Include="rebar.cxx" />
     <ClCompile Include="textrend.cxx" />
     <ClCompile Include="textutil.cxx" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="banner.h" />
     <ClInclude Include="bannerline.h" />
+    <ClInclude Include="clrcombo.h" />
     <ClInclude Include="cmania.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="colorset.h" />
@@ -176,6 +179,7 @@
     <ClInclude Include="debug.h" />
     <ClInclude Include="geom.h" />
     <ClInclude Include="mainwnd.h" />
+    <ClInclude Include="rebar.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="textrend.h" />
     <ClInclude Include="gdipeng.h" />

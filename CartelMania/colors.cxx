@@ -17,11 +17,11 @@ using namespace std;
 
 const CmBrush g_bmColors[] {
 	{ CmBrush(L"White",    make_unique<SolidBrush>(Color::White)) },
-	{ CmBrush(L"12.5% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"25% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},	
-	{ CmBrush(L"50% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"75% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"87.5% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
+	{ CmBrush(L"12.5% Gray", make_unique<HatchBrush>(HatchStyle10Percent, Color::Black, Color::White))},
+	{ CmBrush(L"25% Gray", make_unique<HatchBrush>(HatchStyle25Percent, Color::Black, Color::White))},	
+	{ CmBrush(L"50% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::Black, Color::White))},
+	{ CmBrush(L"75% Gray", make_unique<HatchBrush>(HatchStyle75Percent, Color::Black, Color::White))},
+	{ CmBrush(L"87.5% Gray", make_unique<HatchBrush>(HatchStyle80Percent, Color::Black, Color::White))},
 	{ CmBrush(L"Black",    make_unique<SolidBrush>(Color::Black)) },
 	{ CmBrush(L"Coarse 6.25% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
 	{ CmBrush(L"Coarse 12.5% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
@@ -29,16 +29,16 @@ const CmBrush g_bmColors[] {
 	{ CmBrush(L"Coarse 50% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
 	{ CmBrush(L"Coarse 75% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
 	{ CmBrush(L"Coarse 87.5% Gray", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"Verticals", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"Horizontals", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"Slashes", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
+	{ CmBrush(L"Verticals", make_unique<HatchBrush>(HatchStyleVertical, Color::White, Color::Black))},
+	{ CmBrush(L"Horizontals", make_unique<HatchBrush>(HatchStyleHorizontal, Color::White, Color::Black))},
+	{ CmBrush(L"Slashes", make_unique<HatchBrush>(HatchStyleDarkDownwardDiagonal, Color::White, Color::Black))},
 	{ CmBrush(L"Backslashes", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"Purple 1", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"Purple 2", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"Purple 3", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"Purple 4", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"Purple 5 Pure", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
-	{ CmBrush(L"Purple 6", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
+	{ CmBrush(L"Purple 1", make_unique<HatchBrush>(HatchStyle25Percent, Color::Purple, Color::White))},
+	{ CmBrush(L"Purple 2", make_unique<HatchBrush>(HatchStyle50Percent, Color::Purple, Color::White))},
+	{ CmBrush(L"Purple 3", make_unique<HatchBrush>(HatchStyle75Percent, Color::Purple, Color::White))},
+	{ CmBrush(L"Purple 4", make_unique<HatchBrush>(HatchStyle80Percent, Color::Purple, Color::White))},
+	{ CmBrush(L"Purple 5 Pure", make_unique<SolidBrush>( Color::Purple))},
+	{ CmBrush(L"Purple 6", make_unique<HatchBrush>(HatchStyle50Percent, Color::Purple, Color::Black))},
 	{ CmBrush(L"Violet",   make_unique<HatchBrush>(HatchStyle50Percent, Color::Red  , Color::Blue))},
 	{ CmBrush(L"Night Sky",   make_unique<HatchBrush>(HatchStyle50Percent, Color::Red  , Color::Blue))},
 	{ CmBrush(L"Blue 1", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
@@ -88,3 +88,5 @@ const CmBrush g_bmColors[] {
 	{ CmBrush(L"Red", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))},
 	{ CmBrush(L"Dark Red", make_unique<HatchBrush>(HatchStyle50Percent, Color::White, Color::Black))}
 };
+
+const int g_bmColorsCount = sizeof(g_bmColors) / sizeof(g_bmColors[0]);

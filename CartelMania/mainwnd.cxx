@@ -5,6 +5,7 @@
 #include "globset.h"
 #include "textrend.h"
 #include <map>
+#include "clrcombo.h"
 
 using namespace std;
 
@@ -14,13 +15,6 @@ using namespace std;
 extern Banner g_curBanner;
 extern GlobalSettings g_globalSettings;
 extern bool g_lineSelState[2];
-
-// ---------------------------------------------------------------------------
-// Defined in execmenu.cxx
-// ---------------------------------------------------------------------------
-
-void ExecMenu(CWindow*, int);
-void UpdateMenu(CWindow*);
 
 // ---------------------------------------------------------------------------
 
@@ -38,18 +32,13 @@ LRESULT CManiaMainWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &
 
 LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {	
-	/*XASSERT(m_toolbar.Create(m_hWnd, 0, 0, WS_CHILD | WS_VISIBLE));
-	m_toolbar.SetButtonStructSize();
-	m_toolbar.AddBitmap(0, IDB_STD_LARGE_COLOR);
-	m_edit1.Create(m_toolbar.m_hWnd, _U_RECT(RECT{ 0,0,50,50 }), 0, WS_CHILD | WS_VISIBLE);
-	m_toolbar.AddButton(ID_FILE_OPEN, TBSTATE_ENABLED, BTNS_BUTTON, STD_FILENEW, 0, 0);
-	m_toolbar.AddButton(2, TBSTATE_ENABLED, BTNS_BUTTON, STD_FILEOPEN, L"Y", 0);
-	m_toolbar.AddButton(3, TBSTATE_ENABLED, BTNS_BUTTON, STD_FILESAVE, L"Z", 0);
+	//m_rebar.Create(m_hWnd, RECT{ 0, 0, 420, 50 }, 0, WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | RBS_VARHEIGHT | RBS_BANDBORDERS | CCS_NODIVIDER);
+	
+	CmColorComboBox* cmcolor = new CmColorComboBox(g_bmColors, g_bmColorsCount);
+	HWND hwnd = cmcolor->Create(m_hWnd, RECT{ 0, 0, 300, 300 }, WS_CHILD | WS_VISIBLE, 49000);
 
-	m_toolbar.AutoSize();
-	*/
 	UpdateMenu();
-	return 1L;
+	return 0L;
 }
 
 LRESULT CManiaMainWnd::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
