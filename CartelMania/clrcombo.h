@@ -31,6 +31,7 @@ private:
 	LRESULT OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
 	LRESULT OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
 
-	const CmBrush* m_colorList;
-	size_t	 m_colorCount;
+	const CmBrush*					m_colorList;
+	std::unique_ptr<Gdiplus::Font>	m_font;
+	size_t							m_colorCount;
 };

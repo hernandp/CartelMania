@@ -13,50 +13,56 @@ LRESULT CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
 {
 	LRESULT lr = DefWindowProc();
 	
-	for (int i = 0; i < m_colorCount; ++i)
+	for (size_t i = 0; i < m_colorCount; ++i)
 	{
 		AddString(m_colorList[i].GetName().c_str());
 	}
-
 	return 0;
 }
 
 const int ITEM_LEFTMARGIN = 4;
 const int ITEM_RIGHTMARGIN = 4;
-const int ITEM_TOPMARGIN = 4;
-const int ITEM_BOTTOMMARGIN = 4;
+const int ITEM_VMARGIN = 4;
 const int ITEM_COLORSAMPLE_WIDTH = 24;
 const int ITEM_COLORSAMPLE_HEIGHT = 20;
 
 LRESULT CmColorComboBox::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 {
-	HFONT hFont = (HFONT) GetStockObject(DEFAULT_GUI_FONT);
-	
+	// This is called once! 
 
-	lpMeasureItemStruct->itemHeight = 24;
-	return DefWindowProc();
+	TEXTMETRIC tm;
+	CWindowDC dc(m_hWnd);
+	HFONT hUIFont = (HFONT) GetStockObject(DEFAULT_GUI_FONT);
+	m_font = std::make_unique<Font>(dc, hUIFont); // save for later use
+
+	HFONT hOldFont = dc.SelectFont(hUIFont);
+	dc.GetTextMetricsW(&tm);
+	lpMeasureItemStruct->itemHeight = tm.tmHeight + tm.tmExternalLeading + ITEM_VMARGIN * 2;
+	dc.SelectFont(hOldFont);
+	return 0L;
 }
 
 LRESULT CmColorComboBox::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
 {
-	HFONT hFont = (HFONT) GetStockObject(DEFAULT_GUI_FONT);
-	Gdiplus::Font font(lpDrawItemStruct->hDC, hFont);
-
 	if (lpDrawItemStruct->itemAction == ODA_DRAWENTIRE && lpDrawItemStruct->itemID != -1)
 	{
 		Graphics gr(lpDrawItemStruct->hDC);
+		RECT rcItem = lpDrawItemStruct->rcItem;
+		int rcW = lpDrawItemStruct->rcItem.right - lpDrawItemStruct->rcItem.left;
+		int rcH = lpDrawItemStruct->rcItem.bottom - lpDrawItemStruct->rcItem.top;
 
 		gr.FillRectangle(m_colorList[lpDrawItemStruct->itemID].GetBrush(),
 			lpDrawItemStruct->rcItem.left + ITEM_LEFTMARGIN,
-			lpDrawItemStruct->rcItem.top + 4,
-			22,
-			22);
+			lpDrawItemStruct->rcItem.top + ITEM_VMARGIN,
+			ITEM_COLORSAMPLE_WIDTH,
+			rcH - ITEM_VMARGIN);
 
 		StringFormat fmt;
-		gr.DrawString(m_colorList[lpDrawItemStruct->itemID].GetName().c_str(), -1, 
-			&font, PointF(lpDrawItemStruct->rcItem.left + 26, lpDrawItemStruct->rcItem.top + 4), &fmt, &SolidBrush(Color::Black));
+		fmt.SetLineAlignment(StringAlignmentCenter);
+		gr.DrawString(m_colorList[lpDrawItemStruct->itemID].GetName().c_str(), -1,
+			m_font.get(),
+			RectF(REAL(lpDrawItemStruct->rcItem.left + ITEM_LEFTMARGIN + ITEM_COLORSAMPLE_WIDTH + ITEM_RIGHTMARGIN),
+				REAL(rcItem.top), REAL(rcW), REAL(rcH)), &fmt, &SolidBrush(Color::Black));
 	}
-	
-
 	return 0L;
 }
