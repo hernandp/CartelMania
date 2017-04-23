@@ -1,11 +1,13 @@
+#include "stdafx.h"
 #include "mainwnd.h"
 #include "banner.h"
+#include "bannerline.h"
 #include "debug.h"
 #include "txtedit_dialog.h"
 #include "globset.h"
 #include "textrend.h"
-#include <map>
 #include "clrcombo.h"
+#include "colors.h"
 
 using namespace std;
 
@@ -36,9 +38,9 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	
 	CmColorComboBox* cmcolor = new CmColorComboBox(g_bmColors, g_bmColorsCount);
 	HWND hwnd = cmcolor->Create(m_hWnd, RECT{ 0, 0, 300, 300 }, WS_CHILD | WS_VISIBLE, 49000);
-
+	cmcolor->SetCurSel(4);
 	UpdateMenu();
-	return 0L;
+	return 1L;
 }
 
 LRESULT CManiaMainWnd::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)

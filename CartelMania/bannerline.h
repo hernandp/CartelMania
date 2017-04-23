@@ -1,10 +1,18 @@
 #pragma once
 #include <string>
 #include <memory>
-#include <windows.h>
-#include <gdiplus.h>
+
+// ----------------------------------------------------------------------------
+
 class TextFXRenderer;
 
+namespace Gdiplus
+{
+enum FontStyle;
+class GraphicsPath;
+class Graphics;
+class RectF;
+}
 
 // ----------------------------------------------------------------------------
 

@@ -1,9 +1,11 @@
-#include <atlbase.h>
-#include <atlwin.h>
-#include <gdiplus.h>
-#include "resource.h"
-#include "cmania.h"
+#include "stdafx.h"
+
+#include "banner.h"
+#include "gdipeng.h"
 #include "mainwnd.h"
+#include "resource.h"
+#include "globset.h"
+#include "debug.h"
 
 // Use VisualLeak Detector 
 #include <vld.h>

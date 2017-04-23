@@ -1,10 +1,8 @@
+#include "stdafx.h"
 #include "geom.h"
-#include <windows.h>
-#include <gdiplus.h>
 #include "debug.h"
 #include "colors.h"
-#include <algorithm>
-#include <memory>
+
 
 using namespace Gdiplus;
 using namespace std;
@@ -54,7 +52,7 @@ vector<pair<PointF, PointF>> SubdivideLine(REAL x0, REAL y0, REAL x1, REAL y1,
 // ---------------------------------------------------------------------------
 
 void SubdivideLineAddTo(REAL x0, REAL y0, REAL x1, REAL y1, 
-	int subDivCount, GraphicsPath& destPath, bool fDebugDraw, Graphics* gr)
+	int subDivCount, GraphicsPath& destPath)
 {
 	auto segments = SubdivideLine(x0, y0, x1, y1, subDivCount);
 	for (const auto& seg : segments)
@@ -125,11 +123,14 @@ GraphicsPath* WarpPath(const GraphicsPath& path)
 	PathData pd;
 	path.GetPathData(&pd);
 
-	/*for (int i = 0; i < pd.Count; ++i)
-	{
-		pd.Points[i].Y += 10.0f * sinf(float(i));
-	}	*/
+	RectF bounds;
+	path.GetBounds(&bounds);
 
+	for (int i = 0; i < pd.Count; ++i)
+	{
+		pd.Points[i].Y += 160 *  sinf((pd.Points[i].X / bounds.Width) * 2 * 3.14159f );
+	}
+	
 	return new GraphicsPath(pd.Points, pd.Types, pd.Count);
 }
 

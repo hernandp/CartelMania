@@ -2,16 +2,18 @@
 #include <atlbase.h>
 #include <atlwin.h>
 #include <atlapp.h>
-#include <atluser.h>
 #include <atlctrls.h>
 #include <atlcrack.h>
 #include <atlframe.h>
-#include "colors.h"
+#include <memory>
+#include <GdiPlus.h>
+
+class CmBrush;
 
 class CmColorComboBox : public CWindowImpl<CmColorComboBox, CComboBox>, public COwnerDraw<CmColorComboBox>
 {
 public:
-	DECLARE_WND_SUPERCLASS(L"CM_COLORCOMBOBOX", GetWndClassName());
+	DECLARE_WND_SUPERCLASS(L"CmColorComboBox_WindowClass", GetWndClassName());
 
 	explicit CmColorComboBox(const CmBrush* colorList, size_t colorCount)
 		: CWindowImpl<CmColorComboBox,CComboBox>(),

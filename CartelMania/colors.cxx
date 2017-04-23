@@ -1,6 +1,4 @@
-#include <windows.h>
-#include <gdiplus.h>
-#include <vector>
+#include "stdafx.h"
 #include "colors.h"
 
 using namespace Gdiplus;

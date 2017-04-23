@@ -1,7 +1,6 @@
 #pragma once
 #include <gdiplus.h>
 #include <memory>
-#include <vector>
 
 inline Gdiplus::Color MakeRandColor()
 {

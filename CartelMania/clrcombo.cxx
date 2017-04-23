@@ -1,5 +1,6 @@
+#include "stdafx.h"
 #include "clrcombo.h"
-#include <gdiplus.h>
+#include "colors.h"
 
 using namespace Gdiplus;
 

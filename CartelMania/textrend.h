@@ -30,6 +30,7 @@ public:
 	//
 	void SetOutlineWidth(float w) { m_outlineWidth = w; }
 
+
 protected:
 	void AlignScalePath(Gdiplus::GraphicsPath* path, const Gdiplus::RectF& lineRect);
 

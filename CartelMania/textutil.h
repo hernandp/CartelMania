@@ -4,7 +4,7 @@
 #include <string>
 #include <memory>
 #include "colors.h"
-
+/*
 namespace Cartelmania
 {
 //----------------------------------------------------------------------------
@@ -75,3 +75,4 @@ void DrawStringPathShear(Gdiplus::Graphics& gr,
 
 //----------------------------------------------------------------------------
 }
+*/

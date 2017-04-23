@@ -1,9 +1,7 @@
+#include "stdafx.h"
 #include "banner.h"
+#include "bannerline.h"
 #include "textrend.h"
-#include <memory.h>
-#include <gdiplus.h>
-#include <assert.h>
-#include <map>
 #include "geom.h"
 
 using namespace Gdiplus;

@@ -1,6 +1,5 @@
+#include "stdafx.h"
 #include "textrend.h"
-#include <Windows.h>
-#include <gdiplus.h>
 #include "bannerline.h"
 #include "globset.h"
 #include "geom.h"
