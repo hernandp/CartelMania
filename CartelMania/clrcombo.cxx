@@ -3,13 +3,19 @@
 
 using namespace Gdiplus;
 
+const int ITEM_LEFTMARGIN = 4;
+const int ITEM_RIGHTMARGIN = 4;
+const int ITEM_VMARGIN = 4;
+const int ITEM_COLORSAMPLE_WIDTH = 24;
+const int ITEM_COLORSAMPLE_HEIGHT = 20;
+
 HWND CmColorComboBox::Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT id)
 {
 	return CWindowImpl::Create(hWndParent, rect, nullptr,
 		CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | CBS_DROPDOWNLIST | WS_VSCROLL | dwStyle, NULL, id, nullptr);
 }
 
-LRESULT CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
+int CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
 {
 	LRESULT lr = DefWindowProc();
 	
@@ -20,13 +26,7 @@ LRESULT CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
 	return 0;
 }
 
-const int ITEM_LEFTMARGIN = 4;
-const int ITEM_RIGHTMARGIN = 4;
-const int ITEM_VMARGIN = 4;
-const int ITEM_COLORSAMPLE_WIDTH = 24;
-const int ITEM_COLORSAMPLE_HEIGHT = 20;
-
-LRESULT CmColorComboBox::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct)
+void CmColorComboBox::MeasureItem(LPMEASUREITEMSTRUCT lpMeasureItemStruct)
 {
 	// This is called once! 
 
@@ -35,14 +35,17 @@ LRESULT CmColorComboBox::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasure
 	HFONT hUIFont = (HFONT) GetStockObject(DEFAULT_GUI_FONT);
 	m_font = std::make_unique<Font>(dc, hUIFont); // save for later use
 
+	RECT wndRect;
+	GetWindowRect(&wndRect);
+
 	HFONT hOldFont = dc.SelectFont(hUIFont);
 	dc.GetTextMetricsW(&tm);
 	lpMeasureItemStruct->itemHeight = tm.tmHeight + tm.tmExternalLeading + ITEM_VMARGIN * 2;
+	lpMeasureItemStruct->itemWidth = wndRect.right - wndRect.left;
 	dc.SelectFont(hOldFont);
-	return 0L;
 }
 
-LRESULT CmColorComboBox::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpdis)
+void CmColorComboBox::DrawItem(LPDRAWITEMSTRUCT lpdis)
 {
 	if (lpdis->itemID != -1)
 	{
@@ -70,9 +73,7 @@ LRESULT CmColorComboBox::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpdis)
 			RectF(REAL(rcItem.left + ITEM_LEFTMARGIN + ITEM_COLORSAMPLE_WIDTH + ITEM_RIGHTMARGIN),
 				REAL(rcItem.top), REAL(rcW), REAL(rcH)), &fmt, &SolidBrush(textColor));
 
-		if (lpdis->itemState & ODS_FOCUS)
-			DrawFocusRect(lpdis->hDC, &lpdis->rcItem);
+		//if (lpdis->itemState & ODS_FOCUS)
+		//	DrawFocusRect(lpdis->hDC, &lpdis->rcItem);
 	}
-	
-	return 0L;
 }

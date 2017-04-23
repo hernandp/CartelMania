@@ -5,13 +5,17 @@
 #include <atluser.h>
 #include <atlctrls.h>
 #include <atlcrack.h>
+#include <atlframe.h>
 #include "colors.h"
 
-class CmColorComboBox : public CWindowImpl<CmColorComboBox, CComboBox>
+class CmColorComboBox : public CWindowImpl<CmColorComboBox, CComboBox>, public COwnerDraw<CmColorComboBox>
 {
 public:
+	DECLARE_WND_SUPERCLASS(L"CM_COLORCOMBOBOX", GetWndClassName());
+
 	explicit CmColorComboBox(const CmBrush* colorList, size_t colorCount)
-		: m_colorList(colorList), m_colorCount(colorCount)
+		: CWindowImpl<CmColorComboBox,CComboBox>(),
+		m_colorList(colorList), m_colorCount(colorCount)
 	{
 		ATLASSERT(colorList);
 		ATLASSERT(colorCount > 0);
@@ -23,13 +27,13 @@ private:
 
 	BEGIN_MSG_MAP_EX(CmColorComboBox)
 		MSG_WM_CREATE(OnCreate)
-		MSG_WM_DRAWITEM(OnDrawItem)
-		MSG_WM_MEASUREITEM(OnMeasureItem)
+		CHAIN_MSG_MAP_ALT(COwnerDraw<CmColorComboBox>, 1)
+		DEFAULT_REFLECTION_HANDLER()
 	END_MSG_MAP()
-
-	LRESULT OnCreate(LPCREATESTRUCT);
-	LRESULT OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct);
-	LRESULT OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasureItemStruct);
+	
+	int OnCreate(LPCREATESTRUCT);
+	void DrawItem(LPDRAWITEMSTRUCT);
+	void MeasureItem(LPMEASUREITEMSTRUCT);
 
 	const CmBrush*					m_colorList;
 	std::unique_ptr<Gdiplus::Font>	m_font;
