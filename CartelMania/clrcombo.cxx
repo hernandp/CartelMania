@@ -42,27 +42,37 @@ LRESULT CmColorComboBox::OnMeasureItem(int nIDCtl, LPMEASUREITEMSTRUCT lpMeasure
 	return 0L;
 }
 
-LRESULT CmColorComboBox::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct)
+LRESULT CmColorComboBox::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpdis)
 {
-	if (lpDrawItemStruct->itemAction == ODA_DRAWENTIRE && lpDrawItemStruct->itemID != -1)
+	if (lpdis->itemID != -1)
 	{
-		Graphics gr(lpDrawItemStruct->hDC);
-		RECT rcItem = lpDrawItemStruct->rcItem;
-		int rcW = lpDrawItemStruct->rcItem.right - lpDrawItemStruct->rcItem.left;
-		int rcH = lpDrawItemStruct->rcItem.bottom - lpDrawItemStruct->rcItem.top;
+		Graphics gr(lpdis->hDC);
+		RECT rcItem = lpdis->rcItem;
+		int rcW = lpdis->rcItem.right - lpdis->rcItem.left;
+		int rcH = lpdis->rcItem.bottom - lpdis->rcItem.top;
 
-		gr.FillRectangle(m_colorList[lpDrawItemStruct->itemID].GetBrush(),
-			lpDrawItemStruct->rcItem.left + ITEM_LEFTMARGIN,
-			lpDrawItemStruct->rcItem.top + ITEM_VMARGIN,
+		Color backColor, textColor;
+		backColor.SetFromCOLORREF(GetSysColor(lpdis->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW));
+		textColor.SetFromCOLORREF(GetSysColor(lpdis->itemState & ODS_SELECTED ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));
+
+		gr.FillRectangle(&SolidBrush(backColor), rcItem.left, rcItem.top, rcW, rcH);
+
+		gr.FillRectangle(m_colorList[lpdis->itemID].GetBrush(),
+			rcItem.left + ITEM_LEFTMARGIN,
+			rcItem.top + ITEM_VMARGIN,
 			ITEM_COLORSAMPLE_WIDTH,
-			rcH - ITEM_VMARGIN);
+			rcH - ITEM_VMARGIN * 2);
 
 		StringFormat fmt;
 		fmt.SetLineAlignment(StringAlignmentCenter);
-		gr.DrawString(m_colorList[lpDrawItemStruct->itemID].GetName().c_str(), -1,
+		gr.DrawString(m_colorList[lpdis->itemID].GetName().c_str(), -1,
 			m_font.get(),
-			RectF(REAL(lpDrawItemStruct->rcItem.left + ITEM_LEFTMARGIN + ITEM_COLORSAMPLE_WIDTH + ITEM_RIGHTMARGIN),
-				REAL(rcItem.top), REAL(rcW), REAL(rcH)), &fmt, &SolidBrush(Color::Black));
+			RectF(REAL(rcItem.left + ITEM_LEFTMARGIN + ITEM_COLORSAMPLE_WIDTH + ITEM_RIGHTMARGIN),
+				REAL(rcItem.top), REAL(rcW), REAL(rcH)), &fmt, &SolidBrush(textColor));
+
+		if (lpdis->itemState & ODS_FOCUS)
+			DrawFocusRect(lpdis->hDC, &lpdis->rcItem);
 	}
+	
 	return 0L;
 }
