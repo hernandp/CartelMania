@@ -5,6 +5,7 @@
 #include <atlapp.h>
 #include <atlctrls.h>
 #include <atldlgs.h>
+#include "ColorSelToolWnd.h"
 #include "resource.h"
 #include "rebar.h"
 
@@ -44,6 +45,8 @@ public:
 		COMMAND_ID_HANDLER(ID_FX_SHADEDBLOCK, OnSelectFx)
 		COMMAND_ID_HANDLER(ID_FX_SHADOWREAR, OnSelectFx)
 
+		COMMAND_ID_HANDLER(ID_COLOR_OPEN, OnColorOpen)
+
 		REFLECT_NOTIFICATIONS_EX()
 		
 	END_MSG_MAP()
@@ -65,8 +68,11 @@ private:
 	LRESULT OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
+	LRESULT OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+
 	void UpdateMenu();
 
+	ColorSelectToolWnd m_colorSelectToolWnd;
 	CmRebar		m_rebar;
 	CWindow		m_cwnd;
 };

@@ -1,12 +1,13 @@
 #include "stdafx.h"
-#include "mainwnd.h"
+#include "MainWindow.h"
 #include "banner.h"
 #include "bannerline.h"
 #include "debug.h"
 #include "txtedit_dialog.h"
+#include "ColorSelToolWnd.h"
 #include "globset.h"
 #include "textrend.h"
-#include "clrcombo.h"
+#include "ColorComboBox.h"
 #include "colors.h"
 
 using namespace std;
@@ -37,9 +38,11 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	//m_rebar.Create(m_hWnd, RECT{ 0, 0, 420, 50 }, 0, WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | RBS_VARHEIGHT | RBS_BANDBORDERS | CCS_NODIVIDER);
 	
 	CmColorComboBox* cmcolor = new CmColorComboBox(g_bmColors, g_bmColorsCount);
-	HWND hwnd = cmcolor->Create(m_hWnd, RECT{ 0, 0, 300, 300 }, WS_CHILD | WS_VISIBLE, 49000);
+	HWND hwnd = cmcolor->Create(m_hWnd, RECT{ 0, 0, 400, 120 }, WS_CHILD | WS_VISIBLE);
 	cmcolor->SetCurSel(4);
 	UpdateMenu();
+
+	GetColorByName(L"black");
 	return 1L;
 }
 
@@ -190,6 +193,15 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 			break;
 	}
 
+	return 0L;
+}
+
+LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	XASSERT(m_colorSelectToolWnd.Create(m_hWnd));
+	m_colorSelectToolWnd.CenterWindow(m_hWnd);
+	m_colorSelectToolWnd.ShowWindow(SW_SHOWNA);
+	//m_colorSelectToolWnd.SetWindowPos(m_hWnd, 1000, 1000, 200, 2000, SWP_NOSIZE | SWP_NOZORDER |SWP_SHOWWINDOW);
 	return 0L;
 }
 
