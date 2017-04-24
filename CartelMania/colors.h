@@ -2,11 +2,6 @@
 #include <gdiplus.h>
 #include <memory>
 
-inline Gdiplus::Color MakeRandColor()
-{
-	return Gdiplus::Color(rand() % 255, rand() % 255, rand() % 255);
-}
-
 class CmBrush
 {
 public:
@@ -24,9 +19,12 @@ private:
 	std::unique_ptr<Gdiplus::Brush>		m_brush;
 };
 
-// The classic Bannermania Colors
+// ---------------------------------------------------------------------------
+// 
+const CmBrush& GetColorByName(const std::wstring& name);
+Gdiplus::Color MakeRandColor();
 
 extern const CmBrush g_bmColors[];
 extern const int g_bmColorsCount;
 
-
+// ---------------------------------------------------------------------------

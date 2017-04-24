@@ -2,7 +2,7 @@
 
 #include "banner.h"
 #include "gdipeng.h"
-#include "mainwnd.h"
+#include "MainWindow.h"
 #include "resource.h"
 #include "globset.h"
 #include "debug.h"

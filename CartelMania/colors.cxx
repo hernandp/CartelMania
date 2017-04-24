@@ -112,4 +112,33 @@ const CmBrush g_bmColors[] {
 	{ CmBrush(L"Dark Red", make_unique<SolidBrush>(bm_DarkRed))}
 };
 
+//-----------------------------------------------------------------------------
+
 const int g_bmColorsCount = sizeof(g_bmColors) / sizeof(g_bmColors[0]);
+
+//-----------------------------------------------------------------------------
+
+Gdiplus::Color MakeRandColor()
+{
+	return Gdiplus::Color(rand() % 255, rand() % 255, rand() % 255);
+}
+
+//-----------------------------------------------------------------------------
+
+const CmBrush& GetColorByName(const std::wstring& colorName)
+{
+	auto rv = std::find_if(std::cbegin(g_bmColors), std::cend(g_bmColors),
+		[colorName](const CmBrush& c)
+	{
+		return (lstrcmpi(c.GetName().c_str(), colorName.c_str()) == 0);
+	});
+
+	if (rv == std::cend(g_bmColors))
+		throw(std::invalid_argument("Invalid color name specified"));
+	else
+	{
+		return *rv;
+	}
+}
+
+//-----------------------------------------------------------------------------
