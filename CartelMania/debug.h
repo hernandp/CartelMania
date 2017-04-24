@@ -2,7 +2,7 @@
 #include <windows.h>
 #include <strsafe.h>
 
-#define XASSERT(_cond) do { if ( (_cond) == false) { _FatalMsg("ASSERT-FAIL:\n(%s:%d):\n%s", __FILE__, __LINE__, #_cond ); } } while(0);
+#define XASSERT(_cond) do { if ( (_cond) == false) { _FatalMsg("ASSERT-FAIL:\n(%s:%d):\n%s\n\nLast Win32 error code is %d. Thread ID: 0x%x", __FILE__, __LINE__, #_cond, GetLastError(), GetCurrentThreadId() ); } } while(0);
 
 inline void _FatalMsg(LPCSTR fmt, ...)
 {
