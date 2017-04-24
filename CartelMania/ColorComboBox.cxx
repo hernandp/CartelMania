@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "clrcombo.h"
+#include "ColorComboBox.h"
 #include "colors.h"
 
 using namespace Gdiplus;
@@ -19,7 +19,7 @@ HWND CmColorComboBox::Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT 
 int CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
 {
 	LRESULT lr = DefWindowProc();
-	
+
 	for (size_t i = 0; i < m_colorCount; ++i)
 	{
 		AddString(m_colorList[i].GetName().c_str());
@@ -73,8 +73,5 @@ void CmColorComboBox::DrawItem(LPDRAWITEMSTRUCT lpdis)
 			m_font.get(),
 			RectF(REAL(rcItem.left + ITEM_LEFTMARGIN + ITEM_COLORSAMPLE_WIDTH + ITEM_RIGHTMARGIN),
 				REAL(rcItem.top), REAL(rcW), REAL(rcH)), &fmt, &SolidBrush(textColor));
-
-		//if (lpdis->itemState & ODS_FOCUS)
-		//	DrawFocusRect(lpdis->hDC, &lpdis->rcItem);
 	}
 }

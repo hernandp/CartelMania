@@ -15,7 +15,7 @@ class CmColorComboBox : public CWindowImpl<CmColorComboBox, CComboBox>, public C
 public:
 	DECLARE_WND_SUPERCLASS(L"CmColorComboBox_WindowClass", GetWndClassName());
 
-	explicit CmColorComboBox(const CmBrush* colorList, size_t colorCount)
+	CmColorComboBox(const CmBrush* colorList, size_t colorCount)
 		: CWindowImpl<CmColorComboBox,CComboBox>(),
 		m_colorList(colorList), m_colorCount(colorCount)
 	{
@@ -23,7 +23,7 @@ public:
 		ATLASSERT(colorCount > 0);
 	}
 
-	HWND Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT id);
+	HWND Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT id = 0UL);
 
 private:
 
