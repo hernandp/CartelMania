@@ -45,9 +45,6 @@
     <ClInclude Include="globset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="mainwnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="txtedit_dialog.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -57,10 +54,16 @@
     <ClInclude Include="rebar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="clrcombo.h">
+    <ClInclude Include="stdafx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="stdafx.h">
+    <ClInclude Include="ColorSelToolWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorComboBox.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="MainWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -88,25 +91,28 @@
     <ClCompile Include="geom.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mainwnd.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="textrend.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="rebar.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="clrcombo.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="stdafx.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="gdipeng.cpp">
+    <ClCompile Include="gdipeng.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorSelToolWnd.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorComboBox.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="MainWindow.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
