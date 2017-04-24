@@ -15,6 +15,7 @@
 
 // C/C++ headers
 //
+#include <algorithm>
 #include <memory>
 #include <cassert>
 #include <map>
