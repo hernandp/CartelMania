@@ -13,16 +13,16 @@ const int ITEM_COLORSAMPLE_HEIGHT = 20;
 HWND CmColorComboBox::Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT id)
 {
 	return CWindowImpl::Create(hWndParent, rect, nullptr,
-		CBS_OWNERDRAWFIXED | CBS_HASSTRINGS | CBS_DROPDOWNLIST | WS_VSCROLL | dwStyle, NULL, id, nullptr);
+		CBS_OWNERDRAWFIXED | CBS_DROPDOWNLIST | WS_VSCROLL | dwStyle, NULL, id, nullptr);
 }
 
 int CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
 {
 	LRESULT lr = DefWindowProc();
 
-	for (size_t i = 0; i < m_colorCount; ++i)
+	for (auto& colorEntry : *m_colorTable)
 	{
-		AddString(m_colorList[i].GetName().c_str());
+		AddString(colorEntry.first.c_str());
 	}
 	return 0;
 }
@@ -61,7 +61,7 @@ void CmColorComboBox::DrawItem(LPDRAWITEMSTRUCT lpdis)
 
 		gr.FillRectangle(&SolidBrush(backColor), rcItem.left, rcItem.top, rcW, rcH);
 
-		gr.FillRectangle(m_colorList[lpdis->itemID].GetBrush(),
+		gr.FillRectangle(m_colorTable->at(lpdis->itemID).second.get(),
 			rcItem.left + ITEM_LEFTMARGIN,
 			rcItem.top + ITEM_VMARGIN,
 			ITEM_COLORSAMPLE_WIDTH,
@@ -69,7 +69,7 @@ void CmColorComboBox::DrawItem(LPDRAWITEMSTRUCT lpdis)
 
 		StringFormat fmt;
 		fmt.SetLineAlignment(StringAlignmentCenter);
-		gr.DrawString(m_colorList[lpdis->itemID].GetName().c_str(), -1,
+		gr.DrawString((wchar_t*) lpdis->itemData, -1,
 			m_font.get(),
 			RectF(REAL(rcItem.left + ITEM_LEFTMARGIN + ITEM_COLORSAMPLE_WIDTH + ITEM_RIGHTMARGIN),
 				REAL(rcItem.top), REAL(rcW), REAL(rcH)), &fmt, &SolidBrush(textColor));

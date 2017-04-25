@@ -37,12 +37,11 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 {	
 	//m_rebar.Create(m_hWnd, RECT{ 0, 0, 420, 50 }, 0, WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | RBS_VARHEIGHT | RBS_BANDBORDERS | CCS_NODIVIDER);
 	
-	CmColorComboBox* cmcolor = new CmColorComboBox(g_bmColors, g_bmColorsCount);
+	CmColorComboBox* cmcolor = new CmColorComboBox(&g_colorTable);
 	HWND hwnd = cmcolor->Create(m_hWnd, RECT{ 0, 0, 400, 120 }, WS_CHILD | WS_VISIBLE);
 	cmcolor->SetCurSel(4);
 	UpdateMenu();
 
-	GetColorByName(L"black");
 	return 1L;
 }
 
@@ -201,7 +200,6 @@ LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOO
 	XASSERT(m_colorSelectToolWnd.Create(m_hWnd));
 	m_colorSelectToolWnd.CenterWindow(m_hWnd);
 	m_colorSelectToolWnd.ShowWindow(SW_SHOWNA);
-	//m_colorSelectToolWnd.SetWindowPos(m_hWnd, 1000, 1000, 200, 2000, SWP_NOSIZE | SWP_NOZORDER |SWP_SHOWWINDOW);
 	return 0L;
 }
 

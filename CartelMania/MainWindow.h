@@ -48,7 +48,7 @@ public:
 		COMMAND_ID_HANDLER(ID_COLOR_OPEN, OnColorOpen)
 
 		REFLECT_NOTIFICATIONS_EX()
-		
+
 	END_MSG_MAP()
 
 private:
@@ -72,7 +72,5 @@ private:
 
 	void UpdateMenu();
 
-	ColorSelectToolWnd m_colorSelectToolWnd;
-	CmRebar		m_rebar;
-	CWindow		m_cwnd;
+	ColorSelectToolWnd	m_colorSelectToolWnd;
 };

@@ -7,6 +7,8 @@
 #include <atlframe.h>
 #include <memory>
 #include <GdiPlus.h>
+#include <vector>
+#include "colors.h"
 
 class CmBrush;
 
@@ -15,12 +17,11 @@ class CmColorComboBox : public CWindowImpl<CmColorComboBox, CComboBox>, public C
 public:
 	DECLARE_WND_SUPERCLASS(L"CmColorComboBox_WindowClass", GetWndClassName());
 
-	CmColorComboBox(const CmBrush* colorList, size_t colorCount)
-		: CWindowImpl<CmColorComboBox,CComboBox>(),
-		m_colorList(colorList), m_colorCount(colorCount)
-	{
-		ATLASSERT(colorList);
-		ATLASSERT(colorCount > 0);
+	CmColorComboBox(ColorTable_T* colorTable) : CWindowImpl<CmColorComboBox,CComboBox>(),
+		m_colorTable(colorTable)
+	{		
+		ATLASSERT(colorTable);
+		ATLASSERT(colorTable->size() > 0);
 	}
 
 	HWND Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT id = 0UL);
@@ -37,7 +38,6 @@ private:
 	void DrawItem(LPDRAWITEMSTRUCT);
 	void MeasureItem(LPMEASUREITEMSTRUCT);
 
-	const CmBrush*					m_colorList;
-	std::unique_ptr<Gdiplus::Font>	m_font;
-	size_t							m_colorCount;
+	ColorTable_T*						m_colorTable;
+	std::unique_ptr<Gdiplus::Font>		m_font;
 };
