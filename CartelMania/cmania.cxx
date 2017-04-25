@@ -29,7 +29,7 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 //----------------------------------------------------------------------------
 const WCHAR g_WindowTitle[] = L"CartelMania for Windows";
 GdiPlusEngine g_gdipEng;
-Banner g_curBanner;
+unique_ptr<Banner> g_curBanner = nullptr;
 GlobalSettings g_globalSettings;
 bool g_lineSelState[2]{ true,true };
 
@@ -52,6 +52,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MSG msg;
 	if (mainWindow.m_hWnd)
 	{
+		g_curBanner = make_unique<Banner>(mainWindow.m_hWnd);
+
 		mainWindow.ShowWindow(SW_SHOWDEFAULT);
 		mainWindow.UpdateWindow();
 

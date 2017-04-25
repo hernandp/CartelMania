@@ -12,7 +12,7 @@ extern GlobalSettings g_globalSettings;
 
 //-----------------------------------------------------------------------------
 
-void TextFXRenderer::SetColorProperty(ColorPropertyClass id, std::wstring colorName)
+void TextFXRenderer::SetColorPropertyValue(ColorPropertyClass id, std::wstring colorName)
 {
 	auto it = std::find_if(m_colorPropList.begin(), m_colorPropList.end(),
 		[id](ColorProperty& cp)
@@ -23,7 +23,28 @@ void TextFXRenderer::SetColorProperty(ColorPropertyClass id, std::wstring colorN
 
 	if (it != m_colorPropList.end())
 	{
-		
+		it->SetValue(colorName);
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+std::wstring TextFXRenderer::GetColorPropertyValue(ColorPropertyClass id)
+{
+	auto it = std::find_if(m_colorPropList.begin(), m_colorPropList.end(),
+		[id](ColorProperty& cp)
+	{
+		return (cp.GetClass() == id);
+	}
+	);
+
+	if (it != m_colorPropList.end())
+	{
+		return it->GetValue();
+	}
+	else
+	{
+		throw (invalid_argument("invalid color property class ID"));
 	}
 }
 
@@ -34,6 +55,14 @@ void TextFXRenderer::AddColorPropDefault()
 	m_colorPropList.emplace_back(ColorPropertyClass::Background, L"White");
 	m_colorPropList.emplace_back(ColorPropertyClass::Background_Outline, L"Red");
 	m_colorPropList.emplace_back(ColorPropertyClass::Face, L"Black");
+}
+
+void TextFXRenderer::DrawLineBackground(Graphics& gr, const RectF& lineRect)
+{
+	auto bgColor = GetColorPropertyValue(ColorPropertyClass::Background);
+	auto outColor = GetColorPropertyValue(ColorPropertyClass::Background_Outline);
+	gr.FillRectangle(GetBrushFromColorTable(bgColor), lineRect);
+	gr.DrawRectangle(&Pen(GetBrushFromColorTable(outColor), 1.0f), lineRect);
 }
 
 //-----------------------------------------------------------------------------
@@ -66,15 +95,13 @@ void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF
 {
 	GraphicsPath* path = line.GetPath();
 	//auto path = unique_ptr<GraphicsPath>(WarpPath(*origPath));
-
 	AlignScalePath(path, lineRect);
+	DrawLineBackground(gr, lineRect);
 
-	// Draw to output device
-
+	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
+	
 	if (!g_globalSettings.m_fDebugDisableFillPath)
-		gr.FillPath(&SolidBrush(Gdiplus::Color::Red), path);
-
-	gr.DrawPath(&Pen(Gdiplus::Color::Black), path);
+		gr.FillPath(GetBrushFromColorTable(GetColorPropertyValue(ColorPropertyClass::Face)), path);
 
 	if (g_globalSettings.m_fDebugDrawVertices)
 		DrawPathVertices(gr, *path);

@@ -21,6 +21,7 @@ private:
 	BEGIN_MSG_MAP_EX(ColorSelectToolWnd)
 		MSG_WM_CREATE(OnCreate)
 		MESSAGE_HANDLER(MSG_WM_UPDATE_ENTRIES, OnUpdateEntries)
+		MESSAGE_HANDLER(WM_COMMAND, OnCommand)
 		REFLECT_NOTIFICATIONS_EX()
 	END_MSG_MAP()
 
@@ -30,9 +31,11 @@ private:
 		return 0;
 	}
 
+	LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+
 	int  OnCreate(LPCREATESTRUCT);
 	void CreateControls();
 
-	std::vector<CStatic>							m_label;
-	std::vector<std::unique_ptr<CmColorComboBox>>	m_combo;
+	std::vector<CStatic>							m_labelCtlList;
+	std::vector<std::unique_ptr<CmColorComboBox>>	m_comboCtlList;
 };

@@ -9,7 +9,7 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-Banner::Banner() : m_layout(BannerLayout::SingleLine)
+Banner::Banner(HWND hMainWnd) : m_hMainWnd(hMainWnd), m_layout(BannerLayout::SingleLine)
 {
 	// Create the two default lines, cloning Bannermania behavior
 
@@ -52,9 +52,7 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	RectF bannerShadowRect = bannerRect;
 	bannerShadowRect.Offset(4.0f, 4.0f);
 	gr.FillRectangle(&SolidBrush(Color::Black), bannerShadowRect);
-	gr.FillRectangle(&SolidBrush(Color::White), bannerRect);
 	gr.DrawRectangle(&Pen(Color::Black), bannerRect);
-
 
 	// Step1: Build paths from the text lines
 
@@ -85,6 +83,13 @@ void Banner::BuildPaths()
 {
 	/*GraphicsPath path1, path2;
 	path1.AddString(m_lines[0].)*/
+}
+
+void Banner::Invalidate()
+{
+	m_topLine->InvalidatePath();
+	m_bottomLine->InvalidatePath();
+	InvalidateRect(m_hMainWnd, NULL, FALSE);
 }
 
 //----------------------------------------------------------------------------

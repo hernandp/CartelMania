@@ -15,7 +15,7 @@ using namespace std;
 // ---------------------------------------------------------------------------
 // Globals/Externs
 // ---------------------------------------------------------------------------
-extern Banner g_curBanner;
+extern unique_ptr<Banner> g_curBanner;
 extern GlobalSettings g_globalSettings;
 extern bool g_lineSelState[2];
 
@@ -35,13 +35,7 @@ LRESULT CManiaMainWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &
 
 LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {	
-	//m_rebar.Create(m_hWnd, RECT{ 0, 0, 420, 50 }, 0, WS_CHILD | WS_VISIBLE | WS_CLIPCHILDREN | RBS_VARHEIGHT | RBS_BANDBORDERS | CCS_NODIVIDER);
-	
-	CmColorComboBox* cmcolor = new CmColorComboBox(&g_colorTable);
-	HWND hwnd = cmcolor->Create(m_hWnd, RECT{ 0, 0, 400, 120 }, WS_CHILD | WS_VISIBLE);
-	cmcolor->SetCurSel(4);
 	UpdateMenu();
-
 	return 1L;
 }
 
@@ -51,7 +45,7 @@ LRESULT CManiaMainWnd::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & b
 	HDC hDC = BeginPaint(&ps);
 	RECT rc;
 	GetClientRect(&rc);
-	g_curBanner.PaintOn(hDC, &rc);
+	g_curBanner->PaintOn(hDC, &rc);
 	EndPaint(&ps);
 	return 0L;
 }
@@ -120,7 +114,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND h
 LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
 	g_globalSettings.m_fDisableSubdiv = !g_globalSettings.m_fDisableSubdiv;
-	//g_curBanner.Invalidate();
+	//g_curBanner->Invalidate();
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -143,7 +137,7 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 
 	if (menuToLayoutMap.find(wID) != menuToLayoutMap.end())
 	{
-		g_curBanner.SetLayout(menuToLayoutMap.at(wID));
+		g_curBanner->SetLayout(menuToLayoutMap.at(wID));
 		InvalidateRect(nullptr, FALSE);
 	}
 
@@ -155,7 +149,7 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 	switch (wID)
 	{
 		case ID_FX_SOLID:
-			g_curBanner.GetTopLine()->SetTextFx(make_unique<TextFxSolid>());
+			g_curBanner->GetTopLine()->SetTextFx(make_unique<TextFxSolid>());
 			InvalidateRect(nullptr, FALSE);
 			break;
 
@@ -163,7 +157,7 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 		{
 			auto textR = make_unique<TextFxSolid>();
 			textR->SetOutlineWidth(6.0f);
-			g_curBanner.GetTopLine()->SetTextFx(move(textR));
+			g_curBanner->GetTopLine()->SetTextFx(move(textR));
 			InvalidateRect(nullptr, FALSE);
 			break;
 		}
@@ -173,7 +167,7 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 			auto textR = make_unique<TextFxTwoOutlines>();
 			textR->SetOutlineWidth(6.0f);
 			textR->SetOutline2Width(6.0f);
-			g_curBanner.GetTopLine()->SetTextFx(move(textR));
+			g_curBanner->GetTopLine()->SetTextFx(move(textR));
 			InvalidateRect(nullptr, FALSE);
 			break;
 		}
@@ -182,12 +176,12 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 			break;
 
 		case ID_FX_BLOCK:
-			g_curBanner.GetTopLine()->SetTextFx(make_unique<TextFxBlock>());
+			g_curBanner->GetTopLine()->SetTextFx(make_unique<TextFxBlock>());
 			InvalidateRect(nullptr, FALSE);
 			break;
 
 		case ID_FX_SHADOWREAR:
-			g_curBanner.GetTopLine()->SetTextFx(make_unique<TextFxShadowRear>());
+			g_curBanner->GetTopLine()->SetTextFx(make_unique<TextFxShadowRear>());
 			InvalidateRect(nullptr, FALSE);
 			break;
 	}

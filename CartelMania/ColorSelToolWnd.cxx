@@ -18,7 +18,7 @@ const int WindowMarginTop = 16;
 const int WindowMarginBottom = 16;
 int ComboHeight;
 
-extern Banner g_curBanner;
+extern unique_ptr<Banner> g_curBanner;
 
 BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 {
@@ -30,7 +30,7 @@ BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 
 void ColorSelectToolWnd::CreateControls()
 {
-	TextFXRenderer* textrend = g_curBanner.GetTopLine()->GetTextFx();
+	TextFXRenderer* textrend = g_curBanner->GetTopLine()->GetTextFx();
 
 	const size_t colPropCount = textrend->GetColorPropertyCount();
 	
@@ -64,10 +64,12 @@ void ColorSelectToolWnd::CreateControls()
 			6 * ComboHeight, // drop size
 			SWP_NOZORDER | SWP_SHOWWINDOW);
 
+		colorCombo->SetTag(static_cast<int>(textrend->GetColorPropertyItem(i).GetClass()));
+
 		colorCombo->SetCurSelByColorName(textrend->GetColorPropertyItem(i).GetValue());
 
-		m_label.push_back(label);
-		m_combo.push_back(move(colorCombo));
+		m_labelCtlList.push_back(label);
+		m_comboCtlList.push_back(move(colorCombo));
 	}
 		
 	// Adjust window to contents
@@ -87,4 +89,23 @@ void ColorSelectToolWnd::CreateControls()
 HWND ColorSelectToolWnd::Create(HWND hWndParent)
 {
 	return CWindowImpl::Create(hWndParent, rcDefault, L"Color Selection", WS_POPUP | WS_CAPTION, WS_EX_PALETTEWINDOW);
+}
+
+
+LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+{
+	if (HIWORD(wParam) == CBN_SELCHANGE)
+	{
+		for (auto& comboBox : m_comboCtlList)
+		{
+			ColorPropertyClass colorPropClass = (ColorPropertyClass) comboBox->GetTag().intVal;
+			wstring colorValue = comboBox->GetCurSelColorName();
+
+			g_curBanner->GetTopLine()->GetTextFx()->SetColorPropertyValue(colorPropClass, colorValue);
+		}
+
+		g_curBanner->Invalidate();
+	}
+
+	return 0L;
 }

@@ -34,13 +34,17 @@ public:
 	virtual ~TextFXRenderer() {}
 
 	void SetOutlineWidth(float w) { m_outlineWidth = w; }
-	void SetColorProperty(ColorPropertyClass id, std::wstring colorName);
+
+	void SetColorPropertyValue(ColorPropertyClass id, std::wstring colorName);
+	std::wstring GetColorPropertyValue(ColorPropertyClass id);
 
 	size_t GetColorPropertyCount() const { return m_colorPropList.size(); }
 	ColorProperty GetColorPropertyItem(int index) const { return m_colorPropList[index]; }
 
 protected:
 	void AddColorPropDefault();
+	void DrawLineBackground(Gdiplus::Graphics & gr, const Gdiplus::RectF & lineRect);
+
 	virtual void AddColorPropEx() 
 	{
 

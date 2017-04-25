@@ -29,6 +29,11 @@ void CmColorComboBox::SetCurSelByColorName(const std::wstring & name)
 	}	
 }
 
+std::wstring CmColorComboBox::GetCurSelColorName() const
+{
+	return std::wstring((LPCWSTR) GetItemData(GetCurSel()));
+}
+
 int CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
 {
 	LRESULT lr = DefWindowProc();

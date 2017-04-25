@@ -52,7 +52,7 @@ const std::map<BannerLayout, std::pair<float, float>> g_proportionTable =
 class Banner
 {
 public:
-	Banner();
+	Banner(HWND hWndMain);
 	~Banner();
 	
 	BannerLine* GetTopLine() const {	return m_topLine.get();	}
@@ -60,11 +60,13 @@ public:
 	BannerLayout GetLayout() const { return m_layout;  }
 	void SetLayout(BannerLayout layout) { m_layout = layout;  }
 	void PaintOn(HDC hdc, const LPRECT rcClient);
+	void Invalidate();
 
 private:
 
 	void BuildPaths();
 
+	HWND										m_hMainWnd;
 	BannerLayout								m_layout;
 	std::unique_ptr<BannerLine>					m_topLine;
 	std::unique_ptr<BannerLine>					m_bottomLine;

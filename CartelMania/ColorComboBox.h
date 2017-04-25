@@ -10,8 +10,6 @@
 #include <vector>
 #include "colors.h"
 
-class CmBrush;
-
 class CmColorComboBox : public CWindowImpl<CmColorComboBox, CComboBox>, public COwnerDraw<CmColorComboBox>
 {
 public:
@@ -26,6 +24,12 @@ public:
 
 	HWND Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT id = 0UL);
 	void SetCurSelByColorName(const std::wstring& name);
+	std::wstring GetCurSelColorName() const;
+
+	const CComVariant& GetTag()  const { return m_tag;  }
+
+	template<typename T>
+	void SetTag(const T& tag) { m_tag = tag;  }
 
 private:
 
@@ -39,6 +43,7 @@ private:
 	void DrawItem(LPDRAWITEMSTRUCT);
 	void MeasureItem(LPMEASUREITEMSTRUCT);
 
+	CComVariant							m_tag;
 	ColorTable_T*						m_colorTable;
 	std::unique_ptr<Gdiplus::Font>		m_font;
 };
