@@ -3,35 +3,47 @@
 #include "ColorComboBox.h"
 #include "Debug.h"
 #include "colors.h"
+#include "banner.h"
+#include "bannerline.h"
 
 using namespace std;
+
+const int MarginLeft = 16;
+const int MarginRight = 16;
+const int ControlVSpacing = 6;
+const int ControlHSpacing = 8;
+const int LabelWidth = 60;
+const int ComboWidth = 180;
+const int WindowMarginTop = 16;
+const int WindowMarginBottom = 16;
+int ComboHeight;
+
+extern Banner g_curBanner;
 
 BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 {
 	DefWindowProc();
 	SetClassLongPtr(m_hWnd, GCLP_HBRBACKGROUND, (LONG) COLOR_BTNFACE + 1);
+	CreateControls();
+	return TRUE;
+}
 
-	const int MarginLeft = 16;
-	const int MarginRight = 16;
-	const int ControlVSpacing = 6;
-	const int ControlHSpacing = 8;
-	const int LabelWidth = 60;
-	const int ComboWidth = 180;
-	const int WindowMarginTop = 16;
-	const int WindowMarginBottom = 16;
-	const int ControlCount = 4;
-	int ComboHeight;
+void ColorSelectToolWnd::CreateControls()
+{
+	TextFXRenderer* textrend = g_curBanner.GetTopLine()->GetTextFx();
 
-	for (int i = 0; i < ControlCount; i++)
+	const size_t colPropCount = textrend->GetColorPropertyCount();
+	
+	for (size_t i = 0; i < colPropCount; ++i)
 	{
 		CStatic label;
-		auto colorCombo = make_unique<CmColorComboBox>(g_bmColors, g_bmColorsCount);
+		auto colorCombo = make_unique<CmColorComboBox>(&g_colorTable);
 
 		HWND hLabel = label.Create(*this, rcDefault, L"", WS_CHILD);
 		HWND hCombo = colorCombo->Create(*this, rcDefault, WS_CHILD);
 		XASSERT(hLabel != nullptr && hCombo != nullptr);
 
-		label.SetWindowTextW(g_bmColors[i].GetName().c_str());
+		label.SetWindowTextW(textrend->GetColorPropertyItem(i).GetClassString());
 		label.SetFont((HFONT) GetStockObject(DEFAULT_GUI_FONT));
 
 		RECT rc;
@@ -52,24 +64,24 @@ BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 			6 * ComboHeight, // drop size
 			SWP_NOZORDER | SWP_SHOWWINDOW);
 
+		colorCombo->SetCurSelByColorName(textrend->GetColorPropertyItem(i).GetValue());
+
 		m_label.push_back(label);
 		m_combo.push_back(move(colorCombo));
 	}
-
+		
 	// Adjust window to contents
 
 	int cxVScroll = GetSystemMetrics(SM_CXVSCROLL);
-	int iTotalHeight = (ControlCount * (ControlVSpacing + ComboHeight) + WindowMarginTop);
+	int iTotalHeight = (colPropCount * (ControlVSpacing + ComboHeight) + WindowMarginTop);
 
 	RECT rcDesiredClient{ 0, 0, MarginLeft + LabelWidth + ControlHSpacing + ComboWidth + cxVScroll,
-		iTotalHeight + WindowMarginBottom};
+		iTotalHeight + WindowMarginBottom };
 
 	AdjustWindowRectEx(&rcDesiredClient, this->GetStyle(), FALSE, this->GetExStyle());
 
 	SetWindowPos(NULL, 0, 0, rcDesiredClient.right - rcDesiredClient.left,
 		rcDesiredClient.bottom - rcDesiredClient.top, SWP_NOREPOSITION | SWP_NOZORDER);
-
-	return TRUE;
 }
 
 HWND ColorSelectToolWnd::Create(HWND hWndParent)

@@ -224,7 +224,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="test.cpp" />
-    <ClCompile Include="textrend.cxx">
+    <ClCompile Include="TextRenderer.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -241,6 +241,7 @@
     <ClInclude Include="banner.h" />
     <ClInclude Include="bannerline.h" />
     <ClInclude Include="ColorComboBox.h" />
+    <ClInclude Include="ColorProps.h" />
     <ClInclude Include="colors.h" />
     <ClInclude Include="ColorSelToolWnd.h" />
     <ClInclude Include="colorset.h" />
@@ -251,7 +252,7 @@
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="rebar.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="textrend.h" />
+    <ClInclude Include="TextRenderer.h" />
     <ClInclude Include="gdipeng.h" />
     <ClInclude Include="textutil.h" />
     <ClInclude Include="txtedit_dialog.h" />

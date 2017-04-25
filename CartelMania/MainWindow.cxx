@@ -6,7 +6,7 @@
 #include "txtedit_dialog.h"
 #include "ColorSelToolWnd.h"
 #include "globset.h"
-#include "textrend.h"
+#include "textrenderer.h"
 #include "ColorComboBox.h"
 #include "colors.h"
 

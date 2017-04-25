@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "ColorComboBox.h"
 #include "colors.h"
+#include "debug.h"
 
 using namespace Gdiplus;
 
@@ -14,6 +15,18 @@ HWND CmColorComboBox::Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT 
 {
 	return CWindowImpl::Create(hWndParent, rect, nullptr,
 		CBS_OWNERDRAWFIXED | CBS_DROPDOWNLIST | WS_VSCROLL | dwStyle, NULL, id, nullptr);
+}
+
+void CmColorComboBox::SetCurSelByColorName(const std::wstring & name)
+{
+	for (int i = 0; i < GetCount(); ++i)
+	{
+		if (!lstrcmpi(name.c_str(), (LPCWSTR) GetItemData(i)))
+		{
+			SetCurSel(i);
+			break;
+		}
+	}	
 }
 
 int CmColorComboBox::OnCreate(LPCREATESTRUCT lps)

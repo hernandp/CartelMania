@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "bannerline.h"
-#include "textrend.h"
+#include "textrenderer.h"
 #include "geom.h"
 
 using namespace Gdiplus;

@@ -21,9 +21,6 @@
     <ClInclude Include="gdipeng.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="textrend.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="textutil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -66,6 +63,12 @@
     <ClInclude Include="MainWindow.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ColorProps.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextRenderer.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc">
@@ -91,9 +94,6 @@
     <ClCompile Include="geom.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textrend.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rebar.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -113,6 +113,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="MainWindow.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextRenderer.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

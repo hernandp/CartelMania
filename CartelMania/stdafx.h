@@ -6,6 +6,7 @@
 // Windows headers
 //
 #include <windows.h>
+#include <WindowsX.h>
 #include <gdiplus.h>
 
 // ATL/WTL headers
@@ -19,3 +20,4 @@
 #include <memory>
 #include <cassert>
 #include <map>
+#include <array>

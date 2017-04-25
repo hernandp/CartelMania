@@ -6,6 +6,7 @@
 #include "resource.h"
 #include "globset.h"
 #include "debug.h"
+#include "colors.h"
 
 // Use VisualLeak Detector 
 #include <vld.h>
@@ -41,6 +42,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 {
 	AtlInitCommonControls(ICC_WIN95_CLASSES);
 	XASSERT(g_gdipEng.IsInitOk());
+
+	InitColorTable();
 	
 	CManiaMainWnd mainWindow;
 	HMENU hMenu = LoadMenu(hInstance, MAKEINTRESOURCE(IDR_MENU1));

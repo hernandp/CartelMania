@@ -1,13 +1,40 @@
 #include "stdafx.h"
-#include "textrend.h"
+#include "TextRenderer.h"
 #include "bannerline.h"
 #include "globset.h"
 #include "geom.h"
 #include "colors.h"
 
 using namespace Gdiplus;
+using namespace std;
 
 extern GlobalSettings g_globalSettings;
+
+//-----------------------------------------------------------------------------
+
+void TextFXRenderer::SetColorProperty(ColorPropertyClass id, std::wstring colorName)
+{
+	auto it = std::find_if(m_colorPropList.begin(), m_colorPropList.end(),
+		[id](ColorProperty& cp)
+	{
+		return (cp.GetClass() == id);
+	}
+	);
+
+	if (it != m_colorPropList.end())
+	{
+		
+	}
+}
+
+//-----------------------------------------------------------------------------
+
+void TextFXRenderer::AddColorPropDefault()
+{
+	m_colorPropList.emplace_back(ColorPropertyClass::Background, L"White");
+	m_colorPropList.emplace_back(ColorPropertyClass::Background_Outline, L"Red");
+	m_colorPropList.emplace_back(ColorPropertyClass::Face, L"Black");
+}
 
 //-----------------------------------------------------------------------------
 
@@ -60,15 +87,15 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 	GraphicsPath* path = line.GetPath();
 	//auto path = unique_ptr<GraphicsPath>(WarpPath(*origPath));
 
-	AlignScalePath(path, lineRect);
+	/*AlignScalePath(path, lineRect);
 	
 	Pen penIn(Gdiplus::Color::Yellow, m_outlineWidth);
 	Pen penOut(Gdiplus::Color::Blue, m_outlineWidth * 2);
-	const Brush* brush = g_bmColors[2].GetBrush();
+	const Brush* brush = g_bmColors[2]->GetBrush();
 	
 	gr.DrawPath(&penOut, path);
 	gr.DrawPath(&penIn, path);
-	gr.FillPath(brush, path);
+	gr.FillPath(brush, path);*/
 }
 
 //-----------------------------------------------------------------------------

@@ -25,6 +25,7 @@ public:
 	}
 
 	HWND Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT id = 0UL);
+	void SetCurSelByColorName(const std::wstring& name);
 
 private:
 

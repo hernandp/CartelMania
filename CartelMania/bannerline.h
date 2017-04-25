@@ -25,6 +25,7 @@ public:
 		std::unique_ptr<TextFXRenderer> effect);
 
 	void SetTextFx(std::unique_ptr<TextFXRenderer> newFx);
+	TextFXRenderer* GetTextFx() const { return m_textFx.get();  }
 	void DrawOn(Gdiplus::Graphics& gr, const Gdiplus::RectF& rect);
 	const std::wstring& GetText() const { return m_text; }
 	const std::wstring& GetFontName() const { return m_fontName; }
