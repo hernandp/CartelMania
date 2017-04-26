@@ -18,9 +18,6 @@
     <ClInclude Include="banner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="gdipeng.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="textutil.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -34,12 +31,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="debug.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="geom.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="globset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="txtedit_dialog.h">
@@ -69,6 +60,15 @@
     <ClInclude Include="TextRenderer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="GdiPEngWrapper.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GlobalSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc">
@@ -76,9 +76,6 @@
     </ResourceCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="cmania.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="banner.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -91,16 +88,10 @@
     <ClCompile Include="bannerline.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="geom.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="rebar.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="test.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="gdipeng.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cxx">
@@ -116,6 +107,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextRenderer.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GdiPEngWrapper.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CartelMania.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Geometry.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

@@ -175,7 +175,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="cmania.cxx">
+    <ClCompile Include="CartelMania.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -193,13 +193,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="gdipeng.cxx">
+    <ClCompile Include="GdiPEngWrapper.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="geom.cxx">
+    <ClCompile Include="Geometry.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -245,15 +245,15 @@
     <ClInclude Include="colors.h" />
     <ClInclude Include="ColorSelToolWnd.h" />
     <ClInclude Include="colorset.h" />
-    <ClInclude Include="globset.h" />
+    <ClInclude Include="GlobalSettings.h" />
     <ClInclude Include="debug.h" />
-    <ClInclude Include="geom.h" />
+    <ClInclude Include="Geometry.h" />
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="rebar.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TextRenderer.h" />
-    <ClInclude Include="gdipeng.h" />
+    <ClInclude Include="GdiPEngWrapper.h" />
     <ClInclude Include="textutil.h" />
     <ClInclude Include="txtedit_dialog.h" />
   </ItemGroup>

@@ -26,7 +26,6 @@ public:
 	TextFXRenderer()
 	{
 		AddColorPropDefault();
-		AddColorPropEx();
 	}
 
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr,
@@ -45,10 +44,6 @@ protected:
 	void AddColorPropDefault();
 	void DrawLineBackground(Gdiplus::Graphics & gr, const Gdiplus::RectF & lineRect);
 
-	virtual void AddColorPropEx() 
-	{
-
-	}
 	void AlignScalePath(Gdiplus::GraphicsPath* path, const Gdiplus::RectF& lineRect);
 
 	float							m_outlineWidth = 1.0f;
@@ -63,14 +58,16 @@ protected:
 class TextFxSolid : public TextFXRenderer
 {
 public:
-	TextFxSolid() : TextFXRenderer() {};
+	TextFxSolid() : TextFXRenderer() 
+	{
+		m_colorPropList.emplace_back(ColorPropertyClass::Face_Outline, L"Black");
+	};
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 };
 //----------------------------------------------------------------------------
 
 class TextFxBlock : public TextFXRenderer
 {
-	//virtual void AddColorPropEx() override;
 public:
 	TextFxBlock() : TextFXRenderer() {}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
@@ -79,7 +76,6 @@ public:
 
 class TextFxShadowRear : public TextFXRenderer
 {
-	//virtual void AddColorPropEx() override;
 public:
 	TextFxShadowRear() : TextFXRenderer() {}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
@@ -89,7 +85,6 @@ public:
 
 class TextFxBlend : public TextFXRenderer
 {
-	//virtual void AddColorPropEx() override;
 public:
 	TextFxBlend() : TextFXRenderer() {}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
@@ -99,9 +94,13 @@ public:
 
 class TextFxTwoOutlines : public TextFXRenderer
 {
-	//virtual void AddColorPropEx() override;
 public:
-	TextFxTwoOutlines() : TextFXRenderer() {}
+	TextFxTwoOutlines() : TextFXRenderer() 
+	{
+		m_colorPropList.emplace_back(ColorPropertyClass::Outer_Outline, L"Aqua");
+		m_colorPropList.emplace_back(ColorPropertyClass::Inner_Outline, L"Yellow 2");
+		SetColorPropertyValue(ColorPropertyClass::Face, L"Orange 2");
+	}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 	void SetOutline2Width(float f) { m_outlineWidth2 = f; }
 private:

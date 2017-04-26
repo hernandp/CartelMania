@@ -2,7 +2,7 @@
 #include "banner.h"
 #include "bannerline.h"
 #include "TextRenderer.h"
-#include "geom.h"
+#include "Geometry.h"
 
 using namespace Gdiplus;
 using namespace std;

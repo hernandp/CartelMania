@@ -6,30 +6,22 @@
 #include <atlcrack.h>
 #include <vector>
 #include "ColorComboBox.h"
-
 #include "resource.h"
 #include "TextRenderer.h"
-
-#define MSG_WM_UPDATE_ENTRIES	WM_USER+1
 
 class ColorSelectToolWnd : public CWindowImpl<ColorSelectToolWnd>
 {
 public:
 	HWND Create(_In_opt_ HWND hWndParent);
+	void UpdateEntries();
 
 private:
 	BEGIN_MSG_MAP_EX(ColorSelectToolWnd)
 		MSG_WM_CREATE(OnCreate)
-		MESSAGE_HANDLER(MSG_WM_UPDATE_ENTRIES, OnUpdateEntries)
 		MESSAGE_HANDLER(WM_COMMAND, OnCommand)
 		REFLECT_NOTIFICATIONS_EX()
 	END_MSG_MAP()
 
-	
-	LRESULT OnUpdateEntries(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
-	{
-		return 0;
-	}
 
 	LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 

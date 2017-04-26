@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "bannerline.h"
 #include "textrenderer.h"
-#include "geom.h"
+#include "Geometry.h"
 
 using namespace Gdiplus;
 using namespace std;

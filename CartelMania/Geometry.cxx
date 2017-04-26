@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "geom.h"
+#include "Geometry.h"
 #include "debug.h"
 #include "colors.h"
 

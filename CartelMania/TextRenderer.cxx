@@ -1,8 +1,8 @@
 #include "stdafx.h"
 #include "TextRenderer.h"
 #include "bannerline.h"
-#include "globset.h"
-#include "geom.h"
+#include "GlobalSettings.h"
+#include "Geometry.h"
 #include "colors.h"
 
 using namespace Gdiplus;
@@ -53,8 +53,8 @@ std::wstring TextFXRenderer::GetColorPropertyValue(ColorPropertyClass id)
 void TextFXRenderer::AddColorPropDefault()
 {
 	m_colorPropList.emplace_back(ColorPropertyClass::Background, L"White");
-	m_colorPropList.emplace_back(ColorPropertyClass::Background_Outline, L"Red");
-	m_colorPropList.emplace_back(ColorPropertyClass::Face, L"Black");
+	m_colorPropList.emplace_back(ColorPropertyClass::Background_Outline, L"Black");
+	m_colorPropList.emplace_back(ColorPropertyClass::Face, L"Violet");
 }
 
 void TextFXRenderer::DrawLineBackground(Graphics& gr, const RectF& lineRect)
@@ -89,6 +89,16 @@ void TextFXRenderer::AlignScalePath(GraphicsPath* path, const RectF& lineRect)
 	path->Transform(&mtx);
 }
 
+/************************************************************************/
+//
+// Effect implementations start here                                    
+//
+/************************************************************************/
+
+//-----------------------------------------------------------------------------
+//
+// Solid Effect
+//
 //-----------------------------------------------------------------------------
 
 void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF& lineRect)
@@ -99,14 +109,21 @@ void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF
 	DrawLineBackground(gr, lineRect);
 
 	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
+	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
 	
 	if (!g_globalSettings.m_fDebugDisableFillPath)
-		gr.FillPath(GetBrushFromColorTable(GetColorPropertyValue(ColorPropertyClass::Face)), path);
+		gr.FillPath(GetBrushFromColorTable(faceColor), path);
 
 	if (g_globalSettings.m_fDebugDrawVertices)
 		DrawPathVertices(gr, *path);
+
+	gr.DrawPath(&Pen(GetBrushFromColorTable(faceOutline), 1), path);
 }
 
+//-----------------------------------------------------------------------------
+//
+// Two Outline effect
+//
 //-----------------------------------------------------------------------------
 
 void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
@@ -114,15 +131,20 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 	GraphicsPath* path = line.GetPath();
 	//auto path = unique_ptr<GraphicsPath>(WarpPath(*origPath));
 
-	/*AlignScalePath(path, lineRect);
+	AlignScalePath(path, lineRect);
+	DrawLineBackground(gr, lineRect);
+
+	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
+	auto innerOutline = GetColorPropertyValue(ColorPropertyClass::Inner_Outline);
+	auto outerOutline = GetColorPropertyValue(ColorPropertyClass::Outer_Outline);
 	
-	Pen penIn(Gdiplus::Color::Yellow, m_outlineWidth);
-	Pen penOut(Gdiplus::Color::Blue, m_outlineWidth * 2);
-	const Brush* brush = g_bmColors[2]->GetBrush();
+	Pen penIn(GetBrushFromColorTable(innerOutline), m_outlineWidth);
+	Pen penOut(GetBrushFromColorTable(outerOutline), m_outlineWidth * 2);
+	const Brush* brush = GetBrushFromColorTable(faceColor);
 	
 	gr.DrawPath(&penOut, path);
 	gr.DrawPath(&penIn, path);
-	gr.FillPath(brush, path);*/
+	gr.FillPath(brush, path);
 }
 
 //-----------------------------------------------------------------------------

@@ -1,5 +1,5 @@
 #include "stdafx.h"
-#include "gdipeng.h"
+#include "GdipEngWrapper.h"
 
 GdiPlusEngine::GdiPlusEngine() : m_initOk(false), m_gdipStartupInput(0), m_ulGdipToken(0)
 {

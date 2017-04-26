@@ -91,6 +91,20 @@ HWND ColorSelectToolWnd::Create(HWND hWndParent)
 	return CWindowImpl::Create(hWndParent, rcDefault, L"Color Selection", WS_POPUP | WS_CAPTION, WS_EX_PALETTEWINDOW);
 }
 
+void ColorSelectToolWnd::UpdateEntries()
+{
+	for (auto& ctl : m_comboCtlList)
+		ctl->DestroyWindow();
+
+	for (auto& ctl : m_labelCtlList)
+		ctl.DestroyWindow();
+
+	m_comboCtlList.clear();
+	m_labelCtlList.clear();
+
+	CreateControls();
+}
+
 
 LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {

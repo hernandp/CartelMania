@@ -1,10 +1,10 @@
 #include "stdafx.h"
 
 #include "banner.h"
-#include "gdipeng.h"
+#include "GdiPEngWrapper.h"
 #include "MainWindow.h"
 #include "resource.h"
-#include "globset.h"
+#include "GlobalSettings.h"
 #include "debug.h"
 #include "colors.h"
 

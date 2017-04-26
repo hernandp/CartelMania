@@ -5,7 +5,7 @@
 #include "debug.h"
 #include "txtedit_dialog.h"
 #include "ColorSelToolWnd.h"
-#include "globset.h"
+#include "GlobalSettings.h"
 #include "textrenderer.h"
 #include "ColorComboBox.h"
 #include "colors.h"
@@ -146,6 +146,7 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 
 LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
+	
 	switch (wID)
 	{
 		case ID_FX_SOLID:
@@ -184,6 +185,13 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 			g_curBanner->GetTopLine()->SetTextFx(make_unique<TextFxShadowRear>());
 			InvalidateRect(nullptr, FALSE);
 			break;
+	}
+
+	// Notify the color Selection tool that the current fx style changed
+
+	if (m_colorSelectToolWnd.m_hWnd)
+	{
+		m_colorSelectToolWnd.UpdateEntries();
 	}
 
 	return 0L;
