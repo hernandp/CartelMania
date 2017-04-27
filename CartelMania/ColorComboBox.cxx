@@ -74,8 +74,8 @@ void CmColorComboBox::DrawItem(LPDRAWITEMSTRUCT lpdis)
 		int rcH = lpdis->rcItem.bottom - lpdis->rcItem.top;
 
 		Color backColor, textColor;
-		backColor.SetFromCOLORREF(GetSysColor(lpdis->itemState & ODS_SELECTED ? COLOR_HIGHLIGHT : COLOR_WINDOW));
-		textColor.SetFromCOLORREF(GetSysColor(lpdis->itemState & ODS_SELECTED ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));
+		backColor.SetFromCOLORREF(GetSysColor((lpdis->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHT : COLOR_WINDOW));
+		textColor.SetFromCOLORREF(GetSysColor((lpdis->itemState & ODS_SELECTED) ? COLOR_HIGHLIGHTTEXT : COLOR_WINDOWTEXT));
 
 		gr.FillRectangle(&SolidBrush(backColor), rcItem.left, rcItem.top, rcW, rcH);
 

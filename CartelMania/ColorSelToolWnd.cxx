@@ -32,9 +32,9 @@ void ColorSelectToolWnd::CreateControls()
 {
 	TextFXRenderer* textrend = g_curBanner->GetTopLine()->GetTextFx();
 
-	const size_t colPropCount = textrend->GetColorPropertyCount();
+	const int colPropCount = textrend->GetColorPropertyCount();
 	
-	for (size_t i = 0; i < colPropCount; ++i)
+	for (int i = 0; i < colPropCount; ++i)
 	{
 		CStatic label;
 		auto colorCombo = make_unique<CmColorComboBox>(&g_colorTable);

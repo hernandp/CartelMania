@@ -17,7 +17,6 @@ using namespace std;
 // ---------------------------------------------------------------------------
 extern unique_ptr<Banner> g_curBanner;
 extern GlobalSettings g_globalSettings;
-extern bool g_lineSelState[2];
 
 // ---------------------------------------------------------------------------
 
@@ -74,23 +73,25 @@ LRESULT CManiaMainWnd::OnEditSelLine(WORD wNotifyCode, WORD wID, HWND hWndCtl, B
 	switch (wID)
 	{
 		case ID_EDIT_SEL1:
-			g_lineSelState[0] = true;
-			g_lineSelState[1] = false;
+			m_lineSelState.first = true;
+			m_lineSelState.second = false;
 			UpdateMenu();
 			break;
 
 		case ID_EDIT_SEL2:
-			g_lineSelState[0] = false;
-			g_lineSelState[1] = true;
+			m_lineSelState.first = false;
+			m_lineSelState.second  = true;
 			UpdateMenu();
 			break;
 
 		case ID_EDIT_SELECTBOTH:
-			g_lineSelState[0] = true;
-			g_lineSelState[1] = true;
+			m_lineSelState.first  = true;
+			m_lineSelState.second  = true;
 			UpdateMenu();
 			break;
 	}
+
+	InvalidateRect(nullptr, FALSE);
 
 	return 0L;
 }
@@ -114,7 +115,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND h
 LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
 	g_globalSettings.m_fDisableSubdiv = !g_globalSettings.m_fDisableSubdiv;
-	//g_curBanner->Invalidate();
+	g_curBanner->Invalidate();
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -216,19 +217,19 @@ void CManiaMainWnd::UpdateMenu()
 		HMENU hEditMenu = GetSubMenu(hMenu, 1);
 		if (hEditMenu)
 		{
-			if (g_lineSelState[0] && g_lineSelState[1])
+			if (m_lineSelState.first && m_lineSelState.second)
 			{
 				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_UNCHECKED);
 				CheckMenuItem(hEditMenu, ID_EDIT_SEL2, MF_UNCHECKED);
 				CheckMenuItem(hEditMenu, ID_EDIT_SELECTBOTH, MF_CHECKED);
 			}
-			else if (g_lineSelState[0])
+			else if (m_lineSelState.first)
 			{
 				CheckMenuItem(hEditMenu, ID_EDIT_SELECTBOTH, MF_UNCHECKED);
 				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_CHECKED);
 				CheckMenuItem(hEditMenu, ID_EDIT_SEL2, MF_UNCHECKED);
 			}
-			else if (g_lineSelState[1])
+			else if (m_lineSelState.second)
 			{
 				CheckMenuItem(hEditMenu, ID_EDIT_SELECTBOTH, MF_UNCHECKED);
 				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_UNCHECKED);
@@ -236,7 +237,7 @@ void CManiaMainWnd::UpdateMenu()
 			}
 		}
 
-		HMENU hDebugMenu = GetSubMenu(hMenu, 6);
+		HMENU hDebugMenu = GetSubMenu(hMenu, 7);
 		if (hDebugMenu)
 		{
 			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, g_globalSettings.m_fDebugDrawVertices ? MF_CHECKED : MF_UNCHECKED);

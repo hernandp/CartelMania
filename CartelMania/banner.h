@@ -48,11 +48,11 @@ const std::map<BannerLayout, std::pair<float, float>> g_proportionTable =
 	{BannerLayout::SmallOverLarge2, std::make_pair(0.333333f, 0.666666f)},
 	{BannerLayout::SmallOverLarge3, std::make_pair(0.25f, 0.75f)}
 };
-
+class CManiaMainWnd;
 class Banner
 {
 public:
-	Banner(HWND hWndMain);
+	explicit Banner(CManiaMainWnd& hWndMain);
 	~Banner();
 	
 	BannerLine* GetTopLine() const {	return m_topLine.get();	}
@@ -63,10 +63,10 @@ public:
 	void Invalidate();
 
 private:
-
+	void DrawSelectionMark(Gdiplus::Graphics & gr, const Gdiplus::RectF& bannerRect);
 	void BuildPaths();
 
-	HWND										m_hMainWnd;
+	CManiaMainWnd&								m_mainWnd;
 	BannerLayout								m_layout;
 	std::unique_ptr<BannerLine>					m_topLine;
 	std::unique_ptr<BannerLine>					m_bottomLine;

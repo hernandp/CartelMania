@@ -3,18 +3,20 @@
 #include "bannerline.h"
 #include "TextRenderer.h"
 #include "Geometry.h"
+#include "MainWindow.h"
 
 using namespace Gdiplus;
 using namespace std;
 
+
 //----------------------------------------------------------------------------
 
-Banner::Banner(HWND hMainWnd) : m_hMainWnd(hMainWnd), m_layout(BannerLayout::SingleLine)
+Banner::Banner(CManiaMainWnd& mainWnd) : m_mainWnd(mainWnd),
+m_layout(BannerLayout::SingleLine),
+m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
+m_bottomLine(make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>()))
 {
 	// Create the two default lines, cloning Bannermania behavior
-
-	m_topLine    = make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>());
-	m_bottomLine = make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>());
 }
 //----------------------------------------------------------------------------
 
@@ -67,16 +69,48 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 
 	m_topLine->DrawOn(gr, line1Rect);
 
+	if (m_mainWnd.GetLineSelState().first || m_layout == BannerLayout::SingleLine)
+	DrawSelectionMark(gr, line1Rect);
+
 	if (m_layout != BannerLayout::SingleLine)
 	{
 		// Render second line
 
-		const REAL line2Height = g_proportionTable.at(m_layout).second * bannerRect.Height;
+		REAL line2Height = g_proportionTable.at(m_layout).second * bannerRect.Height;
 		const RectF line2Rect(0, 0, bannerRect.Width, line2Height);
 
 		gr.TranslateTransform(0, line1Rect.Height);
 		m_bottomLine->DrawOn(gr, line2Rect);
-	}	
+
+		if (m_mainWnd.GetLineSelState().second)
+			DrawSelectionMark(gr, line2Rect);
+	}		
+}
+
+void Banner::DrawSelectionMark(Graphics &gr, const RectF& rect)
+{
+	const Pen selMarkerPen(Color::Green, 3);
+	const float margin_L = 8.0f;
+	const float margin_R = 8.0f;
+	const float margin_T = 8.0f;
+	const float margin_B = 8.0f;
+	const float bracket_len = 24.0f;
+
+	PointF bracketL[]{
+		{bracket_len,margin_L},
+		{margin_L,margin_T},
+		{margin_L, rect.Height - margin_B},
+		{ bracket_len, rect.Height - margin_B } };
+
+	PointF bracketR[]{
+		{ rect.Width - margin_R - bracket_len, margin_T },
+		{ rect.Width - margin_R , margin_T },
+		{ rect.Width - margin_R, rect.Height - margin_B},
+		{ rect.Width - margin_R - bracket_len, rect.Height - margin_B }
+	};
+
+	gr.DrawLines(&selMarkerPen, bracketL, _countof(bracketL));
+	gr.DrawLines(&selMarkerPen, bracketR, _countof(bracketR));
 }
 
 void Banner::BuildPaths()
@@ -89,7 +123,7 @@ void Banner::Invalidate()
 {
 	m_topLine->InvalidatePath();
 	m_bottomLine->InvalidatePath();
-	InvalidateRect(m_hMainWnd, NULL, FALSE);
+	InvalidateRect(m_mainWnd, NULL, FALSE);
 }
 
 //----------------------------------------------------------------------------

@@ -15,7 +15,7 @@ class CmColorComboBox : public CWindowImpl<CmColorComboBox, CComboBox>, public C
 public:
 	DECLARE_WND_SUPERCLASS(L"CmColorComboBox_WindowClass", GetWndClassName());
 
-	CmColorComboBox(ColorTable_T* colorTable) : CWindowImpl<CmColorComboBox,CComboBox>(),
+	explicit CmColorComboBox(ColorTable_T* colorTable) : CWindowImpl<CmColorComboBox,CComboBox>(),
 		m_colorTable(colorTable)
 	{		
 		ATLASSERT(colorTable);

@@ -31,7 +31,6 @@ const WCHAR g_WindowTitle[] = L"CartelMania for Windows";
 GdiPlusEngine g_gdipEng;
 unique_ptr<Banner> g_curBanner = nullptr;
 GlobalSettings g_globalSettings;
-bool g_lineSelState[2]{ true,true };
 
 //----------------------------------------------------------------------------
 // 
@@ -52,7 +51,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine
 	MSG msg;
 	if (mainWindow.m_hWnd)
 	{
-		g_curBanner = make_unique<Banner>(mainWindow.m_hWnd);
+		g_curBanner = make_unique<Banner>(mainWindow);
 
 		mainWindow.ShowWindow(SW_SHOWDEFAULT);
 		mainWindow.UpdateWindow();

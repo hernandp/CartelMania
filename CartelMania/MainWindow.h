@@ -51,6 +51,8 @@ public:
 
 	END_MSG_MAP()
 
+	std::pair<bool, bool> GetLineSelState() const { return m_lineSelState;  }
+
 private:
 	LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
@@ -72,5 +74,6 @@ private:
 
 	void UpdateMenu();
 
-	ColorSelectToolWnd	m_colorSelectToolWnd;
+	ColorSelectToolWnd		m_colorSelectToolWnd;
+	std::pair<bool,bool>	m_lineSelState = { true,true };
 };

@@ -37,7 +37,7 @@ public:
 	void SetColorPropertyValue(ColorPropertyClass id, std::wstring colorName);
 	std::wstring GetColorPropertyValue(ColorPropertyClass id);
 
-	size_t GetColorPropertyCount() const { return m_colorPropList.size(); }
+	int GetColorPropertyCount() const { return static_cast<int>(m_colorPropList.size()); }
 	ColorProperty GetColorPropertyItem(int index) const { return m_colorPropList[index]; }
 
 protected:
