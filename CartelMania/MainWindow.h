@@ -73,6 +73,7 @@ private:
 	LRESULT OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
 	void UpdateMenu();
+	template <class Fx_T> void ApplyFx();
 
 	ColorSelectToolWnd		m_colorSelectToolWnd;
 	std::pair<bool,bool>	m_lineSelState = { true,true };

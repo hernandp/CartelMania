@@ -145,46 +145,28 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 	return 0L;
 }
 
+
 LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
-{
-	
+{	
 	switch (wID)
 	{
-		case ID_FX_SOLID:
-			g_curBanner->GetTopLine()->SetTextFx(make_unique<TextFxSolid>());
-			InvalidateRect(nullptr, FALSE);
+		case ID_FX_SOLID: 
+			ApplyFx<TextFxSolid>();
 			break;
 
-		case ID_FX_THICK:
-		{
-			auto textR = make_unique<TextFxSolid>();
-			textR->SetOutlineWidth(6.0f);
-			g_curBanner->GetTopLine()->SetTextFx(move(textR));
-			InvalidateRect(nullptr, FALSE);
+		case ID_FX_TWOOUTLINES: 
+			ApplyFx<TextFxTwoOutlines>();
 			break;
-		}
-
-		case ID_FX_TWOOUTLINES:
-		{
-			auto textR = make_unique<TextFxTwoOutlines>();
-			textR->SetOutlineWidth(6.0f);
-			textR->SetOutline2Width(6.0f);
-			g_curBanner->GetTopLine()->SetTextFx(move(textR));
-			InvalidateRect(nullptr, FALSE);
-			break;
-		}
-
+	
 		case ID_FX_VERTICAL:
 			break;
 
 		case ID_FX_BLOCK:
-			g_curBanner->GetTopLine()->SetTextFx(make_unique<TextFxBlock>());
-			InvalidateRect(nullptr, FALSE);
+			ApplyFx<TextFxBlock>();
 			break;
 
 		case ID_FX_SHADOWREAR:
-			g_curBanner->GetTopLine()->SetTextFx(make_unique<TextFxShadowRear>());
-			InvalidateRect(nullptr, FALSE);
+			ApplyFx<TextFxShadowRear>();
 			break;
 	}
 
@@ -204,6 +186,19 @@ LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOO
 	m_colorSelectToolWnd.CenterWindow(m_hWnd);
 	m_colorSelectToolWnd.ShowWindow(SW_SHOWNA);
 	return 0L;
+}
+
+
+template<class Fx_T>
+void CManiaMainWnd::ApplyFx()
+{
+	if (m_lineSelState.first)
+		g_curBanner->GetTopLine()->SetTextFx(make_unique<Fx_T>());
+
+	if (m_lineSelState.second)
+		g_curBanner->GetBottomLine()->SetTextFx(make_unique<Fx_T>());
+
+	InvalidateRect(nullptr, FALSE);
 }
 
 // ---------------------------------------------------------------------------
