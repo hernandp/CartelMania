@@ -38,15 +38,11 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	return 1L;
 }
 
-LRESULT CManiaMainWnd::OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
+void CManiaMainWnd::DoPaint(CDCHandle hDC)
 {	
-	PAINTSTRUCT ps;
-	HDC hDC = BeginPaint(&ps);
 	RECT rc;
 	GetClientRect(&rc);
 	g_curBanner->PaintOn(hDC, &rc);
-	EndPaint(&ps);
-	return 0L;
 }
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)

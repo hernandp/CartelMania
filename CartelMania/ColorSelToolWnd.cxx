@@ -93,6 +93,7 @@ HWND ColorSelectToolWnd::Create(HWND hWndParent)
 
 void ColorSelectToolWnd::UpdateEntries()
 {
+	LockWindowUpdate(TRUE);
 	for (auto& ctl : m_comboCtlList)
 		ctl->DestroyWindow();
 
@@ -103,8 +104,10 @@ void ColorSelectToolWnd::UpdateEntries()
 	m_labelCtlList.clear();
 
 	CreateControls();
-}
+	LockWindowUpdate(FALSE);
 
+	RedrawWindow(NULL, NULL, RDW_ALLCHILDREN | RDW_UPDATENOW | RDW_INVALIDATE);
+}
 
 LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {

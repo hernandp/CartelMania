@@ -9,16 +9,18 @@
 #include "resource.h"
 #include "rebar.h"
 
-class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits>
+class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits>, public CDoubleBufferImpl<CManiaMainWnd>
 {
+	friend class CDoubleBufferImpl<CManiaMainWnd>;
+
 public:
 	DECLARE_WND_CLASS_EX(L"CartelMania_Window_Class", CS_HREDRAW | CS_VREDRAW | CS_OWNDC, COLOR_WINDOW);
 
 	BEGIN_MSG_MAP(CManiaMainWnd)
+		CHAIN_MSG_MAP(CDoubleBufferImpl)
 		MESSAGE_HANDLER(WM_CLOSE, OnClose)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
-		MESSAGE_HANDLER(WM_PAINT, OnPaint)
 		COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
 
 		COMMAND_ID_HANDLER(ID_CMD_EDITTEXT, OnEditText)
@@ -48,12 +50,12 @@ public:
 		COMMAND_ID_HANDLER(ID_COLOR_OPEN, OnColorOpen)
 
 		REFLECT_NOTIFICATIONS_EX()
-
 	END_MSG_MAP()
 
 	std::pair<bool, bool> GetLineSelState() const { return m_lineSelState;  }
 
 private:
+	void	DoPaint(CDCHandle hDC);
 	LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
