@@ -31,6 +31,7 @@ public:
 		COMMAND_ID_HANDLER(ID_DEBUG_DRAWVERTICES, OnDebugDrawVertices)
 		COMMAND_ID_HANDLER(ID_DEBUG_DISABLEPATHFILL, OnDebugDisablePathFill)
 		COMMAND_ID_HANDLER(ID_DEBUG_DISABLEPATHSUBDIVISION, OnDebugDisablePathSubdivision)
+		COMMAND_ID_HANDLER(ID_DEBUG_DRAWBOUNDINGRECTS, OnDebugDrawBoundingRects)
 
 		COMMAND_ID_HANDLER(ID_LAYOUT_SINGLELINE, OnSelectLayout)
 		COMMAND_ID_HANDLER(ID_LAYOUT_LARGEOVERSMALL1, OnSelectLayout)
@@ -59,7 +60,6 @@ private:
 	LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
-	LRESULT OnPaint(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 
 	LRESULT OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnFileExit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -68,6 +68,7 @@ private:
 	LRESULT OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnDebugDrawBoundingRects(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	LRESULT OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);

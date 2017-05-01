@@ -3,6 +3,12 @@
 #include <gdiplus.h>
 #include <vector>
 
+
+inline float Deg2Rad(float angleDegrees)
+{
+	return angleDegrees * 3.14159265358979323846f  / 180.0f;
+}
+
 // ---------------------------------------------------------------------------
 
 Gdiplus::REAL Length(Gdiplus::REAL x0, Gdiplus::REAL y0, 

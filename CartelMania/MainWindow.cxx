@@ -117,6 +117,14 @@ LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID,
 	return 0L;
 }
 
+LRESULT CManiaMainWnd::OnDebugDrawBoundingRects(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+	g_globalSettings.m_fDebugDrawBoundingRects = !g_globalSettings.m_fDebugDrawBoundingRects;
+	InvalidateRect(nullptr, FALSE);
+	UpdateMenu();
+	return 0L;
+}
+
 LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
 	static const map<int, BannerLayout> menuToLayoutMap{

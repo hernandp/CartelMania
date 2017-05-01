@@ -19,6 +19,13 @@ class RectF;
 class GraphicsPath;
 }
 
+enum  class AlignMode
+{
+	Center,
+	BottomRight,
+	TopLeft
+};
+
 //----------------------------------------------------------------------------
 class TextFXRenderer
 {
@@ -44,7 +51,8 @@ protected:
 	void AddColorPropDefault();
 	void DrawLineBackground(Gdiplus::Graphics & gr, const Gdiplus::RectF & lineRect);
 
-	void AlignScalePath(Gdiplus::GraphicsPath* path, const Gdiplus::RectF& lineRect);
+	void AlignScalePath(Gdiplus::GraphicsPath* path, const Gdiplus::RectF& lineRect, 
+		AlignMode = AlignMode::Center);
 
 	float							m_outlineWidth = 1.0f;
 	ColorPropertyList				m_colorPropList;
@@ -77,7 +85,13 @@ public:
 class TextFxShadowRear : public TextFXRenderer
 {
 public:
-	TextFxShadowRear() : TextFXRenderer() {}
+	TextFxShadowRear() : TextFXRenderer()
+	{
+		m_colorPropList.emplace_back(ColorPropertyClass::Shadow, L"Black");
+		m_colorPropList.emplace_back(ColorPropertyClass::Shadow_Outline, L"Black");
+		m_colorPropList.emplace_back(ColorPropertyClass::Face_Outline, L"Black");
+		SetColorPropertyValue(ColorPropertyClass::Face, L"Violet");
+	}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 };
 

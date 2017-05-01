@@ -67,13 +67,29 @@ void TextFXRenderer::DrawLineBackground(Graphics& gr, const RectF& lineRect)
 
 //-----------------------------------------------------------------------------
 
-void TextFXRenderer::AlignScalePath(GraphicsPath* path, const RectF& lineRect)
+void TextFXRenderer::AlignScalePath(GraphicsPath* path, const RectF& lineRect,
+	AlignMode alignMode)
 {
 	RectF bounds;
 	path->GetBounds(&bounds);
 
 	Matrix vAlign;
-	vAlign.Translate((lineRect.Width / 2 - bounds.Width / 2) - bounds.X, (lineRect.Height / 2 - bounds.Height / 2) - bounds.Y);
+
+	switch (alignMode)
+	{
+		case AlignMode::Center:
+			vAlign.Translate((lineRect.Width / 2 - bounds.Width / 2) - bounds.X, (lineRect.Height / 2 - bounds.Height / 2) - bounds.Y);
+			break;
+
+		case AlignMode::BottomRight:
+			// to-do ? 
+			break;
+
+		case AlignMode::TopLeft:
+			// to-do ?
+			break;
+	}
+	
 	path->Transform(&vAlign);
 
 	// Calculate how much X/Y-scaling we need.
@@ -104,7 +120,6 @@ void TextFXRenderer::AlignScalePath(GraphicsPath* path, const RectF& lineRect)
 void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF& lineRect)
 {
 	GraphicsPath* path = line.GetPath();
-	//auto path = unique_ptr<GraphicsPath>(WarpPath(*origPath));
 	AlignScalePath(path, lineRect);
 	DrawLineBackground(gr, lineRect);
 
@@ -129,7 +144,6 @@ void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF
 void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
 	GraphicsPath* path = line.GetPath();
-	//auto path = unique_ptr<GraphicsPath>(WarpPath(*origPath));
 
 	AlignScalePath(path, lineRect);
 	DrawLineBackground(gr, lineRect);
@@ -148,41 +162,76 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 }
 
 //-----------------------------------------------------------------------------
+//
+// Shadow Rear 
+//
+//-----------------------------------------------------------------------------
 
 void TextFxShadowRear::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
-	//StringFormat format;
-	//format.SetTrimming(StringTrimmingNone);
-	//format.SetFormatFlags(StringFormatFlagsNoWrap);
+	GraphicsPath* path = line.GetPath();
+	GraphicsPath* shadowPath = path->Clone();
 
-	//RectF boundingBox;
-	//FontFamily family(line.GetFontName().c_str());
-	//unique_ptr<Font> font = FindFontToFillTextInRect(gr, lineRect, family, line.GetText(), format, &boundingBox);
+	RectF bounds;
+	path->GetBounds(&bounds);
 
-	//RectF rcBounds = QueryStringPathBounds(gr, line.GetText(), *font, lineRect, format);
-	//	
-	//// Shear matrix by K units yields for (x,y):
-	//// x' = x + Ky
-	//// y' = y + Kx
-	////
-	//// K is the tangent of the shearing angle (so K=1 -> 45 deg)
-	//
-	//
-	//Matrix mtx;
-	//mtx.Shear(-0.2f, 0.0f);
-	////mtx.Scale(1.0f, -1.0f);
-	////mtx.Translate(-0.2f, 0.0f);	
+	/*
+		Source point					Destination point
+		Upper-left corner of srcRect	destPoints[0]
+		Upper-right corner of srcRect	destPoints[1]
+		Lower-left corner of srcRect	destPoints[2]
+	*/
+	const REAL dx = bounds.Height * sinf(Deg2Rad(70));  // 250 deg for shadow front
+	const REAL dy = bounds.Height - (bounds.Height * cosf(Deg2Rad(70)));
 
-	//rcBounds.X = rcBounds.Y = 0;
-
-	/*GraphicsPath p;
-	p.AddRectangle(rcBounds);
-	p.Transform(&mtx);
-	gr.FillPath(&SolidBrush(Gdiplus::Color::Red), &p);
-	gr.DrawRectangle(&Pen(Gdiplus::Color::Black), rcBounds);
+	PointF destPoints[] = {
+		{ bounds.X - dx, bounds.Y + dy }, 
+		{ bounds.X + bounds.Width - dx, bounds.Y + dy },	  	
+		{ bounds.X, bounds.Y + bounds.Height }
+	};
 	
-	DrawStringPath(gr, g_Colors[0], banner.GetText1(), rcBounds, format, *font.get(), &mtx);
-	DrawStringPath(gr, g_Colors[2], banner.GetText1(), boundingBox, format, *font.get());*/
+	shadowPath->Warp(destPoints, 3, bounds);
+	
+	//AlignScalePath(path, lineRect);
+	DrawLineBackground(gr, lineRect);
+
+	// Shadow
+
+	auto shadowColor = GetColorPropertyValue(ColorPropertyClass::Shadow);
+	auto shadowOutline = GetColorPropertyValue(ColorPropertyClass::Shadow_Outline);
+
+	if (!g_globalSettings.m_fDebugDisableFillPath)
+		gr.FillPath(GetBrushFromColorTable(shadowColor), shadowPath);
+
+	if (g_globalSettings.m_fDebugDrawVertices)
+		DrawPathVertices(gr, *shadowPath);
+
+	gr.DrawPath(&Pen(GetBrushFromColorTable(shadowOutline), 1), shadowPath);
+
+	// Face
+
+	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
+	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
+
+	if (!g_globalSettings.m_fDebugDisableFillPath)
+		gr.FillPath(GetBrushFromColorTable(faceColor), path);
+
+	if (g_globalSettings.m_fDebugDrawVertices)
+		DrawPathVertices(gr, *path);
+
+	gr.DrawPath(&Pen(GetBrushFromColorTable(faceOutline), 1), path);
+
+	// Bounding rects
+
+	if (g_globalSettings.m_fDebugDrawBoundingRects)
+	{
+		RectF rcbPath, rcbShadow;
+		path->GetBounds(&rcbPath);
+		shadowPath->GetBounds(&rcbShadow);
+
+		gr.DrawRectangle(&Pen(Color::Red, 2), rcbPath);
+		gr.DrawRectangle(&Pen(Color::Green, 2), rcbShadow);
+	}
 }
 
 //-----------------------------------------------------------------------------
