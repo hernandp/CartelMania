@@ -27,10 +27,10 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 //----------------------------------------------------------------------------
 // Globals
 //----------------------------------------------------------------------------
-const WCHAR g_WindowTitle[] = L"CartelMania for Windows";
-GdiPlusEngine g_gdipEng;
-unique_ptr<Banner> g_curBanner = nullptr;
-GlobalSettings g_globalSettings;
+const WCHAR				g_WindowTitle[] = L"CartelMania for Windows";
+GdiPlusEngine			g_gdipEng;
+unique_ptr<Banner>		g_curBanner = nullptr;
+GlobalSettings			g_globalSettings;
 
 //----------------------------------------------------------------------------
 // 

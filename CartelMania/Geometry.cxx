@@ -29,7 +29,7 @@ vector<pair<PointF, PointF>> SubdivideLine(REAL x0, REAL y0, REAL x1, REAL y1,
 	const  REAL  SUBDIV = (REAL) subDivCount;
 	REAL px = x0, py = y0;
 
-	dprintf(L"original (PX0=%.f PY0=%.f)-(PX1=%.f PY1=%.f) \n", x0, y0, x1, y1);
+	//dprintf(L"original (PX0=%.f PY0=%.f)-(PX1=%.f PY1=%.f) \n", x0, y0, x1, y1);
 
 	for (int k = 1; k < (int) SUBDIV + 1; k++)
 	{

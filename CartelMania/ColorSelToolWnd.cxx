@@ -30,7 +30,7 @@ BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 
 void ColorSelectToolWnd::CreateControls()
 {
-	TextFXRenderer* textrend = g_curBanner->GetTopLine()->GetTextFx();
+	TextFx* textrend = g_curBanner->GetTopLine()->GetTextFx();
 
 	const int colPropCount = textrend->GetColorPropertyCount();
 	
@@ -91,7 +91,7 @@ HWND ColorSelectToolWnd::Create(HWND hWndParent)
 	return CWindowImpl::Create(hWndParent, rcDefault, L"Color Selection", WS_POPUP | WS_CAPTION, WS_EX_PALETTEWINDOW);
 }
 
-void ColorSelectToolWnd::UpdateEntries()
+void ColorSelectToolWnd::UpdateUI()
 {
 	LockWindowUpdate(TRUE);
 	for (auto& ctl : m_comboCtlList)

@@ -26,18 +26,20 @@ enum  class AlignMode
 	TopLeft
 };
 
+enum class ShadowType { Rear, Fore, Baseline  };
+
 //----------------------------------------------------------------------------
-class TextFXRenderer
+class TextFx
 {
 public:
-	TextFXRenderer()
+	TextFx()
 	{
 		AddColorPropDefault();
 	}
 
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr,
 		const Gdiplus::RectF& rect) = 0;
-	virtual ~TextFXRenderer() {}
+	virtual ~TextFx() {}
 
 	void SetOutlineWidth(float w) { m_outlineWidth = w; }
 
@@ -51,7 +53,8 @@ protected:
 	void AddColorPropDefault();
 	void DrawLineBackground(Gdiplus::Graphics & gr, const Gdiplus::RectF & lineRect);
 
-	void AlignScalePath(Gdiplus::GraphicsPath* path, const Gdiplus::RectF& lineRect, 
+	void AlignScalePath(std::vector<Gdiplus::GraphicsPath*> pathList, 
+		const Gdiplus::RectF& lineRect,
 		AlignMode = AlignMode::Center);
 
 	float							m_outlineWidth = 1.0f;
@@ -63,10 +66,10 @@ protected:
 // Available text renderers declarations 
 //
 //----------------------------------------------------------------------------
-class TextFxSolid : public TextFXRenderer
+class TextFxSolid : public TextFx
 {
 public:
-	TextFxSolid() : TextFXRenderer() 
+	TextFxSolid() : TextFx() 
 	{
 		m_colorPropList.emplace_back(ColorPropertyClass::Face_Outline, L"Black");
 	};
@@ -74,18 +77,18 @@ public:
 };
 //----------------------------------------------------------------------------
 
-class TextFxBlock : public TextFXRenderer
+class TextFxBlock : public TextFx
 {
 public:
-	TextFxBlock() : TextFXRenderer() {}
+	TextFxBlock() : TextFx() {}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 };
 //----------------------------------------------------------------------------
 
-class TextFxShadowRear : public TextFXRenderer
+class TextFxShadow : public TextFx
 {
 public:
-	TextFxShadowRear() : TextFXRenderer()
+	TextFxShadow(ShadowType shType) : m_shadowType(shType), TextFx()
 	{
 		m_colorPropList.emplace_back(ColorPropertyClass::Shadow, L"Black");
 		m_colorPropList.emplace_back(ColorPropertyClass::Shadow_Outline, L"Black");
@@ -93,23 +96,26 @@ public:
 		SetColorPropertyValue(ColorPropertyClass::Face, L"Violet");
 	}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
+
+private:
+	ShadowType m_shadowType;
 };
 
 //----------------------------------------------------------------------------
 
-class TextFxBlend : public TextFXRenderer
+class TextFxBlend : public TextFx
 {
 public:
-	TextFxBlend() : TextFXRenderer() {}
+	TextFxBlend() : TextFx() {}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 };
 
 //----------------------------------------------------------------------------
 
-class TextFxTwoOutlines : public TextFXRenderer
+class TextFxTwoOutlines : public TextFx
 {
 public:
-	TextFxTwoOutlines() : TextFXRenderer() 
+	TextFxTwoOutlines() : TextFx() 
 	{
 		m_colorPropList.emplace_back(ColorPropertyClass::Outer_Outline, L"Aqua");
 		m_colorPropList.emplace_back(ColorPropertyClass::Inner_Outline, L"Yellow 2");

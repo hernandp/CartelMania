@@ -7,13 +7,13 @@
 #include <vector>
 #include "ColorComboBox.h"
 #include "resource.h"
-#include "TextRenderer.h"
+#include "TextFx.h"
 
 class ColorSelectToolWnd : public CWindowImpl<ColorSelectToolWnd>
 {
 public:
 	HWND Create(_In_opt_ HWND hWndParent);
-	void UpdateEntries();
+	void UpdateUI();
 
 private:
 	BEGIN_MSG_MAP_EX(ColorSelectToolWnd)

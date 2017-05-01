@@ -1,9 +1,11 @@
 #include "stdafx.h"
-#include "TextRenderer.h"
+#include "TextFx.h"
 #include "bannerline.h"
 #include "GlobalSettings.h"
 #include "Geometry.h"
 #include "colors.h"
+#include <limits>
+#include "debug.h"
 
 using namespace Gdiplus;
 using namespace std;
@@ -12,7 +14,7 @@ extern GlobalSettings g_globalSettings;
 
 //-----------------------------------------------------------------------------
 
-void TextFXRenderer::SetColorPropertyValue(ColorPropertyClass id, std::wstring colorName)
+void TextFx::SetColorPropertyValue(ColorPropertyClass id, std::wstring colorName)
 {
 	auto it = std::find_if(m_colorPropList.begin(), m_colorPropList.end(),
 		[id](ColorProperty& cp)
@@ -29,7 +31,7 @@ void TextFXRenderer::SetColorPropertyValue(ColorPropertyClass id, std::wstring c
 
 //-----------------------------------------------------------------------------
 
-std::wstring TextFXRenderer::GetColorPropertyValue(ColorPropertyClass id)
+std::wstring TextFx::GetColorPropertyValue(ColorPropertyClass id)
 {
 	auto it = std::find_if(m_colorPropList.begin(), m_colorPropList.end(),
 		[id](ColorProperty& cp)
@@ -50,14 +52,14 @@ std::wstring TextFXRenderer::GetColorPropertyValue(ColorPropertyClass id)
 
 //-----------------------------------------------------------------------------
 
-void TextFXRenderer::AddColorPropDefault()
+void TextFx::AddColorPropDefault()
 {
 	m_colorPropList.emplace_back(ColorPropertyClass::Background, L"White");
 	m_colorPropList.emplace_back(ColorPropertyClass::Background_Outline, L"Black");
 	m_colorPropList.emplace_back(ColorPropertyClass::Face, L"Violet");
 }
 
-void TextFXRenderer::DrawLineBackground(Graphics& gr, const RectF& lineRect)
+void TextFx::DrawLineBackground(Graphics& gr, const RectF& lineRect)
 {
 	auto bgColor = GetColorPropertyValue(ColorPropertyClass::Background);
 	auto outColor = GetColorPropertyValue(ColorPropertyClass::Background_Outline);
@@ -67,18 +69,29 @@ void TextFXRenderer::DrawLineBackground(Graphics& gr, const RectF& lineRect)
 
 //-----------------------------------------------------------------------------
 
-void TextFXRenderer::AlignScalePath(GraphicsPath* path, const RectF& lineRect,
+void TextFx::AlignScalePath(vector<GraphicsPath*> pathList, const RectF& lineRect,
 	AlignMode alignMode)
 {
-	RectF bounds;
-	path->GetBounds(&bounds);
+	XASSERT(pathList.size() > 0);
+	RectF maxBounds;
+	pathList[0]->GetBounds(&maxBounds);
+
+	for (const auto& path : pathList)
+	{
+		RectF bounds;
+		path->GetBounds(&bounds);
+		RectF::Union(maxBounds, maxBounds, bounds);
+	}
 
 	Matrix vAlign;
 
 	switch (alignMode)
 	{
 		case AlignMode::Center:
-			vAlign.Translate((lineRect.Width / 2 - bounds.Width / 2) - bounds.X, (lineRect.Height / 2 - bounds.Height / 2) - bounds.Y);
+			vAlign.Translate(
+				(lineRect.Width / 2 - maxBounds.Width / 2) - maxBounds.X, 
+				(lineRect.Height / 2 - maxBounds.Height / 2) - maxBounds.Y
+			);
 			break;
 
 		case AlignMode::BottomRight:
@@ -89,20 +102,19 @@ void TextFXRenderer::AlignScalePath(GraphicsPath* path, const RectF& lineRect,
 			// to-do ?
 			break;
 	}
-	
-	path->Transform(&vAlign);
 
-	// Calculate how much X/Y-scaling we need.
-	// Mantain aspect-ratio (sX=sY)
-
-	const REAL ratio = bounds.Width / bounds.Height;
-	const REAL s = lineRect.Height / bounds.Height;
+	const REAL s = lineRect.Height / maxBounds.Height;
 
 	Matrix mtx;
 	mtx.Translate(lineRect.Width / 2.0f, lineRect.Height / 2.0f);
 	mtx.Scale(s, s);
 	mtx.Translate(-lineRect.Width / 2.0f, -lineRect.Height / 2.0f);
-	path->Transform(&mtx);
+
+	for (const auto& path : pathList)
+	{
+		path->Transform(&vAlign);
+		path->Transform(&mtx);
+	}
 }
 
 /************************************************************************/
@@ -119,20 +131,20 @@ void TextFXRenderer::AlignScalePath(GraphicsPath* path, const RectF& lineRect,
 
 void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF& lineRect)
 {
-	GraphicsPath* path = line.GetPath();
-	AlignScalePath(path, lineRect);
+	auto path = line.GetPathCopy();
+	AlignScalePath({ path.get() }, lineRect);
 	DrawLineBackground(gr, lineRect);
 
 	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
 	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
 	
 	if (!g_globalSettings.m_fDebugDisableFillPath)
-		gr.FillPath(GetBrushFromColorTable(faceColor), path);
+		gr.FillPath(GetBrushFromColorTable(faceColor), path.get());
 
 	if (g_globalSettings.m_fDebugDrawVertices)
 		DrawPathVertices(gr, *path);
 
-	gr.DrawPath(&Pen(GetBrushFromColorTable(faceOutline), 1), path);
+	gr.DrawPath(&Pen(GetBrushFromColorTable(faceOutline), 1), path.get());
 }
 
 //-----------------------------------------------------------------------------
@@ -143,9 +155,9 @@ void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF
 
 void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
-	GraphicsPath* path = line.GetPath();
+	auto path = line.GetPathCopy();
 
-	AlignScalePath(path, lineRect);
+	AlignScalePath({ path.get() }, lineRect);
 	DrawLineBackground(gr, lineRect);
 
 	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
@@ -156,21 +168,21 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 	Pen penOut(GetBrushFromColorTable(outerOutline), m_outlineWidth * 2);
 	const Brush* brush = GetBrushFromColorTable(faceColor);
 	
-	gr.DrawPath(&penOut, path);
-	gr.DrawPath(&penIn, path);
-	gr.FillPath(brush, path);
+	gr.DrawPath(&penOut, path.get());
+	gr.DrawPath(&penIn, path.get());
+	gr.FillPath(brush, path.get());
 }
 
 //-----------------------------------------------------------------------------
 //
-// Shadow Rear 
+// Shadow 
 //
 //-----------------------------------------------------------------------------
 
-void TextFxShadowRear::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
+void TextFxShadow::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
-	GraphicsPath* path = line.GetPath();
-	GraphicsPath* shadowPath = path->Clone();
+	auto path = line.GetPathCopy();
+	auto shadowPath = line.GetPathCopy();
 
 	RectF bounds;
 	path->GetBounds(&bounds);
@@ -181,8 +193,11 @@ void TextFxShadowRear::DrawLine(BannerLine& line, Graphics& gr, const RectF& lin
 		Upper-right corner of srcRect	destPoints[1]
 		Lower-left corner of srcRect	destPoints[2]
 	*/
-	const REAL dx = bounds.Height * sinf(Deg2Rad(70));  // 250 deg for shadow front
-	const REAL dy = bounds.Height - (bounds.Height * cosf(Deg2Rad(70)));
+
+	const float theta = (m_shadowType == ShadowType::Rear) ? 70.0f : 250.0f;
+
+	const REAL dx = bounds.Height * sinf(Deg2Rad(theta));
+	const REAL dy = bounds.Height - (bounds.Height * cosf(Deg2Rad(theta)));
 
 	PointF destPoints[] = {
 		{ bounds.X - dx, bounds.Y + dy }, 
@@ -191,8 +206,8 @@ void TextFxShadowRear::DrawLine(BannerLine& line, Graphics& gr, const RectF& lin
 	};
 	
 	shadowPath->Warp(destPoints, 3, bounds);
-	
-	//AlignScalePath(path, lineRect);
+
+	AlignScalePath({ path.get(), shadowPath.get() }, lineRect);
 	DrawLineBackground(gr, lineRect);
 
 	// Shadow
@@ -201,12 +216,12 @@ void TextFxShadowRear::DrawLine(BannerLine& line, Graphics& gr, const RectF& lin
 	auto shadowOutline = GetColorPropertyValue(ColorPropertyClass::Shadow_Outline);
 
 	if (!g_globalSettings.m_fDebugDisableFillPath)
-		gr.FillPath(GetBrushFromColorTable(shadowColor), shadowPath);
+		gr.FillPath(GetBrushFromColorTable(shadowColor), shadowPath.get());
 
 	if (g_globalSettings.m_fDebugDrawVertices)
 		DrawPathVertices(gr, *shadowPath);
 
-	gr.DrawPath(&Pen(GetBrushFromColorTable(shadowOutline), 1), shadowPath);
+	gr.DrawPath(&Pen(GetBrushFromColorTable(shadowOutline), 1), shadowPath.get());
 
 	// Face
 
@@ -214,12 +229,12 @@ void TextFxShadowRear::DrawLine(BannerLine& line, Graphics& gr, const RectF& lin
 	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
 
 	if (!g_globalSettings.m_fDebugDisableFillPath)
-		gr.FillPath(GetBrushFromColorTable(faceColor), path);
+		gr.FillPath(GetBrushFromColorTable(faceColor), path.get());
 
 	if (g_globalSettings.m_fDebugDrawVertices)
 		DrawPathVertices(gr, *path);
 
-	gr.DrawPath(&Pen(GetBrushFromColorTable(faceOutline), 1), path);
+	gr.DrawPath(&Pen(GetBrushFromColorTable(faceOutline), 1), path.get());
 
 	// Bounding rects
 

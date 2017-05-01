@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "banner.h"
 #include "bannerline.h"
-#include "TextRenderer.h"
+#include "TextFx.h"
 #include "Geometry.h"
 #include "MainWindow.h"
 
@@ -13,7 +13,7 @@ using namespace std;
 
 Banner::Banner(CManiaMainWnd& mainWnd) : m_mainWnd(mainWnd),
 m_layout(BannerLayout::SingleLine),
-m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
+m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxShadow>(ShadowType::Rear))),
 m_bottomLine(make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>()))
 {
 	// Create the two default lines, cloning Bannermania behavior

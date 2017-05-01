@@ -13,7 +13,7 @@ class BannerLine;
 
 const float BANNER_MARGIN_PX = 20;
 const float BANNER_HEIGHT_PCT = 50;
-const auto  DEFAULT_TOPLINE_TEXT{ L"CDB" };
+const auto  DEFAULT_TOPLINE_TEXT{ L"LAIH" };
 const auto  DEFAULT_BOTTOMLINE_TEXT{ L"Line 2" };
 const auto  DEFAULT_FONT_NAME{ L"Arial" };
 

@@ -6,7 +6,7 @@
 #include "txtedit_dialog.h"
 #include "ColorSelToolWnd.h"
 #include "GlobalSettings.h"
-#include "textrenderer.h"
+#include "TextFx.h"
 #include "ColorComboBox.h"
 #include "colors.h"
 
@@ -152,35 +152,48 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 
 LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {	
+	unique_ptr<TextFx> fx = nullptr;
+
 	switch (wID)
 	{
 		case ID_FX_SOLID: 
-			ApplyFx<TextFxSolid>();
+			fx = make_unique<TextFxSolid>();
 			break;
 
 		case ID_FX_TWOOUTLINES: 
-			ApplyFx<TextFxTwoOutlines>();
+			fx = make_unique<TextFxTwoOutlines>();
 			break;
 	
 		case ID_FX_VERTICAL:
 			break;
 
 		case ID_FX_BLOCK:
-			ApplyFx<TextFxBlock>();
+			fx = make_unique<TextFxBlock>();
 			break;
 
 		case ID_FX_SHADOWREAR:
-			ApplyFx<TextFxShadowRear>();
+			fx = make_unique<TextFxShadow>(ShadowType::Rear);
+			break;
+
+		case ID_FX_SHADOWFORE:
+			fx = make_unique<TextFxShadow>(ShadowType::Fore);
 			break;
 	}
 
 	// Notify the color Selection tool that the current fx style changed
 
+	if (m_lineSelState.first)
+		g_curBanner->GetTopLine()->SetTextFx(move(fx));
+
+	if (m_lineSelState.second)
+		g_curBanner->GetBottomLine()->SetTextFx(move(fx));
+
+	InvalidateRect(nullptr, FALSE);
+
 	if (m_colorSelectToolWnd.m_hWnd)
 	{
-		m_colorSelectToolWnd.UpdateEntries();
+		m_colorSelectToolWnd.UpdateUI();
 	}
-
 	return 0L;
 }
 
@@ -190,19 +203,6 @@ LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOO
 	m_colorSelectToolWnd.CenterWindow(m_hWnd);
 	m_colorSelectToolWnd.ShowWindow(SW_SHOWNA);
 	return 0L;
-}
-
-
-template<class Fx_T>
-void CManiaMainWnd::ApplyFx()
-{
-	if (m_lineSelState.first)
-		g_curBanner->GetTopLine()->SetTextFx(make_unique<Fx_T>());
-
-	if (m_lineSelState.second)
-		g_curBanner->GetBottomLine()->SetTextFx(make_unique<Fx_T>());
-
-	InvalidateRect(nullptr, FALSE);
 }
 
 // ---------------------------------------------------------------------------

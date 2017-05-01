@@ -47,6 +47,7 @@ public:
 		COMMAND_ID_HANDLER(ID_FX_TWOOUTLINES, OnSelectFx)
 		COMMAND_ID_HANDLER(ID_FX_SHADEDBLOCK, OnSelectFx)
 		COMMAND_ID_HANDLER(ID_FX_SHADOWREAR, OnSelectFx)
+		COMMAND_ID_HANDLER(ID_FX_SHADOWFORE, OnSelectFx)
 
 		COMMAND_ID_HANDLER(ID_COLOR_OPEN, OnColorOpen)
 
@@ -76,7 +77,7 @@ private:
 	LRESULT OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
 	void UpdateMenu();
-	template <class Fx_T> void ApplyFx();
+	template <class Fx_T> void ApplyFx(...);
 
 	ColorSelectToolWnd		m_colorSelectToolWnd;
 	std::pair<bool,bool>	m_lineSelState = { true,true };

@@ -4,7 +4,7 @@
 #include <vector>
 
 
-inline float Deg2Rad(float angleDegrees)
+inline constexpr float Deg2Rad(float angleDegrees)
 {
 	return angleDegrees * 3.14159265358979323846f  / 180.0f;
 }

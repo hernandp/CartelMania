@@ -1,6 +1,6 @@
 #include "stdafx.h"
 #include "bannerline.h"
-#include "textrenderer.h"
+#include "TextFx.h"
 #include "Geometry.h"
 
 using namespace Gdiplus;
@@ -9,7 +9,7 @@ using namespace std;
 BannerLine::BannerLine(const wstring & text,
 	const wstring & fontName, 
 	FontStyle fontStyle,
-	unique_ptr<TextFXRenderer> effect) :
+	unique_ptr<TextFx> effect) :
 	m_textFx(std::move(effect)),
 	m_text(text),
 	m_fontName(fontName),
@@ -19,7 +19,7 @@ BannerLine::BannerLine(const wstring & text,
 
 }
 
-void BannerLine::SetTextFx(unique_ptr<TextFXRenderer> newFx)
+void BannerLine::SetTextFx(unique_ptr<TextFx> newFx)
 {
 	m_textFx = move(newFx);
 }
@@ -41,6 +41,11 @@ GraphicsPath* BannerLine::GetPath()
 		BuildPath();
 
 	return m_path.get();	
+}
+
+unique_ptr<Gdiplus::GraphicsPath> BannerLine::GetPathCopy()
+{
+	return unique_ptr<Gdiplus::GraphicsPath>(GetPath()->Clone());
 }
 
 void BannerLine::BuildPath()

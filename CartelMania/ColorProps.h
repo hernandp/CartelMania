@@ -104,6 +104,7 @@ public:
 	void SetClass(ColorPropertyClass val) { m_class = val; }
 
 	std::wstring GetValue() const { return m_value; }
+	const wchar_t* GetValueW() const { return m_value.c_str();  }
 	void SetValue(const std::wstring& val) { m_value = val; }
 
 private:
