@@ -5,7 +5,7 @@
 #include "debug.h"
 #include "TextEditDlg.h"
 #include "ColorSelToolWnd.h"
-#include "GlobalSettings.h"
+#include "AppSettings.h"
 #include "TextFx.h"
 #include "ColorComboBox.h"
 #include "colors.h"
@@ -57,8 +57,21 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	//XASSERT(m_textEditDlg.Create(m_hWnd));
-	//m_textEditDlg.ShowWindow(SW_SHOWNA);
+	if (!m_textEditDlg.m_hWnd)
+		XASSERT(m_textEditDlg.Create(m_hWnd));
+
+	auto lastX = CmApp()->GetGlobalSettings()->lastTextEditToolPos.x;
+	auto lastY = CmApp()->GetGlobalSettings()->lastTextEditToolPos.y;
+
+	if (lastX == -1 && lastY == -1)
+	{
+		// Position default 
+		lastX = 0;
+		lastY = 0;
+	}
+
+	m_textEditDlg.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);	
+	m_textEditDlg.ShowWindow(SW_SHOWNA);
 	return 0;
 }
 
@@ -103,7 +116,7 @@ LRESULT CManiaMainWnd::OnEditSelLine(WORD wNotifyCode, WORD wID, HWND hWndCtl, B
 
 LRESULT CManiaMainWnd::OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CmApp()->GetGlobalSettings()->m_fDebugDrawVertices = !CmApp()->GetGlobalSettings()->m_fDebugDrawVertices;
+	CmApp()->GetGlobalSettings()->debugDrawVertices = !CmApp()->GetGlobalSettings()->debugDrawVertices;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -111,7 +124,7 @@ LRESULT CManiaMainWnd::OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWnd
 
 LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CmApp()->GetGlobalSettings()->m_fDebugDisableFillPath = !CmApp()->GetGlobalSettings()->m_fDebugDisableFillPath;
+	CmApp()->GetGlobalSettings()->debugDisableFillPath = !CmApp()->GetGlobalSettings()->debugDisableFillPath;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -119,7 +132,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND h
 
 LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CmApp()->GetGlobalSettings()->m_fDisableSubdiv = !CmApp()->GetGlobalSettings()->m_fDisableSubdiv;
+	CmApp()->GetGlobalSettings()->disableSubdiv = !CmApp()->GetGlobalSettings()->disableSubdiv;
 	CmApp()->GetBanner()->Invalidate();
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
@@ -128,7 +141,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID,
 
 LRESULT CManiaMainWnd::OnDebugDrawBoundingRects(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	CmApp()->GetGlobalSettings()->m_fDebugDrawBoundingRects = !CmApp()->GetGlobalSettings()->m_fDebugDrawBoundingRects;
+	CmApp()->GetGlobalSettings()->debugDrawBoundingRects = !CmApp()->GetGlobalSettings()->debugDrawBoundingRects;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -180,7 +193,8 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 	return 0L;
 }
 
-template <class T, typename ...U> void CManiaMainWnd::ApplyFx(U... v)
+template <class T, typename ...U> 
+void CManiaMainWnd::ApplyFx(U... v)
 {
 	if (m_lineSelState.first)
 		CmApp()->GetBanner()->GetTopLine()->SetTextFx(make_unique<T>(v...));
@@ -191,8 +205,10 @@ template <class T, typename ...U> void CManiaMainWnd::ApplyFx(U... v)
 
 LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	XASSERT(m_colorSelectToolWnd.Create(m_hWnd));
-	m_colorSelectToolWnd.CenterWindow(m_hWnd);
+	if (m_colorSelectToolWnd.m_hWnd == nullptr)
+		XASSERT(m_colorSelectToolWnd.Create(m_hWnd));
+
+	//m_colorSelectToolWnd.CenterWindow(m_hWnd);
 	m_colorSelectToolWnd.ShowWindow(SW_SHOWNA);
 	return 0L;
 }
@@ -231,9 +247,9 @@ void CManiaMainWnd::UpdateMenu()
 		HMENU hDebugMenu = GetSubMenu(hMenu, 7);
 		if (hDebugMenu)
 		{
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, CmApp()->GetGlobalSettings()->m_fDebugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL,CmApp()->GetGlobalSettings()->m_fDebugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, CmApp()->GetGlobalSettings()->m_fDisableSubdiv ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, CmApp()->GetGlobalSettings()->debugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL,CmApp()->GetGlobalSettings()->debugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, CmApp()->GetGlobalSettings()->disableSubdiv ? MF_CHECKED : MF_UNCHECKED);
 		}
 	}
 }

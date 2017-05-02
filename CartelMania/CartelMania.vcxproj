@@ -157,6 +157,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="AppSettings.cxx">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="banner.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -245,7 +251,7 @@
     <ClInclude Include="colors.h" />
     <ClInclude Include="ColorSelToolWnd.h" />
     <ClInclude Include="colorset.h" />
-    <ClInclude Include="GlobalSettings.h" />
+    <ClInclude Include="AppSettings.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="Geometry.h" />
     <ClInclude Include="MainWindow.h" />

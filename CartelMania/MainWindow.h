@@ -83,6 +83,6 @@ private:
 	CImageListManaged		m_imgList;
 	CToolBarCtrl			m_toolbar;
 	ColorSelectToolWnd		m_colorSelectToolWnd;
-	//TextEditDialog			m_textEditDlg;
+	TextEditDialog			m_textEditDlg;
 	std::pair<bool,bool>	m_lineSelState = { true,true };
 };

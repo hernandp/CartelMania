@@ -4,6 +4,7 @@
 #include <atlapp.h>
 #include <atldlgs.h>
 #include <atlcrack.h>
+#include <atlmisc.h>
 #include <vector>
 #include "ColorComboBox.h"
 #include "resource.h"
@@ -18,6 +19,7 @@ public:
 private:
 	BEGIN_MSG_MAP_EX(ColorSelectToolWnd)
 		MSG_WM_CREATE(OnCreate)
+		MSG_WM_MOVE(OnMove)
 		MESSAGE_HANDLER(WM_COMMAND, OnCommand)
 		REFLECT_NOTIFICATIONS_EX()
 	END_MSG_MAP()
@@ -26,6 +28,7 @@ private:
 	LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 
 	int  OnCreate(LPCREATESTRUCT);
+	void OnMove(CPoint pt);
 	void CreateControls();
 
 	std::vector<CStatic>							m_labelCtlList;

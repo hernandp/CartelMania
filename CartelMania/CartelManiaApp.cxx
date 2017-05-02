@@ -13,6 +13,8 @@ CartelManiaApp::CartelManiaApp()
 
 int CartelManiaApp::Run()
 {
+	m_settings.Load();
+
 	InitColorTable();
 
 	HMENU hMenu = LoadMenu(GetModuleHandle(0), MAKEINTRESOURCE(IDR_MENU1));
@@ -36,5 +38,9 @@ int CartelManiaApp::Run()
 			}
 		}
 	}
+
+	// Exiting ...
+
+	m_settings.Save();
 	return msg.wParam;
 }

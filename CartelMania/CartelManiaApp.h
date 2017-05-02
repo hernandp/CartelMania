@@ -2,7 +2,7 @@
 
 #include "GdiPEngWrapper.h"
 #include "banner.h"
-#include "GlobalSettings.h"
+#include "AppSettings.h"
 #include "MainWindow.h"
 #include <memory>
 
@@ -20,7 +20,7 @@ public:
 	int						Run();
 	CManiaMainWnd*			GetMainWindow() { return m_mainWindow.get(); }
 	Banner*					GetBanner() { return &m_banner; }
-	GlobalSettings*			GetGlobalSettings() { return &m_globalSettings;  }
+	AppSettings*			GetGlobalSettings() { return &m_settings;  }
 	
 private:
 	CartelManiaApp();
@@ -31,7 +31,7 @@ private:
 	std::unique_ptr<CManiaMainWnd>			m_mainWindow;
 	GdiPlusEngine							m_gdipEng;
 	Banner									m_banner;
-	GlobalSettings							m_globalSettings;
+	AppSettings								m_settings;
 };
 
 inline CartelManiaApp* CmApp()
