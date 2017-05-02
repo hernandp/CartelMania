@@ -3,20 +3,15 @@
 #include "banner.h"
 #include "bannerline.h"
 #include "debug.h"
-#include "txtedit_dialog.h"
+#include "TextEditDlg.h"
 #include "ColorSelToolWnd.h"
 #include "GlobalSettings.h"
 #include "TextFx.h"
 #include "ColorComboBox.h"
 #include "colors.h"
+#include "CartelManiaApp.h"
 
 using namespace std;
-
-// ---------------------------------------------------------------------------
-// Globals/Externs
-// ---------------------------------------------------------------------------
-extern unique_ptr<Banner> g_curBanner;
-extern GlobalSettings g_globalSettings;
 
 // ---------------------------------------------------------------------------
 
@@ -33,7 +28,22 @@ LRESULT CManiaMainWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &
 }
 
 LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
-{	
+{
+	XASSERT(m_imgList.Create(24,24, ILC_COLOR16|ILC_MASK, 10, 10));
+	XASSERT(m_toolbar.Create(*this, 0, nullptr, WS_VISIBLE | WS_CHILD));
+	m_toolbar.SetImageList(m_imgList, 0);
+	m_toolbar.LoadStdImages(IDB_STD_LARGE_COLOR);
+	 
+	const DWORD buttonStyles = BTNS_AUTOSIZE;
+	TBBUTTON tbButtons[] =
+	{
+		{ MAKELONG(STD_FILENEW,  0),  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ MAKELONG(STD_FILESAVE,  0), ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 }
+	};
+	m_toolbar.SetButtonStructSize(sizeof(TBBUTTON));
+	m_toolbar.AddButtons(_countof(tbButtons), tbButtons);
+	m_toolbar.AutoSize();
+
 	UpdateMenu();
 	return 1L;
 }
@@ -42,14 +52,13 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 {	
 	RECT rc;
 	GetClientRect(&rc);
-	g_curBanner->PaintOn(hDC, &rc);
+	CmApp()->GetBanner()->PaintOn(hDC, &rc);
 }
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CTextEditDialog tdlg;
-	tdlg.DoModal();
-
+	//XASSERT(m_textEditDlg.Create(m_hWnd));
+	//m_textEditDlg.ShowWindow(SW_SHOWNA);
 	return 0;
 }
 
@@ -94,7 +103,7 @@ LRESULT CManiaMainWnd::OnEditSelLine(WORD wNotifyCode, WORD wID, HWND hWndCtl, B
 
 LRESULT CManiaMainWnd::OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	g_globalSettings.m_fDebugDrawVertices = !g_globalSettings.m_fDebugDrawVertices;
+	CmApp()->GetGlobalSettings()->m_fDebugDrawVertices = !CmApp()->GetGlobalSettings()->m_fDebugDrawVertices;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -102,7 +111,7 @@ LRESULT CManiaMainWnd::OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWnd
 
 LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	g_globalSettings.m_fDebugDisableFillPath = !g_globalSettings.m_fDebugDisableFillPath;
+	CmApp()->GetGlobalSettings()->m_fDebugDisableFillPath = !CmApp()->GetGlobalSettings()->m_fDebugDisableFillPath;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -110,8 +119,8 @@ LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND h
 
 LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	g_globalSettings.m_fDisableSubdiv = !g_globalSettings.m_fDisableSubdiv;
-	g_curBanner->Invalidate();
+	CmApp()->GetGlobalSettings()->m_fDisableSubdiv = !CmApp()->GetGlobalSettings()->m_fDisableSubdiv;
+	CmApp()->GetBanner()->Invalidate();
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -119,7 +128,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID,
 
 LRESULT CManiaMainWnd::OnDebugDrawBoundingRects(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	g_globalSettings.m_fDebugDrawBoundingRects = !g_globalSettings.m_fDebugDrawBoundingRects;
+	CmApp()->GetGlobalSettings()->m_fDebugDrawBoundingRects = !CmApp()->GetGlobalSettings()->m_fDebugDrawBoundingRects;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -142,7 +151,7 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 
 	if (menuToLayoutMap.find(wID) != menuToLayoutMap.end())
 	{
-		g_curBanner->SetLayout(menuToLayoutMap.at(wID));
+		CmApp()->GetBanner()->SetLayout(menuToLayoutMap.at(wID));
 		InvalidateRect(nullptr, FALSE);
 	}
 
@@ -152,41 +161,15 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 
 LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {	
-	unique_ptr<TextFx> fx = nullptr;
-
 	switch (wID)
 	{
-		case ID_FX_SOLID: 
-			fx = make_unique<TextFxSolid>();
-			break;
-
-		case ID_FX_TWOOUTLINES: 
-			fx = make_unique<TextFxTwoOutlines>();
-			break;
-	
-		case ID_FX_VERTICAL:
-			break;
-
-		case ID_FX_BLOCK:
-			fx = make_unique<TextFxBlock>();
-			break;
-
-		case ID_FX_SHADOWREAR:
-			fx = make_unique<TextFxShadow>(ShadowType::Rear);
-			break;
-
-		case ID_FX_SHADOWFORE:
-			fx = make_unique<TextFxShadow>(ShadowType::Fore);
-			break;
+		case ID_FX_SOLID:			ApplyFx<TextFxSolid>();			break;
+		case ID_FX_TWOOUTLINES:		ApplyFx<TextFxTwoOutlines>();	break;
+		case ID_FX_VERTICAL:		break;
+		case ID_FX_BLOCK:			ApplyFx<TextFxBlock>();			break;
+		case ID_FX_SHADOWREAR:		ApplyFx<TextFxShadow>(ShadowType::Rear); break;
+		case ID_FX_SHADOWFORE:		ApplyFx<TextFxShadow>(ShadowType::Fore); break;
 	}
-
-	// Notify the color Selection tool that the current fx style changed
-
-	if (m_lineSelState.first)
-		g_curBanner->GetTopLine()->SetTextFx(move(fx));
-
-	if (m_lineSelState.second)
-		g_curBanner->GetBottomLine()->SetTextFx(move(fx));
 
 	InvalidateRect(nullptr, FALSE);
 
@@ -195,6 +178,15 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 		m_colorSelectToolWnd.UpdateUI();
 	}
 	return 0L;
+}
+
+template <class T, typename ...U> void CManiaMainWnd::ApplyFx(U... v)
+{
+	if (m_lineSelState.first)
+		CmApp()->GetBanner()->GetTopLine()->SetTextFx(make_unique<T>(v...));
+
+	if (m_lineSelState.second)
+		CmApp()->GetBanner()->GetBottomLine()->SetTextFx(make_unique<T>(v...));
 }
 
 LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
@@ -239,9 +231,9 @@ void CManiaMainWnd::UpdateMenu()
 		HMENU hDebugMenu = GetSubMenu(hMenu, 7);
 		if (hDebugMenu)
 		{
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, g_globalSettings.m_fDebugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL, g_globalSettings.m_fDebugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, g_globalSettings.m_fDisableSubdiv ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, CmApp()->GetGlobalSettings()->m_fDebugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL,CmApp()->GetGlobalSettings()->m_fDebugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, CmApp()->GetGlobalSettings()->m_fDisableSubdiv ? MF_CHECKED : MF_UNCHECKED);
 		}
 	}
 }

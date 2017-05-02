@@ -13,7 +13,7 @@ class BannerLine;
 
 const float BANNER_MARGIN_PX = 20;
 const float BANNER_HEIGHT_PCT = 50;
-const auto  DEFAULT_TOPLINE_TEXT{ L"LAIH" };
+const auto  DEFAULT_TOPLINE_TEXT{ L"CartelMania" };
 const auto  DEFAULT_BOTTOMLINE_TEXT{ L"Line 2" };
 const auto  DEFAULT_FONT_NAME{ L"Arial" };
 
@@ -52,7 +52,7 @@ class CManiaMainWnd;
 class Banner
 {
 public:
-	explicit Banner(CManiaMainWnd& hWndMain);
+	Banner();
 	~Banner();
 	
 	BannerLine* GetTopLine() const {	return m_topLine.get();	}
@@ -66,7 +66,6 @@ private:
 	void DrawSelectionMark(Gdiplus::Graphics & gr, const Gdiplus::RectF& bannerRect);
 	void BuildPaths();
 
-	CManiaMainWnd&								m_mainWnd;
 	BannerLayout								m_layout;
 	std::unique_ptr<BannerLine>					m_topLine;
 	std::unique_ptr<BannerLine>					m_bottomLine;

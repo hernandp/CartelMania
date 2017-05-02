@@ -6,8 +6,8 @@
 #include <atlctrls.h>
 #include <atldlgs.h>
 #include "ColorSelToolWnd.h"
+#include "TextEditDlg.h"
 #include "resource.h"
-#include "rebar.h"
 
 class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits>, public CDoubleBufferImpl<CManiaMainWnd>
 {
@@ -77,8 +77,12 @@ private:
 	LRESULT OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
 	void UpdateMenu();
-	template <class Fx_T> void ApplyFx(...);
 
+	template <class T, typename ...U> void CManiaMainWnd::ApplyFx(U...);
+
+	CImageListManaged		m_imgList;
+	CToolBarCtrl			m_toolbar;
 	ColorSelectToolWnd		m_colorSelectToolWnd;
+	//TextEditDialog			m_textEditDlg;
 	std::pair<bool,bool>	m_lineSelState = { true,true };
 };

@@ -4,6 +4,7 @@
 #include "TextFx.h"
 #include "Geometry.h"
 #include "MainWindow.h"
+#include "CartelManiaApp.h"
 
 using namespace Gdiplus;
 using namespace std;
@@ -11,7 +12,7 @@ using namespace std;
 
 //----------------------------------------------------------------------------
 
-Banner::Banner(CManiaMainWnd& mainWnd) : m_mainWnd(mainWnd),
+Banner::Banner() :
 m_layout(BannerLayout::SingleLine),
 m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxShadow>(ShadowType::Rear))),
 m_bottomLine(make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>()))
@@ -69,7 +70,7 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 
 	m_topLine->DrawOn(gr, line1Rect);
 
-	if (m_mainWnd.GetLineSelState().first || m_layout == BannerLayout::SingleLine)
+	if (CmApp()->GetMainWindow()->GetLineSelState().first || m_layout == BannerLayout::SingleLine)
 	DrawSelectionMark(gr, line1Rect);
 
 	if (m_layout != BannerLayout::SingleLine)
@@ -82,7 +83,7 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 		gr.TranslateTransform(0, line1Rect.Height);
 		m_bottomLine->DrawOn(gr, line2Rect);
 
-		if (m_mainWnd.GetLineSelState().second)
+		if (CmApp()->GetMainWindow()->GetLineSelState().second)
 			DrawSelectionMark(gr, line2Rect);
 	}		
 }
@@ -123,7 +124,7 @@ void Banner::Invalidate()
 {
 	m_topLine->InvalidatePath();
 	m_bottomLine->InvalidatePath();
-	InvalidateRect(m_mainWnd, NULL, FALSE);
+	InvalidateRect(*CmApp()->GetMainWindow(), NULL, FALSE);
 }
 
 //----------------------------------------------------------------------------

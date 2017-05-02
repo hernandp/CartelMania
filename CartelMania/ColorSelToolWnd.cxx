@@ -5,6 +5,7 @@
 #include "colors.h"
 #include "banner.h"
 #include "bannerline.h"
+#include "CartelManiaApp.h"
 
 using namespace std;
 
@@ -18,7 +19,6 @@ const int WindowMarginTop = 16;
 const int WindowMarginBottom = 16;
 int ComboHeight;
 
-extern unique_ptr<Banner> g_curBanner;
 
 BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 {
@@ -30,7 +30,7 @@ BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 
 void ColorSelectToolWnd::CreateControls()
 {
-	TextFx* textrend = g_curBanner->GetTopLine()->GetTextFx();
+	TextFx* textrend = CmApp()->GetBanner()->GetTopLine()->GetTextFx();
 
 	const int colPropCount = textrend->GetColorPropertyCount();
 	
@@ -88,7 +88,7 @@ void ColorSelectToolWnd::CreateControls()
 
 HWND ColorSelectToolWnd::Create(HWND hWndParent)
 {
-	return CWindowImpl::Create(hWndParent, rcDefault, L"Color Selection", WS_POPUP | WS_CAPTION, WS_EX_PALETTEWINDOW);
+	return CWindowImpl::Create(hWndParent, rcDefault, L"Color Selection", WS_POPUP | WS_CAPTION | WS_SYSMENU, WS_EX_PALETTEWINDOW);
 }
 
 void ColorSelectToolWnd::UpdateUI()
@@ -118,10 +118,10 @@ LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 			ColorPropertyClass colorPropClass = (ColorPropertyClass) comboBox->GetTag().intVal;
 			wstring colorValue = comboBox->GetCurSelColorName();
 
-			g_curBanner->GetTopLine()->GetTextFx()->SetColorPropertyValue(colorPropClass, colorValue);
+			CmApp()->GetBanner()->GetTopLine()->GetTextFx()->SetColorPropertyValue(colorPropClass, colorValue);
 		}
 
-		g_curBanner->Invalidate();
+		CmApp()->GetBanner()->Invalidate();
 	}
 
 	return 0L;

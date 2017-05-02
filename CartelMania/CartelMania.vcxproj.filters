@@ -18,9 +18,6 @@
     <ClInclude Include="banner.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="textutil.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="colorset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -33,13 +30,7 @@
     <ClInclude Include="debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="txtedit_dialog.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="resource.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="rebar.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="stdafx.h">
@@ -69,6 +60,12 @@
     <ClInclude Include="TextFx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="TextEditDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CartelManiaApp.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc">
@@ -82,16 +79,7 @@
     <ClCompile Include="colors.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="textutil.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="bannerline.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="rebar.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="test.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="stdafx.cxx">
@@ -118,10 +106,11 @@
     <ClCompile Include="TextFx.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Image Include="toolbar1.bmp">
-      <Filter>Resource Files</Filter>
-    </Image>
+    <ClCompile Include="CartelManiaApp.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="TextEditDlg.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

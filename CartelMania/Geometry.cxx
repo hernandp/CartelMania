@@ -40,7 +40,7 @@ vector<pair<PointF, PointF>> SubdivideLine(REAL x0, REAL y0, REAL x1, REAL y1,
 		REAL nx = x0 * (1 - t) + x1 * t;
 		REAL ny = y0 * (1 - t) + y1 * t;
 
-		dprintf(L"subdiv line k=%d (PX0=%.f PY0=%.f)-(PX1=%.f PY1=%.f) \n", k, px, py, nx, ny);
+		//dprintf(L"subdiv line k=%d (PX0=%.f PY0=%.f)-(PX1=%.f PY1=%.f) \n", k, px, py, nx, ny);
 		v.push_back(make_pair(PointF(px, py), PointF(nx, ny)));
 		px = nx;
 		py = ny;

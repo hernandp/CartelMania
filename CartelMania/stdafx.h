@@ -21,3 +21,4 @@
 #include <cassert>
 #include <map>
 #include <array>
+#include <limits>
