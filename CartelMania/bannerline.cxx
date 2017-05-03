@@ -63,3 +63,8 @@ void BannerLine::BuildPath()
 
 	m_needRegen = false;
 }
+
+void BannerLine::SetText(const std::wstring& text)
+{
+	m_text = text;
+}

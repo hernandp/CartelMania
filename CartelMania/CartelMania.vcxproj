@@ -229,7 +229,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TextEditDlg.cxx">
+    <ClCompile Include="TextEditToolWnd.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -259,7 +259,7 @@
     <ClInclude Include="resource.h" />
     <ClInclude Include="TextFx.h" />
     <ClInclude Include="GdiPEngWrapper.h" />
-    <ClInclude Include="TextEditDlg.h" />
+    <ClInclude Include="TextEditToolWnd.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc" />

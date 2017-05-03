@@ -129,6 +129,6 @@ LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 
 void ColorSelectToolWnd::OnMove(CPoint pt)
 {
-	CmApp()->GetGlobalSettings()->lastColorEditToolPos.x = pt.x;
-	CmApp()->GetGlobalSettings()->lastColorEditToolPos.y = pt.y;
+	CmApp()->GetSettings()->lastColorEditToolPos.x = pt.x;
+	CmApp()->GetSettings()->lastColorEditToolPos.y = pt.y;
 }

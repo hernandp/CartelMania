@@ -6,7 +6,7 @@
 #include <atlctrls.h>
 #include <atldlgs.h>
 #include "ColorSelToolWnd.h"
-#include "TextEditDlg.h"
+#include "TextEditToolWnd.h"
 #include "resource.h"
 
 class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits>, public CDoubleBufferImpl<CManiaMainWnd>
@@ -83,6 +83,6 @@ private:
 	CImageListManaged		m_imgList;
 	CToolBarCtrl			m_toolbar;
 	ColorSelectToolWnd		m_colorSelectToolWnd;
-	TextEditDialog			m_textEditDlg;
+	TextEditToolWnd			m_textEditToolWnd;
 	std::pair<bool,bool>	m_lineSelState = { true,true };
 };

@@ -11,16 +11,13 @@ class CartelManiaApp
 public:	
 	static CartelManiaApp* GetInstance()
 	{
-		if (m_inst == nullptr)
-			m_inst = new CartelManiaApp();
-
-		return m_inst;
+		return (m_inst == nullptr) ? (m_inst = new CartelManiaApp) : m_inst;
 	}
 
 	int						Run();
-	CManiaMainWnd*			GetMainWindow() { return m_mainWindow.get(); }
+	CManiaMainWnd*			GetMainWindow() const { return m_mainWindow.get(); }
 	Banner*					GetBanner() { return &m_banner; }
-	AppSettings*			GetGlobalSettings() { return &m_settings;  }
+	AppSettings*			GetSettings() { return &m_settings;  }
 	
 private:
 	CartelManiaApp();

@@ -31,6 +31,19 @@ enum class BannerLayout
 	LargeOverSmall3
 };
 
+// Returns true if both layouts contain the same number of lines
+//
+inline bool AreCompatibleLayouts(BannerLayout l1, BannerLayout l2)
+{
+	if ((l1 == l2) ||
+		(l1 != BannerLayout::SingleLine && l2 != BannerLayout::SingleLine))
+	{
+		return true;
+	}
+
+	return false;
+}
+
 // 
 // Approximate "empirical" calculation from Bannermania
 // Prop1: 25% / 75 %

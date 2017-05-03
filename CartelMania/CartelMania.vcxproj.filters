@@ -57,13 +57,13 @@
     <ClInclude Include="TextFx.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="TextEditDlg.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CartelManiaApp.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="AppSettings.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="TextEditToolWnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -109,10 +109,10 @@
     <ClCompile Include="CartelManiaApp.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TextEditDlg.cxx">
+    <ClCompile Include="AppSettings.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="AppSettings.cxx">
+    <ClCompile Include="TextEditToolWnd.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

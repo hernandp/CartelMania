@@ -3,7 +3,7 @@
 #include "banner.h"
 #include "bannerline.h"
 #include "debug.h"
-#include "TextEditDlg.h"
+#include "TextEditToolWnd.h"
 #include "ColorSelToolWnd.h"
 #include "AppSettings.h"
 #include "TextFx.h"
@@ -57,11 +57,11 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	if (!m_textEditDlg.m_hWnd)
-		XASSERT(m_textEditDlg.Create(m_hWnd));
+	if (!m_textEditToolWnd.m_hWnd)
+		XASSERT(m_textEditToolWnd.Create(m_hWnd));
 
-	auto lastX = CmApp()->GetGlobalSettings()->lastTextEditToolPos.x;
-	auto lastY = CmApp()->GetGlobalSettings()->lastTextEditToolPos.y;
+	auto lastX = CmApp()->GetSettings()->lastTextEditToolPos.x;
+	auto lastY = CmApp()->GetSettings()->lastTextEditToolPos.y;
 
 	if (lastX == -1 && lastY == -1)
 	{
@@ -70,8 +70,8 @@ LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 		lastY = 0;
 	}
 
-	m_textEditDlg.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);	
-	m_textEditDlg.ShowWindow(SW_SHOWNA);
+	m_textEditToolWnd.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);	
+	m_textEditToolWnd.ShowWindow(SW_SHOWNA);
 	return 0;
 }
 
@@ -116,7 +116,7 @@ LRESULT CManiaMainWnd::OnEditSelLine(WORD wNotifyCode, WORD wID, HWND hWndCtl, B
 
 LRESULT CManiaMainWnd::OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CmApp()->GetGlobalSettings()->debugDrawVertices = !CmApp()->GetGlobalSettings()->debugDrawVertices;
+	CmApp()->GetSettings()->debugDrawVertices = !CmApp()->GetSettings()->debugDrawVertices;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -124,7 +124,7 @@ LRESULT CManiaMainWnd::OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWnd
 
 LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CmApp()->GetGlobalSettings()->debugDisableFillPath = !CmApp()->GetGlobalSettings()->debugDisableFillPath;
+	CmApp()->GetSettings()->debugDisableFillPath = !CmApp()->GetSettings()->debugDisableFillPath;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -132,7 +132,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND h
 
 LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CmApp()->GetGlobalSettings()->disableSubdiv = !CmApp()->GetGlobalSettings()->disableSubdiv;
+	CmApp()->GetSettings()->disableSubdiv = !CmApp()->GetSettings()->disableSubdiv;
 	CmApp()->GetBanner()->Invalidate();
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
@@ -141,7 +141,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID,
 
 LRESULT CManiaMainWnd::OnDebugDrawBoundingRects(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	CmApp()->GetGlobalSettings()->debugDrawBoundingRects = !CmApp()->GetGlobalSettings()->debugDrawBoundingRects;
+	CmApp()->GetSettings()->debugDrawBoundingRects = !CmApp()->GetSettings()->debugDrawBoundingRects;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -160,11 +160,22 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 	{ ID_LAYOUT_SMALLOVERLARGE3, BannerLayout::SmallOverLarge3 }
 	};
 
-	// Handle layouts menu
+	XASSERT(menuToLayoutMap.find(wID) != menuToLayoutMap.end());
 
-	if (menuToLayoutMap.find(wID) != menuToLayoutMap.end())
+	auto currentLayout = CmApp()->GetBanner()->GetLayout();
+	auto selectedLayout = menuToLayoutMap.at(wID);
+
+	// Handle layouts menu  (do nothing if layout is the same as selected)
+
+	if (currentLayout != selectedLayout)
 	{
-		CmApp()->GetBanner()->SetLayout(menuToLayoutMap.at(wID));
+		if (m_textEditToolWnd.m_hWnd &&
+			(!AreCompatibleLayouts(currentLayout, selectedLayout)))
+		{
+			m_textEditToolWnd.LayoutUpdate(selectedLayout);
+		}
+
+		CmApp()->GetBanner()->SetLayout(selectedLayout);
 		InvalidateRect(nullptr, FALSE);
 	}
 
@@ -247,9 +258,9 @@ void CManiaMainWnd::UpdateMenu()
 		HMENU hDebugMenu = GetSubMenu(hMenu, 7);
 		if (hDebugMenu)
 		{
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, CmApp()->GetGlobalSettings()->debugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL,CmApp()->GetGlobalSettings()->debugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, CmApp()->GetGlobalSettings()->disableSubdiv ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, CmApp()->GetSettings()->debugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL,CmApp()->GetSettings()->debugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, CmApp()->GetSettings()->disableSubdiv ? MF_CHECKED : MF_UNCHECKED);
 		}
 	}
 }
