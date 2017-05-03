@@ -21,9 +21,6 @@
     <ClInclude Include="colorset.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="colors.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="bannerline.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -66,6 +63,9 @@
     <ClInclude Include="TextEditToolWnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ColorTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc">
@@ -74,9 +74,6 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="banner.cxx">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="colors.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="bannerline.cxx">
@@ -113,6 +110,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TextEditToolWnd.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorTable.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

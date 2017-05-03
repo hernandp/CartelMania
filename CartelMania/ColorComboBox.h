@@ -8,18 +8,18 @@
 #include <memory>
 #include <GdiPlus.h>
 #include <vector>
-#include "colors.h"
+#include "colorTable.h"
 
 class CmColorComboBox : public CWindowImpl<CmColorComboBox, CComboBox>, public COwnerDraw<CmColorComboBox>
 {
 public:
 	DECLARE_WND_SUPERCLASS(L"CmColorComboBox_WindowClass", GetWndClassName());
 
-	explicit CmColorComboBox(ColorTable_T* colorTable) : CWindowImpl<CmColorComboBox,CComboBox>(),
+	explicit CmColorComboBox(ColorTable* colorTable) : CWindowImpl<CmColorComboBox,CComboBox>(),
 		m_colorTable(colorTable)
 	{		
 		ATLASSERT(colorTable);
-		ATLASSERT(colorTable->size() > 0);
+		ATLASSERT(colorTable->GetCount() > 0);
 	}
 
 	HWND Create(HWND hWndParent, _U_RECT rect, DWORD dwStyle, UINT id = 0UL);
@@ -44,6 +44,6 @@ private:
 	void MeasureItem(LPMEASUREITEMSTRUCT);
 
 	CComVariant							m_tag;
-	ColorTable_T*						m_colorTable;
+	ColorTable*							m_colorTable;
 	std::unique_ptr<Gdiplus::Font>		m_font;
 };

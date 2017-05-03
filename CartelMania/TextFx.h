@@ -1,6 +1,6 @@
 #pragma once
 #include "ColorProps.h"
-#include "Colors.h"
+#include "ColorTable.h"
 
 //----------------------------------------------------------------------------
 //

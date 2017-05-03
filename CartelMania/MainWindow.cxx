@@ -8,7 +8,7 @@
 #include "AppSettings.h"
 #include "TextFx.h"
 #include "ColorComboBox.h"
-#include "colors.h"
+#include "colorTable.h"
 #include "CartelManiaApp.h"
 
 using namespace std;
@@ -52,7 +52,7 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 {	
 	RECT rc;
 	GetClientRect(&rc);
-	CmApp()->GetBanner()->PaintOn(hDC, &rc);
+	App()->GetBanner()->PaintOn(hDC, &rc);
 }
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
@@ -60,8 +60,8 @@ LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 	if (!m_textEditToolWnd.m_hWnd)
 		XASSERT(m_textEditToolWnd.Create(m_hWnd));
 
-	auto lastX = CmApp()->GetSettings()->lastTextEditToolPos.x;
-	auto lastY = CmApp()->GetSettings()->lastTextEditToolPos.y;
+	auto lastX = App()->GetSettings()->lastTextEditToolPos.x;
+	auto lastY = App()->GetSettings()->lastTextEditToolPos.y;
 
 	if (lastX == -1 && lastY == -1)
 	{
@@ -116,7 +116,7 @@ LRESULT CManiaMainWnd::OnEditSelLine(WORD wNotifyCode, WORD wID, HWND hWndCtl, B
 
 LRESULT CManiaMainWnd::OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CmApp()->GetSettings()->debugDrawVertices = !CmApp()->GetSettings()->debugDrawVertices;
+	App()->GetSettings()->debugDrawVertices = !App()->GetSettings()->debugDrawVertices;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -124,7 +124,7 @@ LRESULT CManiaMainWnd::OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWnd
 
 LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CmApp()->GetSettings()->debugDisableFillPath = !CmApp()->GetSettings()->debugDisableFillPath;
+	App()->GetSettings()->debugDisableFillPath = !App()->GetSettings()->debugDisableFillPath;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -132,8 +132,8 @@ LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND h
 
 LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	CmApp()->GetSettings()->disableSubdiv = !CmApp()->GetSettings()->disableSubdiv;
-	CmApp()->GetBanner()->Invalidate();
+	App()->GetSettings()->disableSubdiv = !App()->GetSettings()->disableSubdiv;
+	App()->GetBanner()->Invalidate();
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -141,7 +141,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID,
 
 LRESULT CManiaMainWnd::OnDebugDrawBoundingRects(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	CmApp()->GetSettings()->debugDrawBoundingRects = !CmApp()->GetSettings()->debugDrawBoundingRects;
+	App()->GetSettings()->debugDrawBoundingRects = !App()->GetSettings()->debugDrawBoundingRects;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;
@@ -162,7 +162,7 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 
 	XASSERT(menuToLayoutMap.find(wID) != menuToLayoutMap.end());
 
-	auto currentLayout = CmApp()->GetBanner()->GetLayout();
+	auto currentLayout = App()->GetBanner()->GetLayout();
 	auto selectedLayout = menuToLayoutMap.at(wID);
 
 	// Handle layouts menu  (do nothing if layout is the same as selected)
@@ -175,7 +175,7 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 			m_textEditToolWnd.LayoutUpdate(selectedLayout);
 		}
 
-		CmApp()->GetBanner()->SetLayout(selectedLayout);
+		App()->GetBanner()->SetLayout(selectedLayout);
 		InvalidateRect(nullptr, FALSE);
 	}
 
@@ -208,10 +208,10 @@ template <class T, typename ...U>
 void CManiaMainWnd::ApplyFx(U... v)
 {
 	if (m_lineSelState.first)
-		CmApp()->GetBanner()->GetTopLine()->SetTextFx(make_unique<T>(v...));
+		App()->GetBanner()->GetTopLine()->SetTextFx(make_unique<T>(v...));
 
 	if (m_lineSelState.second)
-		CmApp()->GetBanner()->GetBottomLine()->SetTextFx(make_unique<T>(v...));
+		App()->GetBanner()->GetBottomLine()->SetTextFx(make_unique<T>(v...));
 }
 
 LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
@@ -258,9 +258,9 @@ void CManiaMainWnd::UpdateMenu()
 		HMENU hDebugMenu = GetSubMenu(hMenu, 7);
 		if (hDebugMenu)
 		{
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, CmApp()->GetSettings()->debugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL,CmApp()->GetSettings()->debugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, CmApp()->GetSettings()->disableSubdiv ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, App()->GetSettings()->debugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL,App()->GetSettings()->debugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, App()->GetSettings()->disableSubdiv ? MF_CHECKED : MF_UNCHECKED);
 		}
 	}
 }

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CartelManiaApp.h"
+#include "GdiPEngWrapper.h"
 
 // Use VisualLeak Detector 
 #include <vld.h>
@@ -23,6 +24,10 @@ processorArchitecture='*' publicKeyToken='6595b64144ccf1df' language='*'\"")
 //----------------------------------------------------------------------------
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd)
 {
+	GdiPlusEngine gdiplus;
+	XASSERT(gdiplus.IsInitOk());
+
 	AtlInitCommonControls(ICC_WIN95_CLASSES);
-	return CmApp()->Run();
+	CartelManiaApp app;
+	return app.Run();
 }

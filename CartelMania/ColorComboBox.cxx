@@ -1,7 +1,8 @@
 #include "stdafx.h"
 #include "ColorComboBox.h"
-#include "colors.h"
+#include "colorTable.h"
 #include "debug.h"
+#include "CartelManiaApp.h"
 
 using namespace Gdiplus;
 
@@ -38,9 +39,9 @@ int CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
 {
 	LRESULT lr = DefWindowProc();
 
-	for (auto& colorEntry : *m_colorTable)
+	for (int i = 0; i < App()->GetColorTable()->GetCount(); ++i)
 	{
-		AddString(colorEntry.first.c_str());
+		AddString(App()->GetColorTable()->NameAt(i).c_str());
 	}
 	return 0;
 }
@@ -79,7 +80,7 @@ void CmColorComboBox::DrawItem(LPDRAWITEMSTRUCT lpdis)
 
 		gr.FillRectangle(&SolidBrush(backColor), rcItem.left, rcItem.top, rcW, rcH);
 
-		gr.FillRectangle(m_colorTable->at(lpdis->itemID).second.get(),
+		gr.FillRectangle(m_colorTable->BrushAt(lpdis->itemID),
 			rcItem.left + ITEM_LEFTMARGIN,
 			rcItem.top + ITEM_VMARGIN,
 			ITEM_COLORSAMPLE_WIDTH,

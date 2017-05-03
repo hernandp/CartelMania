@@ -70,7 +70,7 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 
 	m_topLine->DrawOn(gr, line1Rect);
 
-	if (CmApp()->GetMainWindow()->GetLineSelState().first || m_layout == BannerLayout::SingleLine)
+	if (App()->GetMainWindow()->GetLineSelState().first || m_layout == BannerLayout::SingleLine)
 	DrawSelectionMark(gr, line1Rect);
 
 	if (m_layout != BannerLayout::SingleLine)
@@ -83,7 +83,7 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 		gr.TranslateTransform(0, line1Rect.Height);
 		m_bottomLine->DrawOn(gr, line2Rect);
 
-		if (CmApp()->GetMainWindow()->GetLineSelState().second)
+		if (App()->GetMainWindow()->GetLineSelState().second)
 			DrawSelectionMark(gr, line2Rect);
 	}		
 }
@@ -124,7 +124,7 @@ void Banner::Invalidate()
 {
 	m_topLine->InvalidatePath();
 	m_bottomLine->InvalidatePath();
-	InvalidateRect(*CmApp()->GetMainWindow(), NULL, FALSE);
+	InvalidateRect(*App()->GetMainWindow(), NULL, FALSE);
 }
 
 //----------------------------------------------------------------------------

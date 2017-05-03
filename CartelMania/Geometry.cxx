@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "Geometry.h"
 #include "debug.h"
-#include "colors.h"
+#include "colorTable.h"
 
 
 using namespace Gdiplus;

@@ -193,7 +193,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="colors.cxx">
+    <ClCompile Include="ColorTable.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -248,7 +248,7 @@
     <ClInclude Include="CartelManiaApp.h" />
     <ClInclude Include="ColorComboBox.h" />
     <ClInclude Include="ColorProps.h" />
-    <ClInclude Include="colors.h" />
+    <ClInclude Include="ColorTable.h" />
     <ClInclude Include="ColorSelToolWnd.h" />
     <ClInclude Include="colorset.h" />
     <ClInclude Include="AppSettings.h" />

@@ -1,37 +1,39 @@
 #pragma once
-
-#include "GdiPEngWrapper.h"
+#include <windows.h>
+#include "gdiplus.h"
 #include "banner.h"
 #include "AppSettings.h"
 #include "MainWindow.h"
+#include "debug.h"
 #include <memory>
 
 class CartelManiaApp
 {
 public:	
-	static CartelManiaApp* GetInstance()
-	{
-		return (m_inst == nullptr) ? (m_inst = new CartelManiaApp) : m_inst;
-	}
-
+	CartelManiaApp();
 	int						Run();
 	CManiaMainWnd*			GetMainWindow() const { return m_mainWindow.get(); }
 	Banner*					GetBanner() { return &m_banner; }
+	ColorTable*				GetColorTable() { return &m_colorTable; }
+	const Gdiplus::Brush*	GetBrushFromColorTable(const std::wstring& name){ return m_colorTable.GetBrush(name); }
 	AppSettings*			GetSettings() { return &m_settings;  }
-	
+	static CartelManiaApp*	Instance() { return s_appPtr;  }
+	virtual ~CartelManiaApp();
+
 private:
-	CartelManiaApp();
+	
 	CartelManiaApp(CartelManiaApp&) = delete;
 	CartelManiaApp operator= (CartelManiaApp&) = delete;
 
-	static CartelManiaApp*					m_inst;
+	static CartelManiaApp*					s_appPtr;
+	ColorTable								m_colorTable;
 	std::unique_ptr<CManiaMainWnd>			m_mainWindow;
-	GdiPlusEngine							m_gdipEng;
 	Banner									m_banner;
 	AppSettings								m_settings;
 };
 
-inline CartelManiaApp* CmApp()
-{
-	return CartelManiaApp::GetInstance();
-}
+
+//
+// The global Application Object
+//
+inline CartelManiaApp* App() { return CartelManiaApp::Instance(); }

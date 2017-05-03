@@ -1,21 +1,31 @@
 #include "stdafx.h"
 #include "CartelManiaApp.h"
 #include "debug.h"
-#include "colors.h"
+#include "colorTable.h"
 
-CartelManiaApp * CartelManiaApp::m_inst = nullptr;
+using namespace std;
+using namespace Gdiplus;
 
+CartelManiaApp* CartelManiaApp::s_appPtr = nullptr;
+
+// ---------------------------------------------------------------------------
 CartelManiaApp::CartelManiaApp()
 {
-	XASSERT(m_gdipEng.IsInitOk());
+	dprintf(__FUNCTIONW__);
+	XASSERT(!s_appPtr);
+	s_appPtr = this;
+		
 	m_mainWindow = std::make_unique<CManiaMainWnd>();
+}
+
+inline CartelManiaApp::~CartelManiaApp()
+{
+	dprintf(__FUNCTIONW__);
 }
 
 int CartelManiaApp::Run()
 {
 	m_settings.Load();
-
-	InitColorTable();
 
 	HMENU hMenu = LoadMenu(GetModuleHandle(0), MAKEINTRESOURCE(IDR_MENU1));
 	XASSERT(m_mainWindow->Create(0, CWindow::rcDefault,  L"CartelMania for Windows", 0, 0, hMenu));
@@ -42,5 +52,5 @@ int CartelManiaApp::Run()
 	// Exiting ...
 
 	m_settings.Save();
-	return msg.wParam;
+	return static_cast<int>(msg.wParam);
 }

@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "GdipEngWrapper.h"
+#include "debug.h"
 
 GdiPlusEngine::GdiPlusEngine() : m_initOk(false), m_gdipStartupInput(0), m_ulGdipToken(0)
 {
@@ -14,6 +15,7 @@ GdiPlusEngine::~GdiPlusEngine()
 {
 	if (m_initOk && m_ulGdipToken)
 	{
+		dprintf(L"Shutting down GDI+...");
 		Gdiplus::GdiplusShutdown(m_ulGdipToken);
 	}
 }

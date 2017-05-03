@@ -3,7 +3,7 @@
 #include "bannerline.h"
 #include "AppSettings.h"
 #include "Geometry.h"
-#include "colors.h"
+#include "colorTable.h"
 #include "CartelManiaApp.h"
 #include "debug.h"
 #include "vld.h"
@@ -64,8 +64,8 @@ void TextFx::DrawLineBackground(Graphics& gr, const RectF& lineRect)
 {
 	auto bgColor = GetColorPropertyValue(ColorPropertyClass::Background);
 	auto outColor = GetColorPropertyValue(ColorPropertyClass::Background_Outline);
-	gr.FillRectangle(GetBrushFromColorTable(bgColor), lineRect);
-	gr.DrawRectangle(&Pen(GetBrushFromColorTable(outColor), 1.0f), lineRect);
+	gr.FillRectangle(App()->GetBrushFromColorTable(bgColor), lineRect);
+	gr.DrawRectangle(&Pen(App()->GetBrushFromColorTable(outColor), 1.0f), lineRect);
 }
 
 //-----------------------------------------------------------------------------
@@ -139,13 +139,13 @@ void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF
 	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
 	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
 	
-	if (!CmApp()->GetSettings()->debugDisableFillPath)
-		gr.FillPath(GetBrushFromColorTable(faceColor), path.get());
+	if (!App()->GetSettings()->debugDisableFillPath)
+		gr.FillPath(App()->GetBrushFromColorTable(faceColor), path.get());
 
-	if (CmApp()->GetSettings()->debugDrawVertices)
+	if (App()->GetSettings()->debugDrawVertices)
 		DrawPathVertices(gr, *path);
 
-	gr.DrawPath(&Pen(GetBrushFromColorTable(faceOutline), 1), path.get());
+	gr.DrawPath(&Pen(App()->GetBrushFromColorTable(faceOutline), 1), path.get());
 }
 
 //-----------------------------------------------------------------------------
@@ -165,9 +165,9 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 	auto innerOutline = GetColorPropertyValue(ColorPropertyClass::Inner_Outline);
 	auto outerOutline = GetColorPropertyValue(ColorPropertyClass::Outer_Outline);
 	
-	Pen penIn(GetBrushFromColorTable(innerOutline), m_outlineWidth);
-	Pen penOut(GetBrushFromColorTable(outerOutline), m_outlineWidth * 2);
-	const Brush* brush = GetBrushFromColorTable(faceColor);
+	Pen penIn(App()->GetBrushFromColorTable(innerOutline), m_outlineWidth);
+	Pen penOut(App()->GetBrushFromColorTable(outerOutline), m_outlineWidth * 2);
+	const Brush* brush = App()->GetBrushFromColorTable(faceColor);
 	
 	gr.DrawPath(&penOut, path.get());
 	gr.DrawPath(&penIn, path.get());
@@ -182,7 +182,6 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 
 void TextFxShadow::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
-	GraphicsPath* x = new GraphicsPath;
 	auto path = line.GetPathCopy();
 	auto shadowPath = line.GetPathCopy();
 
@@ -217,30 +216,30 @@ void TextFxShadow::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRec
 	auto shadowColor = GetColorPropertyValue(ColorPropertyClass::Shadow);
 	auto shadowOutline = GetColorPropertyValue(ColorPropertyClass::Shadow_Outline);
 
-	if (!CmApp()->GetSettings()->debugDisableFillPath)
-		gr.FillPath(GetBrushFromColorTable(shadowColor), shadowPath.get());
+	if (!App()->GetSettings()->debugDisableFillPath)
+		gr.FillPath(App()->GetBrushFromColorTable(shadowColor), shadowPath.get());
 
-	if (CmApp()->GetSettings()->debugDrawVertices)
+	if (App()->GetSettings()->debugDrawVertices)
 		DrawPathVertices(gr, *shadowPath);
 
-	gr.DrawPath(&Pen(GetBrushFromColorTable(shadowOutline), 1), shadowPath.get());
+	gr.DrawPath(&Pen(App()->GetBrushFromColorTable(shadowOutline), 1), shadowPath.get());
 
 	// Face
 
 	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
 	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
 
-	if (!CmApp()->GetSettings()->debugDisableFillPath)
-		gr.FillPath(GetBrushFromColorTable(faceColor), path.get());
+	if (!App()->GetSettings()->debugDisableFillPath)
+		gr.FillPath(App()->GetBrushFromColorTable(faceColor), path.get());
 
-	if (CmApp()->GetSettings()->debugDrawVertices)
+	if (App()->GetSettings()->debugDrawVertices)
 		DrawPathVertices(gr, *path);
 
-	gr.DrawPath(&Pen(GetBrushFromColorTable(faceOutline), 1), path.get());
+	gr.DrawPath(&Pen(App()->GetBrushFromColorTable(faceOutline), 1), path.get());
 
 	// Bounding rects
 
-	if (CmApp()->GetSettings()->debugDrawBoundingRects)
+	if (App()->GetSettings()->debugDrawBoundingRects)
 	{
 		RectF rcbPath, rcbShadow;
 		path->GetBounds(&rcbPath);

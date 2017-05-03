@@ -10,19 +10,19 @@ BOOL TextEditToolWnd::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 {
 	m_edit1.Attach(GetDlgItem(IDC_EDIT1));
 	m_edit2.Attach(GetDlgItem(IDC_EDIT2));
-	m_edit1.SetLimitText(CmApp()->GetSettings()->maxTextLength);
-	m_edit2.SetLimitText(CmApp()->GetSettings()->maxTextLength);
-	m_edit1.SetWindowTextW(CmApp()->GetBanner()->GetTopLine()->GetText().c_str());
-	m_edit2.SetWindowTextW(CmApp()->GetBanner()->GetBottomLine()->GetText().c_str());
-	LayoutUpdate(CmApp()->GetBanner()->GetLayout());
+	m_edit1.SetLimitText(App()->GetSettings()->maxTextLength);
+	m_edit2.SetLimitText(App()->GetSettings()->maxTextLength);
+	m_edit1.SetWindowTextW(App()->GetBanner()->GetTopLine()->GetText().c_str());
+	m_edit2.SetWindowTextW(App()->GetBanner()->GetBottomLine()->GetText().c_str());
+	LayoutUpdate(App()->GetBanner()->GetLayout());
 	m_bInitialized = true;
 	return TRUE;
 }
 
 void TextEditToolWnd::OnMove(CPoint pos)
 {
-	CmApp()->GetSettings()->lastTextEditToolPos.x = pos.x;
-	CmApp()->GetSettings()->lastTextEditToolPos.y = pos.y;
+	App()->GetSettings()->lastTextEditToolPos.x = pos.x;
+	App()->GetSettings()->lastTextEditToolPos.y = pos.y;
 }
 
 void TextEditToolWnd::OnClose()
@@ -39,8 +39,8 @@ LRESULT TextEditToolWnd::OnEdit1Change(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 		CComBSTR text;
 		m_edit1.GetWindowTextW(&text);
 				
-		CmApp()->GetBanner()->GetTopLine()->SetText(text.Length() > 0 ? std::wstring(text) : L"Line 1");
-		CmApp()->GetBanner()->Invalidate();
+		App()->GetBanner()->GetTopLine()->SetText(text.Length() > 0 ? std::wstring(text) : L"Line 1");
+		App()->GetBanner()->Invalidate();
 	}
 	return 0L;
 }
@@ -53,8 +53,8 @@ LRESULT TextEditToolWnd::OnEdit2Change(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 	{
 		CComBSTR text;
 		m_edit2.GetWindowTextW(&text);
-		CmApp()->GetBanner()->GetBottomLine()->SetText(text.Length() > 0 ? std::wstring(text) : L"Line 2");
-		CmApp()->GetBanner()->Invalidate();
+		App()->GetBanner()->GetBottomLine()->SetText(text.Length() > 0 ? std::wstring(text) : L"Line 2");
+		App()->GetBanner()->Invalidate();
 	}
 	return 0L;
 }

@@ -2,7 +2,7 @@
 #include "ColorSelToolWnd.h"
 #include "ColorComboBox.h"
 #include "Debug.h"
-#include "colors.h"
+#include "colorTable.h"
 #include "banner.h"
 #include "bannerline.h"
 #include "CartelManiaApp.h"
@@ -30,14 +30,14 @@ BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 
 void ColorSelectToolWnd::CreateControls()
 {
-	TextFx* textrend = CmApp()->GetBanner()->GetTopLine()->GetTextFx();
+	TextFx* textrend = App()->GetBanner()->GetTopLine()->GetTextFx();
 
 	const int colPropCount = textrend->GetColorPropertyCount();
 	
 	for (int i = 0; i < colPropCount; ++i)
 	{
 		CStatic label;
-		auto colorCombo = make_unique<CmColorComboBox>(&g_colorTable);
+		auto colorCombo = make_unique<CmColorComboBox>(App()->GetColorTable());
 
 		HWND hLabel = label.Create(*this, rcDefault, L"", WS_CHILD);
 		HWND hCombo = colorCombo->Create(*this, rcDefault, WS_CHILD);
@@ -118,10 +118,10 @@ LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 			ColorPropertyClass colorPropClass = (ColorPropertyClass) comboBox->GetTag().intVal;
 			wstring colorValue = comboBox->GetCurSelColorName();
 
-			CmApp()->GetBanner()->GetTopLine()->GetTextFx()->SetColorPropertyValue(colorPropClass, colorValue);
+			App()->GetBanner()->GetTopLine()->GetTextFx()->SetColorPropertyValue(colorPropClass, colorValue);
 		}
 
-		CmApp()->GetBanner()->Invalidate();
+		App()->GetBanner()->Invalidate();
 	}
 
 	return 0L;
@@ -129,6 +129,6 @@ LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 
 void ColorSelectToolWnd::OnMove(CPoint pt)
 {
-	CmApp()->GetSettings()->lastColorEditToolPos.x = pt.x;
-	CmApp()->GetSettings()->lastColorEditToolPos.y = pt.y;
+	App()->GetSettings()->lastColorEditToolPos.x = pt.x;
+	App()->GetSettings()->lastColorEditToolPos.y = pt.y;
 }
