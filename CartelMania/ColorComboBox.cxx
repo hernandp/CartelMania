@@ -39,7 +39,7 @@ int CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
 {
 	LRESULT lr = DefWindowProc();
 
-	for (int i = 0; i < App()->GetColorTable()->GetCount(); ++i)
+	for (size_t i = 0; i < App()->GetColorTable()->GetCount(); ++i)
 	{
 		AddString(App()->GetColorTable()->NameAt(i).c_str());
 	}
@@ -80,7 +80,7 @@ void CmColorComboBox::DrawItem(LPDRAWITEMSTRUCT lpdis)
 
 		gr.FillRectangle(&SolidBrush(backColor), rcItem.left, rcItem.top, rcW, rcH);
 
-		gr.FillRectangle(m_colorTable->BrushAt(lpdis->itemID),
+		gr.FillRectangle(m_colorTable->ObjectAt(lpdis->itemID).get(),
 			rcItem.left + ITEM_LEFTMARGIN,
 			rcItem.top + ITEM_VMARGIN,
 			ITEM_COLORSAMPLE_WIDTH,

@@ -33,11 +33,6 @@ const Color bm_Gray3{ 248,248,248 };
 const Color bm_Gray{ 80,84,80 };
 const Color bm_Black{ 0,0,0 };
 
-ColorTable::ColorTable()
-{
-	Init();
-}
-
 void ColorTable::Init()
 {
 	dprintf(L"Initializing Color Table...\n");
@@ -118,20 +113,3 @@ void ColorTable::Init()
 	m_table.push_back(make_pair(L"Dark Red",  make_unique<SolidBrush>(bm_DarkRed)));
 }
 
-const Gdiplus::Brush* ColorTable::GetBrush(const std::wstring & name)
-{
-	auto ret = std::find_if ( m_table.cbegin(), m_table.cend(), 
-		[&name](const std::pair<std::wstring, std::unique_ptr<Gdiplus::Brush>>& entry)
-	{
-		return entry.first == name;
-	}	
-	);
-
-	if (ret == m_table.end())
-	{
-		XASSERT(FALSE);
-		return nullptr;
-	}
-
-	return ret->second.get();
-}

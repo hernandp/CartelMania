@@ -5,6 +5,7 @@
 #include "AppSettings.h"
 #include "MainWindow.h"
 #include "debug.h"
+#include "ShapeTable.h"
 #include <memory>
 
 class CartelManiaApp
@@ -15,7 +16,7 @@ public:
 	CManiaMainWnd*			GetMainWindow() const { return m_mainWindow.get(); }
 	Banner*					GetBanner() { return &m_banner; }
 	ColorTable*				GetColorTable() { return &m_colorTable; }
-	const Gdiplus::Brush*	GetBrushFromColorTable(const std::wstring& name){ return m_colorTable.GetBrush(name); }
+	const Gdiplus::Brush*	GetBrushFromColorTable(const std::wstring& name){ return m_colorTable.LookupName(name).get(); }
 	AppSettings*			GetSettings() { return &m_settings;  }
 	static CartelManiaApp*	Instance() { return s_appPtr;  }
 	virtual ~CartelManiaApp();
@@ -27,6 +28,7 @@ private:
 
 	static CartelManiaApp*					s_appPtr;
 	ColorTable								m_colorTable;
+	ShapeTable								m_shapeTable;
 	std::unique_ptr<CManiaMainWnd>			m_mainWindow;
 	Banner									m_banner;
 	AppSettings								m_settings;
