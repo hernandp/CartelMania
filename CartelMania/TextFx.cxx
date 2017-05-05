@@ -84,8 +84,9 @@ void TextFx::AlignScalePath(vector<GraphicsPath*> pathList, const RectF& lineRec
 		RectF::Union(maxBounds, maxBounds, bounds);
 	}
 
+	// Set alignment
+	//
 	Matrix vAlign;
-
 	switch (alignMode)
 	{
 		case AlignMode::Center:
@@ -104,7 +105,7 @@ void TextFx::AlignScalePath(vector<GraphicsPath*> pathList, const RectF& lineRec
 			break;
 	}
 
-	const REAL s = lineRect.Height / maxBounds.Height;
+	const REAL s = CalcAspectRatioToFit(maxBounds.Width, maxBounds.Height, lineRect.Width, lineRect.Height);	
 
 	Matrix mtx;
 	mtx.Translate(lineRect.Width / 2.0f, lineRect.Height / 2.0f);
@@ -133,6 +134,9 @@ void TextFx::AlignScalePath(vector<GraphicsPath*> pathList, const RectF& lineRec
 void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF& lineRect)
 {
 	auto path = line.GetPathCopy();
+
+
+
 	AlignScalePath({ path.get() }, lineRect);
 	DrawLineBackground(gr, lineRect);
 

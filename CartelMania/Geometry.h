@@ -2,7 +2,14 @@
 #include <windows.h>
 #include <gdiplus.h>
 #include <vector>
+#include <algorithm>
 
+
+inline Gdiplus::REAL CalcAspectRatioToFit(float srcW, float srcH, float dstW, float dstH)
+{
+	return min(dstW / srcW, dstH / srcH);
+}
+// ---------------------------------------------------------------------------
 
 inline constexpr float Deg2Rad(float angleDegrees)
 {
