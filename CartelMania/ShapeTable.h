@@ -4,17 +4,17 @@
 #include <vector>
 #include "NamedTable.h"
 
-using ShapeFn = std::function<float(float)>;
+using ShapeFn_T = std::function<float(float)>;
 
 struct ShapeFunc
 {
-	ShapeFunc(ShapeFn top, ShapeFn bottom)
+	ShapeFunc(ShapeFn_T top, ShapeFn_T bottom)
 	{
 		topFunc = top;
 		bottomFunc = bottom;
 	}
 
-	ShapeFn topFunc, bottomFunc;
+	ShapeFn_T topFunc, bottomFunc;
 };
 
 class ShapeTable : public NamedTable<ShapeTable, ShapeFunc>

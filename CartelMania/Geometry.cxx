@@ -3,6 +3,7 @@
 #include "debug.h"
 #include "colorTable.h"
 #include "CartelManiaApp.h"
+#include "ShapeTable.h"
 
 using namespace Gdiplus;
 using namespace std;
@@ -114,6 +115,52 @@ void SubdividePath(const GraphicsPath& path, GraphicsPath& newPath)
 			i++;
 		}
 	}
+}
+
+Gdiplus::GraphicsPath * ShapePath(const Gdiplus::GraphicsPath & path, const ShapeFunc& shapeFunc)
+{
+	//
+	// To shape the path, the entire banner rectangle is mapped to
+	// x=0..1 
+	// y=0..1 
+	//
+	// So, banner top and bottom lines are mapped e.g to x=1..1/2, 1/2..0
+	// in case of medium-medium layout, or in different proportions.
+	// 
+	// Two functions f(x) and g(x) are used for the top and bottom
+	// deformation shapes respectively.  As in the original Bannermania program,
+	// x coordinates are not transformed. f(x) and g(x) *must be* both in [0..1] codomain.
+	//
+	// So, for every point p(x,y) in a path, p' is generated where:
+	//
+	// x = x 
+	// y'= lerp(y, f(x), g(x))
+	//
+
+	auto newPath = path.Clone();
+
+	RectF bounds;
+	newPath->GetBounds(&bounds);
+
+	Matrix normX;	// matrix to normalize x and y to [0..1]
+	normX.Scale(1 / bounds.Width, 1 / bounds.Height);
+	newPath->Transform(&normX);
+
+	PathData pd;
+	newPath->GetPathData(&pd);
+
+	for (int i = 0; i < pd.Count; ++i)
+	{
+		pd.Points[i].Y += shapeFunc.topFunc(pd.Points[i].X);
+	}
+
+	delete newPath;
+	newPath = new GraphicsPath(pd.Points, pd.Types, pd.Count);
+
+	normX.Invert();
+	newPath->Transform(&normX);
+
+	return newPath;
 }
 
 // ---------------------------------------------------------------------------

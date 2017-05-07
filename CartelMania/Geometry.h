@@ -3,6 +3,7 @@
 #include <gdiplus.h>
 #include <vector>
 #include <algorithm>
+#include "ShapeTable.h"
 
 constexpr float PI = 3.14159265358979323846f;
 
@@ -50,7 +51,7 @@ void SubdivideLineAddTo(Gdiplus::REAL x0, Gdiplus::REAL y0, Gdiplus::REAL x1, Gd
 void SubdividePath(const Gdiplus::GraphicsPath& path, Gdiplus::GraphicsPath& newPath);
 // ---------------------------------------------------------------------------
 
-Gdiplus::GraphicsPath* WarpPath(const Gdiplus::GraphicsPath& path);
+Gdiplus::GraphicsPath* ShapePath(const Gdiplus::GraphicsPath& path, const ShapeFunc& shapeFunc);
 
 // ---------------------------------------------------------------------------
 //

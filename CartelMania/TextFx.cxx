@@ -133,9 +133,7 @@ void TextFx::AlignScalePath(vector<GraphicsPath*> pathList, const RectF& lineRec
 
 void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF& lineRect)
 {
-	auto path = line.GetPathCopy();
-
-
+	auto path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc()));
 
 	AlignScalePath({ path.get() }, lineRect);
 	DrawLineBackground(gr, lineRect);

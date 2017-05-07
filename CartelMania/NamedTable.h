@@ -1,6 +1,4 @@
 #pragma once
-#include <gdiplus.h>
-#include <memory>
 #include <vector>
 
 template <class Derived_T, class ObjectT>
@@ -11,8 +9,6 @@ public:
 	{
 		static_cast<Derived_T*>(this)->Init();
 	}
-
-	void Init() {}
 
 	const ObjectT& LookupName(const std::wstring& name)
 	{
