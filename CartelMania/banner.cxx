@@ -9,12 +9,12 @@
 using namespace Gdiplus;
 using namespace std;
 
-
 //----------------------------------------------------------------------------
 
 Banner::Banner() :
 m_layout(BannerLayout::SingleLine),
-m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxShadow>(ShadowType::Rear))),
+m_shapeName(L"Rectangle"),
+m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
 m_bottomLine(make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>()))
 {
 	// Create the two default lines, cloning Bannermania behavior
