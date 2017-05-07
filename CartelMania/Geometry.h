@@ -4,6 +4,14 @@
 #include <vector>
 #include <algorithm>
 
+constexpr float PI = 3.14159265358979323846f;
+
+// ---------------------------------------------------------------------------
+inline float Lerp(float a, float b, float t)
+{
+	return (1.0f - t) * a + t * b;
+}
+// ---------------------------------------------------------------------------
 
 inline Gdiplus::REAL CalcAspectRatioToFit(float srcW, float srcH, float dstW, float dstH)
 {
@@ -13,7 +21,7 @@ inline Gdiplus::REAL CalcAspectRatioToFit(float srcW, float srcH, float dstW, fl
 
 inline constexpr float Deg2Rad(float angleDegrees)
 {
-	return angleDegrees * 3.14159265358979323846f  / 180.0f;
+	return angleDegrees * PI / 180.0f;
 }
 
 // ---------------------------------------------------------------------------
@@ -43,6 +51,15 @@ void SubdividePath(const Gdiplus::GraphicsPath& path, Gdiplus::GraphicsPath& new
 // ---------------------------------------------------------------------------
 
 Gdiplus::GraphicsPath* WarpPath(const Gdiplus::GraphicsPath& path);
+
+// ---------------------------------------------------------------------------
+//
+//Gdiplus::GraphicsPath* NormalizePath(const Gdiplus::GraphicsPath& path,
+//	Gdiplus::REAL yMin, Gdiplus::REAL yMax, Gdiplus::REAL xMin = 0.0f,
+//	Gdiplus::REAL xMax = 0.0f)
+//{
+//
+//}
 
 // ---------------------------------------------------------------------------
 

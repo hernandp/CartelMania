@@ -2,7 +2,7 @@
 #include "Geometry.h"
 #include "debug.h"
 #include "colorTable.h"
-
+#include "CartelManiaApp.h"
 
 using namespace Gdiplus;
 using namespace std;
@@ -81,7 +81,7 @@ void SubdividePath(const GraphicsPath& path, GraphicsPath& newPath)
 		const REAL px1 = pathData.Points[i].X;
 		const REAL py1 = pathData.Points[i].Y;
 
-		const int subdivCount = GetAdaptiveSubdivCount(px0, py0, px1, py1, 16.0f);
+		const int subdivCount = GetAdaptiveSubdivCount(px0, py0, px1, py1, 8);// (REAL) App()->GetSettings()->pathSubDivInterval);
 		
 		SubdivideLineAddTo(px0, py0, px1, py1, subdivCount, newPath);
 
