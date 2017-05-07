@@ -1,5 +1,4 @@
 #pragma once
-
 #include <atlbase.h>
 #include <atlwin.h>
 #include <atlapp.h>
@@ -7,6 +6,7 @@
 #include <atldlgs.h>
 #include "ColorSelToolWnd.h"
 #include "TextEditToolWnd.h"
+#include "ShapeSelToolWnd.h"
 #include "resource.h"
 
 class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits>, public CDoubleBufferImpl<CManiaMainWnd>
@@ -27,6 +27,8 @@ public:
 		COMMAND_ID_HANDLER(ID_EDIT_SEL1, OnEditSelLine)
 		COMMAND_ID_HANDLER(ID_EDIT_SEL2, OnEditSelLine)
 		COMMAND_ID_HANDLER(ID_EDIT_SELECTBOTH, OnEditSelLine)
+
+		COMMAND_ID_HANDLER(ID_CMD_OPENSHAPETOOL, OnOpenShapeTool)
 
 		COMMAND_ID_HANDLER(ID_DEBUG_DRAWVERTICES, OnDebugDrawVertices)
 		COMMAND_ID_HANDLER(ID_DEBUG_DISABLEPATHFILL, OnDebugDisablePathFill)
@@ -76,6 +78,8 @@ private:
 
 	LRESULT OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
+	LRESULT OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+
 	void UpdateMenu();
 
 	template <class T, typename ...U> void CManiaMainWnd::ApplyFx(U...);
@@ -84,5 +88,6 @@ private:
 	CToolBarCtrl			m_toolbar;
 	ColorSelectToolWnd		m_colorSelectToolWnd;
 	TextEditToolWnd			m_textEditToolWnd;
+	ShapeSelectToolWnd		m_shapeSelectToolWnd;
 	std::pair<bool,bool>	m_lineSelState = { true,true };
 };

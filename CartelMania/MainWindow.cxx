@@ -38,7 +38,9 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	TBBUTTON tbButtons[] =
 	{
 		{ MAKELONG(STD_FILENEW,  0),  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ MAKELONG(STD_FILESAVE,  0), ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 }
+		{ MAKELONG(STD_FILESAVE,  0), ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ MAKELONG(STD_FIND,      0), ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 }
+	
 	};
 	m_toolbar.SetButtonStructSize(sizeof(TBBUTTON));
 	m_toolbar.AddButtons(_countof(tbButtons), tbButtons);
@@ -219,8 +221,36 @@ LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOO
 	if (m_colorSelectToolWnd.m_hWnd == nullptr)
 		XASSERT(m_colorSelectToolWnd.Create(m_hWnd));
 
-	//m_colorSelectToolWnd.CenterWindow(m_hWnd);
 	m_colorSelectToolWnd.ShowWindow(SW_SHOWNA);
+	return 0L;
+}
+
+LRESULT CManiaMainWnd::OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	auto lastX = App()->GetSettings()->lastShapeEditToolPos.x;
+	auto lastY = App()->GetSettings()->lastShapeEditToolPos.y;
+	auto lastSizeX = App()->GetSettings()->lastShapeEditToolSize.x;
+	auto lastSizeY = App()->GetSettings()->lastShapeEditToolSize.y;
+
+	if (lastX == -1 && lastY == -1)
+	{
+		// Position defaults
+		lastX = 0;
+		lastY = 0;
+	}
+
+	if (lastSizeX == -1 && lastSizeY == -1)
+	{
+		// Size defaults
+		lastSizeX = 150;
+		lastSizeY = 275;
+	}
+
+	if (m_shapeSelectToolWnd.m_hWnd == nullptr)
+		XASSERT(m_shapeSelectToolWnd.Create(m_hWnd, RECT{ lastX,lastY,lastX + lastSizeX,lastY + lastSizeY }));
+
+	m_shapeSelectToolWnd.SetWindowPos(nullptr, lastX, lastY, lastSizeX, lastSizeY, SWP_NOZORDER);
+	m_shapeSelectToolWnd.ShowWindow(SW_SHOWNA);
 	return 0L;
 }
 

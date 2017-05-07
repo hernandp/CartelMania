@@ -66,13 +66,13 @@
     <ClInclude Include="ColorTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ShapeToolWnd.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="NamedTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="ShapeTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ShapeSelToolWnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -124,10 +124,10 @@
     <ClCompile Include="ColorTable.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShapeToolWnd.cxx">
+    <ClCompile Include="ShapeTable.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ShapeTable.cxx">
+    <ClCompile Include="ShapeSelToolWnd.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

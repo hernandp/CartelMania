@@ -229,7 +229,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ShapeToolWnd.cxx">
+    <ClCompile Include="ShapeSelToolWnd.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -269,7 +269,7 @@
     <ClInclude Include="MainWindow.h" />
     <ClInclude Include="NamedTable.h" />
     <ClInclude Include="ShapeTable.h" />
-    <ClInclude Include="ShapeToolWnd.h" />
+    <ClInclude Include="ShapeSelToolWnd.h" />
     <ClInclude Include="stdafx.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TextFx.h" />
