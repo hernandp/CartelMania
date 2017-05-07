@@ -16,6 +16,7 @@ public:
 	CManiaMainWnd*			GetMainWindow() const { return m_mainWindow.get(); }
 	Banner*					GetBanner() { return &m_banner; }
 	ColorTable*				GetColorTable() { return &m_colorTable; }
+	ShapeTable*				GetShapeTable() { return &m_shapeTable; }
 	const Gdiplus::Brush*	GetBrushFromColorTable(const std::wstring& name){ return m_colorTable.LookupName(name).get(); }
 	AppSettings*			GetSettings() { return &m_settings;  }
 	static CartelManiaApp*	Instance() { return s_appPtr;  }
