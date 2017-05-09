@@ -134,7 +134,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND h
 
 LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	App()->GetSettings()->disableSubdiv = !App()->GetSettings()->disableSubdiv;
+	App()->GetSettings()->debugDisableSubdiv = !App()->GetSettings()->debugDisableSubdiv;
 	App()->GetBanner()->Invalidate();
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
@@ -290,7 +290,7 @@ void CManiaMainWnd::UpdateMenu()
 		{
 			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, App()->GetSettings()->debugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
 			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL,App()->GetSettings()->debugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, App()->GetSettings()->disableSubdiv ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, App()->GetSettings()->debugDisableSubdiv ? MF_CHECKED : MF_UNCHECKED);
 		}
 	}
 }

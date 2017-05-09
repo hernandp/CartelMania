@@ -107,15 +107,15 @@ void TextFx::AlignScalePath(vector<GraphicsPath*> pathList, const RectF& lineRec
 
 	const REAL s = CalcAspectRatioToFit(maxBounds.Width, maxBounds.Height, lineRect.Width, lineRect.Height);	
 
-	Matrix mtx;
+	/*Matrix mtx;
 	mtx.Translate(lineRect.Width / 2.0f, lineRect.Height / 2.0f);
-	mtx.Scale(s, s);
-	mtx.Translate(-lineRect.Width / 2.0f, -lineRect.Height / 2.0f);
+	mtx.Scale(s, lineRect.Height / maxBounds.Height);
+	mtx.Translate(-lineRect.Width / 2.0f, -lineRect.Height / 2.0f);*/
 
 	for (const auto& path : pathList)
 	{
 		path->Transform(&vAlign);
-		path->Transform(&mtx);
+		//path->Transform(&mtx);
 	}
 }
 
@@ -133,9 +133,13 @@ void TextFx::AlignScalePath(vector<GraphicsPath*> pathList, const RectF& lineRec
 
 void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF& lineRect)
 {
-	auto path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc()));
-
+    auto path = line.GetPathCopy();
+	
+	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
 	AlignScalePath({ path.get() }, lineRect);
+
+	// Bounding rects
+		
 	DrawLineBackground(gr, lineRect);
 
 	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
@@ -148,6 +152,14 @@ void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF
 		DrawPathVertices(gr, *path);
 
 	gr.DrawPath(&Pen(App()->GetBrushFromColorTable(faceOutline), 1), path.get());
+
+	if (App()->GetSettings()->debugDrawBoundingRects)
+	{
+		RectF rcbPath;
+		path->GetBounds(&rcbPath);
+
+		gr.DrawRectangle(&Pen(Color::Red, 2), rcbPath);
+	}
 }
 
 //-----------------------------------------------------------------------------

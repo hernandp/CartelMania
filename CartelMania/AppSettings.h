@@ -12,7 +12,7 @@ public:
 	DWORD Save();
 	DWORD Load();
 
-	bool disableSubdiv;
+	bool debugDisableSubdiv = false;
 	bool debugDrawVertices = false;
 	bool debugDisableFillPath = false;
 	bool debugDrawBoundingRects = false;

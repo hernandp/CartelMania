@@ -51,16 +51,7 @@ void SubdivideLineAddTo(Gdiplus::REAL x0, Gdiplus::REAL y0, Gdiplus::REAL x1, Gd
 void SubdividePath(const Gdiplus::GraphicsPath& path, Gdiplus::GraphicsPath& newPath);
 // ---------------------------------------------------------------------------
 
-Gdiplus::GraphicsPath* ShapePath(const Gdiplus::GraphicsPath& path, const ShapeFunc& shapeFunc);
-
-// ---------------------------------------------------------------------------
-//
-//Gdiplus::GraphicsPath* NormalizePath(const Gdiplus::GraphicsPath& path,
-//	Gdiplus::REAL yMin, Gdiplus::REAL yMax, Gdiplus::REAL xMin = 0.0f,
-//	Gdiplus::REAL xMax = 0.0f)
-//{
-//
-//}
+Gdiplus::GraphicsPath* ShapePath(const Gdiplus::GraphicsPath& path, const ShapeFunc& shapeFunc, const Gdiplus::RectF& lineRect);
 
 // ---------------------------------------------------------------------------
 

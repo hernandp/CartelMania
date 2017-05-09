@@ -117,7 +117,8 @@ void SubdividePath(const GraphicsPath& path, GraphicsPath& newPath)
 	}
 }
 
-Gdiplus::GraphicsPath * ShapePath(const Gdiplus::GraphicsPath & path, const ShapeFunc& shapeFunc)
+Gdiplus::GraphicsPath * ShapePath(const Gdiplus::GraphicsPath & path, const ShapeFunc& shapeFunc,
+	const RectF& lineRect)
 {
 	//
 	// To shape the path, the entire banner rectangle is mapped to
@@ -133,51 +134,26 @@ Gdiplus::GraphicsPath * ShapePath(const Gdiplus::GraphicsPath & path, const Shap
 	//
 	// So, for every point p(x,y) in a path, p' is generated where:
 	//
-	// x = x 
-	// y'= lerp(y, f(x), g(x))
+	// x' = x 
+	// y' = lerp(f(x), g(x), y)
 	//
-
-	auto newPath = path.Clone();
+	// ** Path is returned in 0..1 normalized coordinates **
 
 	RectF bounds;
-	newPath->GetBounds(&bounds);
-
-	Matrix normX;	// matrix to normalize x and y to [0..1]
-	normX.Scale(1 / bounds.Width, 1 / bounds.Height);
-	newPath->Transform(&normX);
-
-	PathData pd;
-	newPath->GetPathData(&pd);
-
-	for (int i = 0; i < pd.Count; ++i)
-	{
-		pd.Points[i].Y += shapeFunc.topFunc(pd.Points[i].X);
-	}
-
-	delete newPath;
-	newPath = new GraphicsPath(pd.Points, pd.Types, pd.Count);
-
-	normX.Invert();
-	newPath->Transform(&normX);
-
-	return newPath;
-}
-
-// ---------------------------------------------------------------------------
-
-GraphicsPath* WarpPath(const GraphicsPath& path)
-{
 	PathData pd;
 	path.GetPathData(&pd);
-
-	RectF bounds;
 	path.GetBounds(&bounds);
 
 	for (int i = 0; i < pd.Count; ++i)
 	{
-		pd.Points[i].Y += 160 *  sinf((pd.Points[i].X / bounds.Width) * 2 * 3.14159f );
+		// Normalize points  & interpolate
+		pd.Points[i].X = (pd.Points[i].X - bounds.X)/ bounds.Width;
+		pd.Points[i].Y = (pd.Points[i].Y - bounds.Y)/ bounds.Height;
+		pd.Points[i].Y += Lerp(shapeFunc.topFunc(pd.Points[i].X), shapeFunc.bottomFunc(pd.Points[i].X), pd.Points[i].Y);
+		pd.Points[i].X *= bounds.Width;
+		pd.Points[i].Y *= bounds.Height;
 	}
-	
+
 	return new GraphicsPath(pd.Points, pd.Types, pd.Count);
 }
 
