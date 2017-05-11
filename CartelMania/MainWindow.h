@@ -7,6 +7,7 @@
 #include "ColorSelToolWnd.h"
 #include "TextEditToolWnd.h"
 #include "ShapeSelToolWnd.h"
+#include "PrintJobInfo.h"
 #include "resource.h"
 
 class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits>, public CDoubleBufferImpl<CManiaMainWnd>
@@ -43,6 +44,7 @@ public:
 		COMMAND_ID_HANDLER(ID_LAYOUT_SMALLOVERLARGE1, OnSelectLayout)
 		COMMAND_ID_HANDLER(ID_LAYOUT_SMALLOVERLARGE2, OnSelectLayout)
 		COMMAND_ID_HANDLER(ID_LAYOUT_SMALLOVERLARGE3, OnSelectLayout)
+		COMMAND_ID_HANDLER(ID_LAYOUT_SCALETOFIT, OnLayoutScaleToFit)
 
 		COMMAND_ID_HANDLER(ID_FX_BLOCK, OnSelectFx)
 		COMMAND_ID_HANDLER(ID_FX_SOLID, OnSelectFx)
@@ -53,13 +55,17 @@ public:
 
 		COMMAND_ID_HANDLER(ID_COLOR_OPEN, OnColorOpen)
 
+		COMMAND_ID_HANDLER(ID_CMD_PRINT, OnPrint)
+		COMMAND_ID_HANDLER(ID_CMD_PRINTPRE, OnPrintPreview)
 		REFLECT_NOTIFICATIONS_EX()
 	END_MSG_MAP()
 
-	std::pair<bool, bool> GetLineSelState() const { return m_lineSelState;  }
-
+	std::pair<bool, bool>	GetLineSelState() const { return m_lineSelState;  }
 private:
 	void	DoPaint(CDCHandle hDC);
+	void	DrawSelectionMark(Gdiplus::Graphics & gr, const Gdiplus::RectF & rect);
+	void	DrawClientArea(CDCHandle hDC);
+
 	LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
@@ -75,10 +81,14 @@ private:
 
 	LRESULT OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+	LRESULT OnLayoutScaleToFit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
 	LRESULT OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
 	LRESULT OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+
+	LRESULT OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	void UpdateMenu();
 
@@ -89,5 +99,7 @@ private:
 	ColorSelectToolWnd		m_colorSelectToolWnd;
 	TextEditToolWnd			m_textEditToolWnd;
 	ShapeSelectToolWnd		m_shapeSelectToolWnd;
+	CmPrintJobInfo			m_printJobInfo;
 	std::pair<bool,bool>	m_lineSelState = { true,true };
+	
 };

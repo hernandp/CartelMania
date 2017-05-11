@@ -31,6 +31,12 @@ enum class BannerLayout
 	LargeOverSmall3
 };
 
+enum class ScalePolicy
+{
+	ScaleToFit,
+	KeepAspect
+};
+
 // Returns true if both layouts contain the same number of lines
 //
 inline bool AreCompatibleLayouts(BannerLayout l1, BannerLayout l2)
@@ -67,22 +73,27 @@ class Banner
 public:
 	Banner();
 	~Banner();
-	
-	BannerLine* GetTopLine() const {	return m_topLine.get();	}
-	BannerLine* GetBottomLine() const { return m_bottomLine.get(); }
-	BannerLayout GetLayout() const { return m_layout;  }
-	const std::wstring& GetShapeName() const { return m_shapeName;  }
-	void SetShapeName(const std::wstring& name) { m_shapeName = name;  }
-	void SetLayout(BannerLayout layout) { m_layout = layout;  }
-	void PaintOn(HDC hdc, const LPRECT rcClient);
-	void Invalidate();
+
+	BannerLine*		GetTopLine() const { return m_topLine.get(); }
+	BannerLine*		GetBottomLine() const { return m_bottomLine.get(); }
+	BannerLayout	GetLayout() const { return m_layout; }
+	const std::wstring& GetShapeName() const { return m_shapeName; }
+	void			SetShapeName(const std::wstring& name) { m_shapeName = name; }
+	void			SetLayout(BannerLayout layout) { m_layout = layout; }
+	void			SetScalePolicy(ScalePolicy sp) { m_scalePolicy = sp; }
+	ScalePolicy		GetScalePolicy() const { return m_scalePolicy; }
+	void			PaintOn(HDC hdc, const LPRECT rcClient);
+	void			Invalidate();
+	Gdiplus::RectF	GetRect(const Gdiplus::RectF& clientArea) const;
+	Gdiplus::RectF  GetRect(const LPRECT) const;
+	void			GetLineRects(const Gdiplus::RectF& bannerRect, Gdiplus::RectF& line1, Gdiplus::RectF& line2) const;
 
 private:
-	void DrawSelectionMark(Gdiplus::Graphics & gr, const Gdiplus::RectF& bannerRect);
 	void BuildPaths();
 
 	BannerLayout								m_layout;
 	std::wstring								m_shapeName;
 	std::unique_ptr<BannerLine>					m_topLine;
 	std::unique_ptr<BannerLine>					m_bottomLine;
+	ScalePolicy									m_scalePolicy;
 };

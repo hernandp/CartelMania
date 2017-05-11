@@ -32,7 +32,7 @@ DWORD AppSettings::Save()
 		PackDWORDs(regKey, L"lastShapeEditToolSize", lastShapeEditToolSize.x, lastShapeEditToolSize.y);
 		regKey.Close();
 	}
-	return lr;
+	return (DWORD) lr;
 }
 
 DWORD AppSettings::Load()
@@ -47,5 +47,5 @@ DWORD AppSettings::Load()
 		UnpackDWORDs(regKey, L"lastShapeEditToolSize", lastShapeEditToolSize.x, lastShapeEditToolSize.y);
 		regKey.Close();
 	}
-	return lr;
+	return (DWORD) lr;
 }

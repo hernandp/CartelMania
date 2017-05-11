@@ -39,8 +39,9 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	{
 		{ MAKELONG(STD_FILENEW,  0),  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_FILESAVE,  0), ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ MAKELONG(STD_FIND,      0), ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 }
-	
+		{ MAKELONG(STD_FIND,      0), ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ MAKELONG(STD_PRINTPRE,  0), ID_CMD_PRINTPRE, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ MAKELONG(STD_PRINT,     0), ID_CMD_PRINT, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 }	
 	};
 	m_toolbar.SetButtonStructSize(sizeof(TBBUTTON));
 	m_toolbar.AddButtons(_countof(tbButtons), tbButtons);
@@ -52,9 +53,89 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 
 void CManiaMainWnd::DoPaint(CDCHandle hDC)
 {	
+	DrawClientArea(hDC);
+
 	RECT rc;
 	GetClientRect(&rc);
-	App()->GetBanner()->PaintOn(hDC, &rc);
+
+	auto banner = App()->GetBanner();
+	banner->PaintOn(hDC, &rc);
+
+	// Selection marks
+	//
+	Gdiplus::Graphics gr(hDC);
+
+	Gdiplus::RectF line1Rect, line2Rect;
+	banner->GetLineRects(banner->GetRect(&rc), line1Rect, line2Rect);
+
+	gr.TranslateTransform(rc.left + BANNER_MARGIN_PX / 2, (rc.bottom-rc.top) / 2.0f - banner->GetRect(&rc).Height / 2.0f);
+
+	if (App()->GetMainWindow()->GetLineSelState().first || App()->GetBanner()->GetLayout() == BannerLayout::SingleLine)
+		DrawSelectionMark(gr, line1Rect);
+
+	if (App()->GetMainWindow()->GetLineSelState().second && App()->GetBanner()->GetLayout() != BannerLayout::SingleLine)
+	{
+		gr.TranslateTransform(0, line1Rect.Height);
+		DrawSelectionMark(gr, line2Rect);
+	}
+}
+
+void CManiaMainWnd::DrawSelectionMark(Gdiplus::Graphics &gr, const Gdiplus::RectF& rect)
+{
+	const Gdiplus::Pen selMarkerPen(Gdiplus::Color::Green, 3);
+	const float margin_L = 8.0f;
+	const float margin_R = 8.0f;
+	const float margin_T = 8.0f;
+	const float margin_B = 8.0f;
+	const float bracket_len = 24.0f;
+
+	Gdiplus::PointF bracketL[]{
+		{bracket_len,margin_L},
+		{margin_L,margin_T},
+		{margin_L, rect.Height - margin_B},
+		{ bracket_len, rect.Height - margin_B } };
+
+	Gdiplus::PointF bracketR[]{
+		{ rect.Width - margin_R - bracket_len, margin_T },
+		{ rect.Width - margin_R , margin_T },
+		{ rect.Width - margin_R, rect.Height - margin_B},
+		{ rect.Width - margin_R - bracket_len, rect.Height - margin_B }
+	};
+
+	gr.DrawLines(&selMarkerPen, bracketL, _countof(bracketL));
+	gr.DrawLines(&selMarkerPen, bracketR, _countof(bracketR));
+}
+
+void CManiaMainWnd::DrawClientArea(CDCHandle hDC)
+{
+	RECT rc;
+	GetClientRect(&rc);
+
+	const Gdiplus::RectF rcClientArea((float) rc.left, (float) rc.top, float(rc.right - rc.left), float(rc.bottom - rc.top));
+	Gdiplus::Graphics gr(hDC);
+
+	// Background
+
+	gr.FillRectangle(&Gdiplus::HatchBrush(Gdiplus::HatchStyle10Percent, Gdiplus::Color::Blue, Gdiplus::Color::DarkCyan), rcClientArea);
+	
+
+	// Transform coordinate space.
+	// Banner area spans over 100% width minus borders, and 50% height, of the window client area.
+	// Origin of drawing is set to the upper-left corner of the banner, with Y+ pointing down, X+ pointing left.
+	// We still use pixel units, however.
+	//
+	const Gdiplus::RectF bannerRect(0, 0, rcClientArea.Width - BANNER_MARGIN_PX,
+		rcClientArea.Height * BANNER_HEIGHT_PCT / 100.0f);
+
+	gr.TranslateTransform(rcClientArea.X + BANNER_MARGIN_PX / 2, rcClientArea.Height / 2.0f - bannerRect.Height / 2.0f);
+	gr.FillRectangle(&Gdiplus::SolidBrush(Gdiplus::Color::White), bannerRect);
+
+	// Draw banner page and shadow
+
+	Gdiplus::RectF bannerShadowRect = bannerRect;
+	bannerShadowRect.Offset(4.0f, 4.0f);
+	gr.FillRectangle(&Gdiplus::SolidBrush(Gdiplus::Color::Black), bannerShadowRect);
+	gr.DrawRectangle(&Gdiplus::Pen(Gdiplus::Color::Black), bannerRect);
 }
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
@@ -206,6 +287,12 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 	return 0L;
 }
 
+LRESULT CManiaMainWnd::OnLayoutScaleToFit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	App()->GetBanner()->SetScalePolicy(ScalePolicy::ScaleToFit);
+	return 0;
+}
+
 template <class T, typename ...U> 
 void CManiaMainWnd::ApplyFx(U... v)
 {
@@ -251,6 +338,30 @@ LRESULT CManiaMainWnd::OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 
 	m_shapeSelectToolWnd.SetWindowPos(nullptr, lastX, lastY, lastSizeX, lastSizeY, SWP_NOZORDER);
 	m_shapeSelectToolWnd.ShowWindow(SW_SHOWNA);
+	return 0L;
+}
+
+
+LRESULT CManiaMainWnd::OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+	CPrintJob job;
+	CPrintDialogEx printDlg;
+	printDlg.DoModal();
+
+	CPrinter printer;
+	if (printer.OpenPrinterW(printDlg.GetDeviceName(), printDlg.GetDevMode()))
+	{
+		job.StartPrintJob(false, printer.m_hPrinter, printDlg.GetDevMode(), &m_printJobInfo, L"xxx", 0, 0);
+	}
+	return 0L;
+}
+
+LRESULT CManiaMainWnd::OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+	CPrintPreviewWindow prnPreWnd;
+	
+	//prnPreWnd.SetEnhMetaFile(hEmf);
+	
 	return 0L;
 }
 

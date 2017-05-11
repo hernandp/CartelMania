@@ -104,18 +104,26 @@ void TextFx::AlignScalePath(vector<GraphicsPath*> pathList, const RectF& lineRec
 			// to-do ?
 			break;
 	}
+	Matrix mScale;
+	switch (App()->GetBanner()->GetScalePolicy())
+	{
+		case  ScalePolicy::KeepAspect:
+		
+			break;
+
+		case ScalePolicy::ScaleToFit:
+			mScale.Translate(lineRect.Width / 2.0f, lineRect.Height / 2.0f);
+			mScale.Scale(lineRect.Width / maxBounds.Width, lineRect.Height / maxBounds.Height);
+			mScale.Translate(-lineRect.Width / 2.0f, -lineRect.Height / 2.0f);
+			break;
+	}
 
 	const REAL s = CalcAspectRatioToFit(maxBounds.Width, maxBounds.Height, lineRect.Width, lineRect.Height);	
-
-	/*Matrix mtx;
-	mtx.Translate(lineRect.Width / 2.0f, lineRect.Height / 2.0f);
-	mtx.Scale(s, lineRect.Height / maxBounds.Height);
-	mtx.Translate(-lineRect.Width / 2.0f, -lineRect.Height / 2.0f);*/
 
 	for (const auto& path : pathList)
 	{
 		path->Transform(&vAlign);
-		//path->Transform(&mtx);
+		path->Transform(&mScale);
 	}
 }
 

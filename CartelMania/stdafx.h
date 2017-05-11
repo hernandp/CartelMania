@@ -13,6 +13,8 @@
 //
 #include <atlbase.h>
 #include <atlwin.h>
+#include <atlapp.h>
+#include <atlprint.h>
 
 // C/C++ headers
 //
