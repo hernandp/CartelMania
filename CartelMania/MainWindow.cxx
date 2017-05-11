@@ -358,7 +358,17 @@ LRESULT CManiaMainWnd::OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 
 LRESULT CManiaMainWnd::OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	CPrintPreviewWindow prnPreWnd;
+	CPrintDialogEx printDlg;
+	printDlg.DoModal();
+	CPrinter printer;
+	if (printer.OpenPrinterW(printDlg.GetDeviceName(), printDlg.GetDevMode()))
+	{
+		CPrintPreviewWindow* prnPreWnd = new CPrintPreviewWindow;
+		prnPreWnd->SetPrintPreviewInfo(printer, printDlg.GetDevMode(), &m_printJobInfo, 0, 0);
+		prnPreWnd->SetPage(0);
+		XASSERT(prnPreWnd->Create(*this, rcDefault, L"Print Preview", WS_OVERLAPPEDWINDOW, WS_EX_CLIENTEDGE));
+		prnPreWnd->ShowWindow(SW_SHOWNORMAL);
+	}
 	
 	//prnPreWnd.SetEnhMetaFile(hEmf);
 	
