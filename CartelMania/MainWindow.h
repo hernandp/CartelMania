@@ -3,6 +3,7 @@
 #include <atlwin.h>
 #include <atlapp.h>
 #include <atlctrls.h>
+#include <atlctrlx.h>
 #include <atldlgs.h>
 #include "ColorSelToolWnd.h"
 #include "TextEditToolWnd.h"
@@ -22,6 +23,7 @@ public:
 		MESSAGE_HANDLER(WM_CLOSE, OnClose)
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
+		MESSAGE_HANDLER(WM_SIZE, OnSize)
 		COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
 
 		COMMAND_ID_HANDLER(ID_CMD_EDITTEXT, OnEditText)
@@ -57,18 +59,25 @@ public:
 
 		COMMAND_ID_HANDLER(ID_CMD_PRINT, OnPrint)
 		COMMAND_ID_HANDLER(ID_CMD_PRINTPRE, OnPrintPreview)
+		COMMAND_ID_HANDLER(ID_CMD_PAGESETUP, OnPageSetup)
 		REFLECT_NOTIFICATIONS_EX()
 	END_MSG_MAP()
 
 	std::pair<bool, bool>	GetLineSelState() const { return m_lineSelState;  }
+
+	int GetClientRect(_Out_ LPRECT lpRect) const;
+
 private:
 	void	DoPaint(CDCHandle hDC);
 	void	DrawSelectionMark(Gdiplus::Graphics & gr, const Gdiplus::RectF & rect);
+	void	DoPageSetupDialog();
 	void	DrawClientArea(CDCHandle hDC);
+	bool	GetPageDisplayAreaRect(RECT*);
 
 	LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+	LRESULT OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 
 	LRESULT OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnFileExit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -89,6 +98,7 @@ private:
 
 	LRESULT OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnPageSetup(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	void UpdateMenu();
 
@@ -99,7 +109,9 @@ private:
 	ColorSelectToolWnd		m_colorSelectToolWnd;
 	TextEditToolWnd			m_textEditToolWnd;
 	ShapeSelectToolWnd		m_shapeSelectToolWnd;
+	CPrinter				m_printer;
 	CmPrintJobInfo			m_printJobInfo;
+	CStatusBarCtrl			m_statusBar;
 	std::pair<bool,bool>	m_lineSelState = { true,true };
 	
 };

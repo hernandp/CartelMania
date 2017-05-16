@@ -39,7 +39,7 @@ int CmColorComboBox::OnCreate(LPCREATESTRUCT lps)
 {
 	LRESULT lr = DefWindowProc();
 
-	for (size_t i = 0; i < App()->GetColorTable()->GetCount(); ++i)
+	for (int i = 0; i < App()->GetColorTable()->GetCount(); ++i)
 	{
 		AddString(App()->GetColorTable()->NameAt(i).c_str());
 	}

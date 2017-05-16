@@ -27,9 +27,9 @@ public:
 		return ret->second;
 	}
 
-	size_t GetCount() const
+	int GetCount() const
 	{
-		return m_table.size();
+		return (int) m_table.size();
 	}
 
 	const auto&  At(int index)

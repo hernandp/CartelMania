@@ -67,7 +67,7 @@ const std::map<BannerLayout, std::pair<float, float>> g_proportionTable =
 	{BannerLayout::SmallOverLarge2, std::make_pair(0.333333f, 0.666666f)},
 	{BannerLayout::SmallOverLarge3, std::make_pair(0.25f, 0.75f)}
 };
-class CManiaMainWnd;
+
 class Banner
 {
 public:
@@ -77,21 +77,25 @@ public:
 	BannerLine*		GetTopLine() const { return m_topLine.get(); }
 	BannerLine*		GetBottomLine() const { return m_bottomLine.get(); }
 	BannerLayout	GetLayout() const { return m_layout; }
+	void			SetLayout(BannerLayout layout) { m_layout = layout; }
 	const std::wstring& GetShapeName() const { return m_shapeName; }
 	void			SetShapeName(const std::wstring& name) { m_shapeName = name; }
-	void			SetLayout(BannerLayout layout) { m_layout = layout; }
 	void			SetScalePolicy(ScalePolicy sp) { m_scalePolicy = sp; }
 	ScalePolicy		GetScalePolicy() const { return m_scalePolicy; }
 	void			PaintOn(HDC hdc, const LPRECT rcClient);
 	void			Invalidate();
 	Gdiplus::RectF	GetRect(const Gdiplus::RectF& clientArea) const;
 	Gdiplus::RectF  GetRect(const LPRECT) const;
+	Gdiplus::Size	GetSizeMm() const { return m_size;  }
+	void			SetSizeMm(const Gdiplus::Size& size) { m_size = size;  }
+	Gdiplus::Size	CalcPrintOutputPageCount(const Gdiplus::Size& paperSize);
 	void			GetLineRects(const Gdiplus::RectF& bannerRect, Gdiplus::RectF& line1, Gdiplus::RectF& line2) const;
 
 private:
 	void BuildPaths();
 
 	BannerLayout								m_layout;
+	Gdiplus::Size								m_size;
 	std::wstring								m_shapeName;
 	std::unique_ptr<BannerLine>					m_topLine;
 	std::unique_ptr<BannerLine>					m_bottomLine;

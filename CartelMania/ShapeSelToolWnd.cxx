@@ -12,7 +12,7 @@ void ShapeSelectToolWnd::CreateControls()
 	const auto shapeTable = App()->GetShapeTable();
 	lb.Create(m_hWnd, rcDefault, 0, WS_CHILD | LBS_NOTIFY | WS_BORDER | WS_VSCROLL | WS_VISIBLE);
 
-	for (size_t i = 0; i < shapeTable->GetCount(); ++i)
+	for (int i = 0; i < shapeTable->GetCount(); ++i)
 	{
 		lb.AddString(shapeTable->NameAt(i).c_str());
 	}

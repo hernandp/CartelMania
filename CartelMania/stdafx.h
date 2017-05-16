@@ -24,3 +24,4 @@
 #include <map>
 #include <array>
 #include <limits>
+#include <stdexcept>

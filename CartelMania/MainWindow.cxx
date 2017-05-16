@@ -10,6 +10,7 @@
 #include "ColorComboBox.h"
 #include "colorTable.h"
 #include "CartelManiaApp.h"
+#include "Geometry.h"
 
 using namespace std;
 
@@ -29,8 +30,9 @@ LRESULT CManiaMainWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &
 
 LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
-	XASSERT(m_imgList.Create(24,24, ILC_COLOR16|ILC_MASK, 10, 10));
-	XASSERT(m_toolbar.Create(*this, 0, nullptr, WS_VISIBLE | WS_CHILD));
+	XASSERT(m_statusBar.Create(*this, rcDefault, NULL, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, NULL, IDC_STATUSBAR));
+	XASSERT(m_imgList.Create(24,24, ILC_COLOR16 | ILC_MASK, 10, 10));
+	XASSERT(m_toolbar.Create(*this, 0, nullptr, WS_VISIBLE | WS_CHILD, TBSTYLE_FLAT, IDC_TOOLBAR));
 	m_toolbar.SetImageList(m_imgList, 0);
 	m_toolbar.LoadStdImages(IDB_STD_LARGE_COLOR);
 	 
@@ -40,15 +42,37 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 		{ MAKELONG(STD_FILENEW,  0),  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_FILESAVE,  0), ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_FIND,      0), ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ MAKELONG(0       ,      0), NULL, NULL, TBSTYLE_SEP, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINTPRE,  0), ID_CMD_PRINTPRE, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ MAKELONG(STD_PRINT,     0), ID_CMD_PRINT, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 }	
+		{ MAKELONG(STD_PRINT,     0), ID_CMD_PRINT, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ MAKELONG(STD_PRINT,     0), ID_CMD_PAGESETUP, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 }
 	};
 	m_toolbar.SetButtonStructSize(sizeof(TBBUTTON));
 	m_toolbar.AddButtons(_countof(tbButtons), tbButtons);
 	m_toolbar.AutoSize();
 
 	UpdateMenu();
+
+	//UpdateBannerSize();
+
 	return 1L;
+}
+
+LRESULT CManiaMainWnd::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+{
+	m_toolbar.SendMessageW(WM_SIZE, wParam, lParam);
+	m_statusBar.SendMessageW(WM_SIZE, wParam, lParam);
+	return 0L;
+}
+
+int CManiaMainWnd::GetClientRect(_Out_ LPRECT lpRect) const
+{	
+	int info[] = { 1, 0, 
+		1, IDC_TOOLBAR, 
+		1, IDC_STATUSBAR, 
+		0, 0 };
+	GetEffectiveClientRect(m_hWnd, lpRect, info);
+	return TRUE;
 }
 
 void CManiaMainWnd::DoPaint(CDCHandle hDC)
@@ -56,7 +80,7 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 	DrawClientArea(hDC);
 
 	RECT rc;
-	GetClientRect(&rc);
+	GetPageDisplayAreaRect(&rc);
 
 	auto banner = App()->GetBanner();
 	banner->PaintOn(hDC, &rc);
@@ -68,7 +92,7 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 	Gdiplus::RectF line1Rect, line2Rect;
 	banner->GetLineRects(banner->GetRect(&rc), line1Rect, line2Rect);
 
-	gr.TranslateTransform(rc.left + BANNER_MARGIN_PX / 2, (rc.bottom-rc.top) / 2.0f - banner->GetRect(&rc).Height / 2.0f);
+	//gr.TranslateTransform(rc.left + BANNER_MARGIN_PX / 2, (rc.bottom-rc.top) / 2.0f - banner->GetRect(&rc).Height / 2.0f);
 
 	if (App()->GetMainWindow()->GetLineSelState().first || App()->GetBanner()->GetLayout() == BannerLayout::SingleLine)
 		DrawSelectionMark(gr, line1Rect);
@@ -106,36 +130,108 @@ void CManiaMainWnd::DrawSelectionMark(Gdiplus::Graphics &gr, const Gdiplus::Rect
 	gr.DrawLines(&selMarkerPen, bracketR, _countof(bracketR));
 }
 
+void CManiaMainWnd::DoPageSetupDialog()
+{
+	CPageSetupDialog psDlg(PSD_INTHOUSANDTHSOFINCHES);
+	if (psDlg.DoModal() == IDOK)
+	{
+		psDlg.GetPaperSize();
+
+		/*DEVMODE* pDevMode = psDlg.GetDevMode();
+		if (pDevMode)
+		{
+			CDevMode dm(pDevMode);
+			dm.m_pDevMode->dmS
+		}
+
+		psDlg.GetPaperSize();*/
+	}
+}
+
+bool CManiaMainWnd::GetPageDisplayAreaRect(RECT* lpRect)
+{
+	Gdiplus::Size paperSize = App()->GetPaperSize();
+	if (paperSize.Empty())
+	{
+		return false;
+	}
+
+	const Gdiplus::Size bannerSize = App()->GetBanner()->GetSizeMm();
+	Gdiplus::RectF pageRect(0, 0, float(bannerSize.Width), float(bannerSize.Height));
+
+	// Adjust the preliminary rect to ratio to fill window client area
+	CRect rcClient;
+	GetClientRect(&rcClient);
+	const Gdiplus::RectF rcClientArea((float) rcClient.left, (float) rcClient.top, float(rcClient.Width()), float(rcClient.Height()));
+
+	const float bannerRectRatio = CalcAspectRatioToFit((float) bannerSize.Width, (float) bannerSize.Height,
+		rcClientArea.Width, rcClientArea.Height);
+
+	//const int cxRulerTop = int(14.0f * gr.GetDpiY() / 72.0f);
+	pageRect.Height *= bannerRectRatio;
+	pageRect.Width *= bannerRectRatio;
+	pageRect.X = (rcClient.Width() / 2) - (pageRect.Width / 2);
+	pageRect.Y = rcClient.top + (rcClient.Height() / 2) - (pageRect.Height / 2);
+
+	lpRect->top = (LONG)pageRect.Y;
+	lpRect->left =(LONG) pageRect.X;
+	lpRect->bottom = LONG(pageRect.Y + pageRect.Height);
+	lpRect->right = LONG(pageRect.X + pageRect.Width);
+
+	return true;
+}
+
 void CManiaMainWnd::DrawClientArea(CDCHandle hDC)
 {
-	RECT rc;
-	GetClientRect(&rc);
-
-	const Gdiplus::RectF rcClientArea((float) rc.left, (float) rc.top, float(rc.right - rc.left), float(rc.bottom - rc.top));
 	Gdiplus::Graphics gr(hDC);
+	CRect rcClient;
+
+	GetClientRect(&rcClient);
+	const Gdiplus::RectF rcClientArea((float) rcClient.left, (float) rcClient.top, float(rcClient.Width()), float(rcClient.Height()));
 
 	// Background
 
-	gr.FillRectangle(&Gdiplus::HatchBrush(Gdiplus::HatchStyle10Percent, Gdiplus::Color::Blue, Gdiplus::Color::DarkCyan), rcClientArea);
+	gr.FillRectangle(&Gdiplus::LinearGradientBrush(rcClientArea,
+		Gdiplus::Color::DarkSlateBlue,
+		Gdiplus::Color::DarkCyan,
+		Gdiplus::LinearGradientModeVertical), rcClientArea);
+
+	// Get current page size
+		
+	CRect rcPageDA;
+	if (!GetPageDisplayAreaRect(&rcPageDA))
+	{
+		MessageBox(L"Cannot determine the current printer page size.\n\nPress Ok to select your page configuration.");
+		DoPageSetupDialog();
+	}
+
+	// Draw banner WYSIWYG client area, keeping banner length and width aspect ratio.
+
+	Gdiplus::Font rulerFont(&Gdiplus::FontFamily(L"Arial"), 14);
+
+	// Draw page+shadow
+	
+	CRect pageShadow = rcPageDA;
+	pageShadow.OffsetRect(1, 1);
+
+	for (int i = 0; i < 16; ++i)
+	{
+		pageShadow.OffsetRect(16 - i, 16 - i);
+		gr.DrawLine(&Gdiplus::Pen(Gdiplus::Color(i * (256 / 16), 0, 0, 0)),
+			Gdiplus::Point(rcPageDA.left + rcPageDA.Width() + 16 - i, rcPageDA.top + 16 - i),
+			Gdiplus::Point(rcPageDA.left + rcPageDA.Width() + 16 - i, rcPageDA.top + rcPageDA.Height() + 16 - i));
+	}
+
+	gr.FillRectangle(&Gdiplus::SolidBrush(Gdiplus::Color::White),
+		Gdiplus::Rect(rcPageDA.left, rcPageDA.top, rcPageDA.Width(), rcPageDA.Height()));
+
+	// Draw Dimensions
+
 	
 
-	// Transform coordinate space.
-	// Banner area spans over 100% width minus borders, and 50% height, of the window client area.
-	// Origin of drawing is set to the upper-left corner of the banner, with Y+ pointing down, X+ pointing left.
-	// We still use pixel units, however.
-	//
-	const Gdiplus::RectF bannerRect(0, 0, rcClientArea.Width - BANNER_MARGIN_PX,
-		rcClientArea.Height * BANNER_HEIGHT_PCT / 100.0f);
-
-	gr.TranslateTransform(rcClientArea.X + BANNER_MARGIN_PX / 2, rcClientArea.Height / 2.0f - bannerRect.Height / 2.0f);
-	gr.FillRectangle(&Gdiplus::SolidBrush(Gdiplus::Color::White), bannerRect);
-
-	// Draw banner page and shadow
-
-	Gdiplus::RectF bannerShadowRect = bannerRect;
-	bannerShadowRect.Offset(4.0f, 4.0f);
-	gr.FillRectangle(&Gdiplus::SolidBrush(Gdiplus::Color::Black), bannerShadowRect);
-	gr.DrawRectangle(&Gdiplus::Pen(Gdiplus::Color::Black), bannerRect);
+	// Transform the graphics coordinate space to begin at the top-left corner
+	
+	//gr.TranslateTransform(bannerRect.X, bannerRect.Y);	
 }
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
@@ -341,7 +437,6 @@ LRESULT CManiaMainWnd::OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 	return 0L;
 }
 
-
 LRESULT CManiaMainWnd::OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
 	CPrintJob job;
@@ -368,11 +463,15 @@ LRESULT CManiaMainWnd::OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 		prnPreWnd->SetPage(0);
 		XASSERT(prnPreWnd->Create(*this, rcDefault, L"Print Preview", WS_OVERLAPPEDWINDOW, WS_EX_CLIENTEDGE));
 		prnPreWnd->ShowWindow(SW_SHOWNORMAL);
-	}
-	
-	//prnPreWnd.SetEnhMetaFile(hEmf);
-	
+	}	
 	return 0L;
+}
+
+LRESULT CManiaMainWnd::OnPageSetup(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+	CPageSetupDialog pageSetupDlg;
+	pageSetupDlg.DoModal();
+	return 0L;	
 }
 
 // ---------------------------------------------------------------------------

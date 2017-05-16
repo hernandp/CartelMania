@@ -13,11 +13,13 @@ using namespace std;
 
 Banner::Banner() :
 m_layout(BannerLayout::SingleLine),
+m_size(0,0),
 m_shapeName(L"Rectangle"),
 m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
 m_bottomLine(make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
 m_scalePolicy(ScalePolicy::ScaleToFit)
-{
+{	
+	
 }
 //----------------------------------------------------------------------------
 
@@ -70,6 +72,12 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 		gr.TranslateTransform(0, line1Rect.Height);
 		m_bottomLine->DrawOn(gr, line2Rect);
 	}		
+}
+
+inline Gdiplus::Size Banner::CalcPrintOutputPageCount(const Gdiplus::Size & paperSize)
+{
+	return Size((int) ceilf((float)paperSize.Height / m_size.Height), 
+		(int) ceilf((float)paperSize.Width / m_size.Width));
 }
 
 void Banner::GetLineRects(const RectF& bannerRect, RectF& rcLine1, RectF& rcLine2) const
