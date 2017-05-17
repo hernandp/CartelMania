@@ -22,8 +22,48 @@ BOOL LayoutSetupToolWnd::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	StringCchPrintf(vFillText, 10, L"%d%%", banner->GetVerticalFill());
 	SetDlgItemText(IDC_HORZFILL_TEXT, hFillText);
 	SetDlgItemText(IDC_VERTFILL_TEXT, vFillText);
-
+	SetupAlignComboCtls();
+	UpdatePrintPageCountUI();
 	return TRUE;
+}
+
+void LayoutSetupToolWnd::SetupAlignComboCtls()
+{
+	auto banner = App()->GetBanner();
+	CComboBox cboVAlign, cboHAlign;
+	cboVAlign.Attach(GetDlgItem(IDC_VALIGN));
+	cboHAlign.Attach(GetDlgItem(IDC_HALIGN));
+
+	cboVAlign.AddString(L"Top");
+	cboVAlign.AddString(L"Center");
+	cboVAlign.AddString(L"Bottom");
+	cboVAlign.SetItemData(0, (DWORD_PTR) BannerVerticalAlignment::Top);
+	cboVAlign.SetItemData(1, (DWORD_PTR) BannerVerticalAlignment::Center);
+	cboVAlign.SetItemData(2, (DWORD_PTR) BannerVerticalAlignment::Bottom);
+
+	cboHAlign.AddString(L"Left");
+	cboHAlign.AddString(L"Center");
+	cboHAlign.AddString(L"Right");
+	cboHAlign.SetItemData(0, (DWORD_PTR) BannerHorizontalAlignment::Left);
+	cboHAlign.SetItemData(1, (DWORD_PTR) BannerHorizontalAlignment::Center);
+	cboHAlign.SetItemData(2, (DWORD_PTR) BannerHorizontalAlignment::Right);
+
+	for (int i = 0; i < cboVAlign.GetCount(); i++)
+	{
+		if ((BannerVerticalAlignment) cboVAlign.GetItemData(i) == banner->GetVerticalAlignment())
+			cboVAlign.SetCurSel(i);
+	}
+
+	for (int i = 0; i < cboHAlign.GetCount(); i++)
+	{
+		if ((BannerHorizontalAlignment) cboVAlign.GetItemData(i) == banner->GetHorizontalAlignment())
+			cboHAlign.SetCurSel(i);
+	}
+}
+
+void LayoutSetupToolWnd::UpdatePrintPageCountUI()
+{
+
 }
 
 void LayoutSetupToolWnd::OnMove(CPoint pos)
@@ -42,7 +82,6 @@ void LayoutSetupToolWnd::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBa
 		case IDC_HORZFILL:
 		case IDC_VERTFILL:
 		{
-			auto banner = App()->GetBanner();
 			wchar_t hFillText[10], vFillText[10];
 			StringCchPrintf(hFillText, 10, L"%d%%", m_horzFillTrackbar.GetPos());
 			StringCchPrintf(vFillText, 10, L"%d%%", m_vertFillTrackbar.GetPos());
@@ -51,4 +90,28 @@ void LayoutSetupToolWnd::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBa
 		}
 		break;
 	}
+}
+
+LRESULT LayoutSetupToolWnd::OnApply(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	auto banner = App()->GetBanner();
+
+	// Validate first
+
+	// Set and request redraw
+	CComboBox cboVAlign, cboHAlign;
+	cboVAlign.Attach(GetDlgItem(IDC_VALIGN));
+	cboHAlign.Attach(GetDlgItem(IDC_HALIGN));
+
+	banner->SetSizeMm(Gdiplus::Size(GetDlgItemInt(IDC_BANNERWIDTH), GetDlgItemInt(IDC_BANNERHEIGHT)));
+	banner->SetVerticalAlignment(static_cast<BannerVerticalAlignment>
+		(cboVAlign.GetItemData(cboVAlign.GetCurSel())));
+	banner->SetHorizontalAlignment(static_cast<BannerHorizontalAlignment>
+		(cboHAlign.GetItemData(cboHAlign.GetCurSel())));
+	banner->SetHorizontalFill(m_horzFillTrackbar.GetPos());
+	banner->SetVerticalFill(m_vertFillTrackbar.GetPos());
+
+	banner->Redraw();
+
+	return 0;
 }

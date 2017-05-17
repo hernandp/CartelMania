@@ -121,7 +121,7 @@ LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 			App()->GetBanner()->GetTopLine()->GetTextFx()->SetColorPropertyValue(colorPropClass, colorValue);
 		}
 
-		App()->GetBanner()->Invalidate();
+		App()->GetBanner()->RegenPathAndRedraw();
 	}
 
 	return 0L;

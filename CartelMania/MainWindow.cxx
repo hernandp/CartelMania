@@ -305,7 +305,7 @@ LRESULT CManiaMainWnd::OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND h
 LRESULT CManiaMainWnd::OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
 	App()->GetSettings()->debugDisableSubdiv = !App()->GetSettings()->debugDisableSubdiv;
-	App()->GetBanner()->Invalidate();
+	App()->GetBanner()->RegenPathAndRedraw();
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
 	return 0L;

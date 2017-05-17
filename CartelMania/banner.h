@@ -87,6 +87,13 @@ class Banner
 public:
 	Banner();
 	~Banner();
+	void			PaintOn(HDC hdc, const LPRECT rcClient);
+	void			RegenPathAndRedraw();
+	void			Redraw();
+	Gdiplus::Size	CalcPrintOutputPageCount(const Gdiplus::Size& paperSize);
+	void			GetLineRects(const Gdiplus::RectF& bannerRect, Gdiplus::RectF& line1, Gdiplus::RectF& line2) const;
+	Gdiplus::RectF	GetRect(const Gdiplus::RectF& clientArea) const;
+	Gdiplus::RectF	GetRect(const LPRECT) const;
 
 	BannerLine*		GetTopLine() const { return m_topLine.get(); }
 	BannerLine*		GetBottomLine() const { return m_bottomLine.get(); }
@@ -96,18 +103,18 @@ public:
 	void			SetShapeName(const std::wstring& name) { m_shapeName = name; }
 	void			SetScalePolicy(ScalePolicy sp) { m_scalePolicy = sp; }
 	ScalePolicy		GetScalePolicy() const { return m_scalePolicy; }
-	void			PaintOn(HDC hdc, const LPRECT rcClient);
-	void			Invalidate();
-	Gdiplus::RectF	GetRect(const Gdiplus::RectF& clientArea) const;
-	Gdiplus::RectF	GetRect(const LPRECT) const;
 	Gdiplus::Size	GetSizeMm() const { return m_size; }
 	void			SetSizeMm(const Gdiplus::Size& size) { m_size = size; }
 	int				GetVerticalFill() const { return m_verticalFill; };
 	int				GetHorizontalFill() const { return m_horizontalFill; }
+	void			SetHorizontalFill(int pct) { m_horizontalFill = pct;  }
+	void			SetVerticalFill(int pct) { m_verticalFill = pct; }
+
 	BannerVerticalAlignment GetVerticalAlignment() const { return m_verticalAlign; }
 	BannerHorizontalAlignment GetHorizontalAlignment() const { return m_horizontalAlign; }
-	Gdiplus::Size	CalcPrintOutputPageCount(const Gdiplus::Size& paperSize);
-	void			GetLineRects(const Gdiplus::RectF& bannerRect, Gdiplus::RectF& line1, Gdiplus::RectF& line2) const;
+	void			SetVerticalAlignment(BannerVerticalAlignment vAlign) { m_verticalAlign = vAlign; }
+	void			SetHorizontalAlignment(BannerHorizontalAlignment hAlign) { m_horizontalAlign = hAlign; }
+
 
 private:
 	void BuildPaths();

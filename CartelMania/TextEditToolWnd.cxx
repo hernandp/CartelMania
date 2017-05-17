@@ -40,7 +40,7 @@ LRESULT TextEditToolWnd::OnEdit1Change(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 		m_edit1.GetWindowTextW(&text);
 				
 		App()->GetBanner()->GetTopLine()->SetText(text.Length() > 0 ? std::wstring(text) : L"Line 1");
-		App()->GetBanner()->Invalidate();
+		App()->GetBanner()->RegenPathAndRedraw();
 	}
 	return 0L;
 }
@@ -54,7 +54,7 @@ LRESULT TextEditToolWnd::OnEdit2Change(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 		CComBSTR text;
 		m_edit2.GetWindowTextW(&text);
 		App()->GetBanner()->GetBottomLine()->SetText(text.Length() > 0 ? std::wstring(text) : L"Line 2");
-		App()->GetBanner()->Invalidate();
+		App()->GetBanner()->RegenPathAndRedraw();
 	}
 	return 0L;
 }
