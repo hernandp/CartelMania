@@ -8,6 +8,7 @@
 #include "ColorSelToolWnd.h"
 #include "TextEditToolWnd.h"
 #include "ShapeSelToolWnd.h"
+#include "LayoutSetupToolWnd.h"
 #include "PrintJobInfo.h"
 #include "resource.h"
 
@@ -32,6 +33,7 @@ public:
 		COMMAND_ID_HANDLER(ID_EDIT_SELECTBOTH, OnEditSelLine)
 
 		COMMAND_ID_HANDLER(ID_CMD_OPENSHAPETOOL, OnOpenShapeTool)
+		COMMAND_ID_HANDLER(ID_CMD_LAYOUTSETUPTOOL, OnLayoutSetupTool)
 
 		COMMAND_ID_HANDLER(ID_DEBUG_DRAWVERTICES, OnDebugDrawVertices)
 		COMMAND_ID_HANDLER(ID_DEBUG_DISABLEPATHFILL, OnDebugDisablePathFill)
@@ -63,7 +65,7 @@ public:
 		REFLECT_NOTIFICATIONS_EX()
 	END_MSG_MAP()
 
-	std::pair<bool, bool>	GetLineSelState() const { return m_lineSelState;  }
+	std::pair<bool, bool>	GetLineSelState() const { return m_lineSelState; }
 
 	int GetClientRect(_Out_ LPRECT lpRect) const;
 
@@ -93,7 +95,7 @@ private:
 	LRESULT OnLayoutScaleToFit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
 	LRESULT OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
-
+	LRESULT OnLayoutSetupTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	LRESULT OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -108,10 +110,11 @@ private:
 	CToolBarCtrl			m_toolbar;
 	ColorSelectToolWnd		m_colorSelectToolWnd;
 	TextEditToolWnd			m_textEditToolWnd;
+	LayoutSetupToolWnd		m_layoutSetupToolWnd;
 	ShapeSelectToolWnd		m_shapeSelectToolWnd;
 	CPrinter				m_printer;
 	CmPrintJobInfo			m_printJobInfo;
 	CStatusBarCtrl			m_statusBar;
-	std::pair<bool,bool>	m_lineSelState = { true,true };
-	
+	std::pair<bool, bool>	m_lineSelState = { true,true };
+
 };

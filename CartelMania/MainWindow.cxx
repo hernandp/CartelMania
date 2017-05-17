@@ -31,17 +31,18 @@ LRESULT CManiaMainWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &
 LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	XASSERT(m_statusBar.Create(*this, rcDefault, NULL, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, NULL, IDC_STATUSBAR));
-	XASSERT(m_imgList.Create(24,24, ILC_COLOR16 | ILC_MASK, 10, 10));
+	XASSERT(m_imgList.Create(24, 24, ILC_COLOR16 | ILC_MASK, 10, 10));
 	XASSERT(m_toolbar.Create(*this, 0, nullptr, WS_VISIBLE | WS_CHILD, TBSTYLE_FLAT, IDC_TOOLBAR));
 	m_toolbar.SetImageList(m_imgList, 0);
 	m_toolbar.LoadStdImages(IDB_STD_LARGE_COLOR);
-	 
+
 	const DWORD buttonStyles = BTNS_AUTOSIZE;
 	TBBUTTON tbButtons[] =
 	{
 		{ MAKELONG(STD_FILENEW,  0),  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_FILESAVE,  0), ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_FIND,      0), ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ MAKELONG(STD_FIND,      0), ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(0       ,      0), NULL, NULL, TBSTYLE_SEP, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINTPRE,  0), ID_CMD_PRINTPRE, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINT,     0), ID_CMD_PRINT, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
@@ -66,17 +67,17 @@ LRESULT CManiaMainWnd::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHa
 }
 
 int CManiaMainWnd::GetClientRect(_Out_ LPRECT lpRect) const
-{	
-	int info[] = { 1, 0, 
-		1, IDC_TOOLBAR, 
-		1, IDC_STATUSBAR, 
+{
+	int info[] = { 1, 0,
+		1, IDC_TOOLBAR,
+		1, IDC_STATUSBAR,
 		0, 0 };
 	GetEffectiveClientRect(m_hWnd, lpRect, info);
 	return TRUE;
 }
 
 void CManiaMainWnd::DoPaint(CDCHandle hDC)
-{	
+{
 	DrawClientArea(hDC);
 
 	RECT rc;
@@ -173,8 +174,8 @@ bool CManiaMainWnd::GetPageDisplayAreaRect(RECT* lpRect)
 	pageRect.X = (rcClient.Width() / 2) - (pageRect.Width / 2);
 	pageRect.Y = rcClient.top + (rcClient.Height() / 2) - (pageRect.Height / 2);
 
-	lpRect->top = (LONG)pageRect.Y;
-	lpRect->left =(LONG) pageRect.X;
+	lpRect->top = (LONG) pageRect.Y;
+	lpRect->left = (LONG) pageRect.X;
 	lpRect->bottom = LONG(pageRect.Y + pageRect.Height);
 	lpRect->right = LONG(pageRect.X + pageRect.Width);
 
@@ -197,7 +198,7 @@ void CManiaMainWnd::DrawClientArea(CDCHandle hDC)
 		Gdiplus::LinearGradientModeVertical), rcClientArea);
 
 	// Get current page size
-		
+
 	CRect rcPageDA;
 	if (!GetPageDisplayAreaRect(&rcPageDA))
 	{
@@ -210,28 +211,20 @@ void CManiaMainWnd::DrawClientArea(CDCHandle hDC)
 	Gdiplus::Font rulerFont(&Gdiplus::FontFamily(L"Arial"), 14);
 
 	// Draw page+shadow
-	
+
 	CRect pageShadow = rcPageDA;
 	pageShadow.OffsetRect(1, 1);
 
 	for (int i = 0; i < 16; ++i)
 	{
 		pageShadow.OffsetRect(16 - i, 16 - i);
-		gr.DrawLine(&Gdiplus::Pen(Gdiplus::Color(i * (256 / 16), 0, 0, 0)),
+		gr.DrawLine(&Gdiplus::Pen(Gdiplus::Color(i * (128 / 16), 0, 0, 0)),
 			Gdiplus::Point(rcPageDA.left + rcPageDA.Width() + 16 - i, rcPageDA.top + 16 - i),
 			Gdiplus::Point(rcPageDA.left + rcPageDA.Width() + 16 - i, rcPageDA.top + rcPageDA.Height() + 16 - i));
 	}
 
 	gr.FillRectangle(&Gdiplus::SolidBrush(Gdiplus::Color::White),
 		Gdiplus::Rect(rcPageDA.left, rcPageDA.top, rcPageDA.Width(), rcPageDA.Height()));
-
-	// Draw Dimensions
-
-	
-
-	// Transform the graphics coordinate space to begin at the top-left corner
-	
-	//gr.TranslateTransform(bannerRect.X, bannerRect.Y);	
 }
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
@@ -249,7 +242,7 @@ LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 		lastY = 0;
 	}
 
-	m_textEditToolWnd.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);	
+	m_textEditToolWnd.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);
 	m_textEditToolWnd.ShowWindow(SW_SHOWNA);
 	return 0;
 }
@@ -277,13 +270,13 @@ LRESULT CManiaMainWnd::OnEditSelLine(WORD wNotifyCode, WORD wID, HWND hWndCtl, B
 
 		case ID_EDIT_SEL2:
 			m_lineSelState.first = false;
-			m_lineSelState.second  = true;
+			m_lineSelState.second = true;
 			UpdateMenu();
 			break;
 
 		case ID_EDIT_SELECTBOTH:
-			m_lineSelState.first  = true;
-			m_lineSelState.second  = true;
+			m_lineSelState.first = true;
+			m_lineSelState.second = true;
 			UpdateMenu();
 			break;
 	}
@@ -361,9 +354,28 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 	return 0L;
 }
 
+LRESULT CManiaMainWnd::OnLayoutSetupTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	if (!m_layoutSetupToolWnd.m_hWnd)
+		XASSERT(m_layoutSetupToolWnd.Create(m_hWnd));
+
+	auto lastX = App()->GetSettings()->lastLayoutEditToolPos.x;
+	auto lastY = App()->GetSettings()->lastLayoutEditToolPos.y;
+
+	if (lastX == -1 && lastY == -1)
+	{
+		// Position default 
+		lastX = 0;
+		lastY = 0;
+	}
+
+	m_layoutSetupToolWnd.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);
+	m_layoutSetupToolWnd.ShowWindow(SW_SHOWNA);
+	return 0L;
+}
 
 LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
-{	
+{
 	switch (wID)
 	{
 		case ID_FX_SOLID:			ApplyFx<TextFxSolid>();			break;
@@ -389,7 +401,7 @@ LRESULT CManiaMainWnd::OnLayoutScaleToFit(WORD wNotifyCode, WORD wID, HWND hWndC
 	return 0;
 }
 
-template <class T, typename ...U> 
+template <class T, typename ...U>
 void CManiaMainWnd::ApplyFx(U... v)
 {
 	if (m_lineSelState.first)
@@ -463,7 +475,7 @@ LRESULT CManiaMainWnd::OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 		prnPreWnd->SetPage(0);
 		XASSERT(prnPreWnd->Create(*this, rcDefault, L"Print Preview", WS_OVERLAPPEDWINDOW, WS_EX_CLIENTEDGE));
 		prnPreWnd->ShowWindow(SW_SHOWNORMAL);
-	}	
+	}
 	return 0L;
 }
 
@@ -471,7 +483,7 @@ LRESULT CManiaMainWnd::OnPageSetup(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOO
 {
 	CPageSetupDialog pageSetupDlg;
 	pageSetupDlg.DoModal();
-	return 0L;	
+	return 0L;
 }
 
 // ---------------------------------------------------------------------------
@@ -509,7 +521,7 @@ void CManiaMainWnd::UpdateMenu()
 		if (hDebugMenu)
 		{
 			CheckMenuItem(hDebugMenu, ID_DEBUG_DRAWVERTICES, App()->GetSettings()->debugDrawVertices ? MF_CHECKED : MF_UNCHECKED);
-			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL,App()->GetSettings()->debugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
+			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHFILL, App()->GetSettings()->debugDisableFillPath ? MF_CHECKED : MF_UNCHECKED);
 			CheckMenuItem(hDebugMenu, ID_DEBUG_DISABLEPATHSUBDIVISION, App()->GetSettings()->debugDisableSubdiv ? MF_CHECKED : MF_UNCHECKED);
 		}
 	}

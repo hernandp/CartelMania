@@ -17,7 +17,11 @@ m_size(0,0),
 m_shapeName(L"Rectangle"),
 m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
 m_bottomLine(make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
-m_scalePolicy(ScalePolicy::ScaleToFit)
+m_scalePolicy(ScalePolicy::ScaleToFit),
+m_verticalFill(50),
+m_horizontalFill(90),
+m_verticalAlign(BannerVerticalAlignment::Center),
+m_horizontalAlign(BannerHorizontalAlignment::Center)
 {	
 	
 }
@@ -49,18 +53,21 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 {
 	Graphics gr(hdc);
 	gr.SetPageUnit(Gdiplus::Unit::UnitPixel);
+	gr.SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 
 	const RectF rcClientArea((REAL) rcClient->left,
 		(REAL) rcClient->top,
 		(REAL) (rcClient->right - rcClient->left),
 		(REAL) (rcClient->bottom - rcClient->top));
 
+	gr.DrawRectangle(&Pen(Color::Blue), rcClientArea);
+
 	const RectF bannerRect = GetRect(rcClientArea);
 
 	// The banner coordinate space is divided by number of lines, considering the current layout.
 	// Each line has it's own local space with x+/y+ pointing left and down in display.
 
-	gr.TranslateTransform(rcClientArea.X + BANNER_MARGIN_PX / 2, rcClientArea.Height / 2.0f - bannerRect.Height / 2.0f);
+	gr.TranslateTransform(rcClientArea.X + BANNER_MARGIN_PX / 2, rcClientArea.Y + rcClientArea.Height / 2.0f - bannerRect.Height / 2.0f);
 
 	RectF line1Rect, line2Rect;
 	GetLineRects(bannerRect, line1Rect, line2Rect);

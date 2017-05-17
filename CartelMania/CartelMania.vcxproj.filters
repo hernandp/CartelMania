@@ -78,6 +78,9 @@
     <ClInclude Include="PrintJobInfo.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LayoutSetupToolWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc">
@@ -134,6 +137,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="PrintJobInfo.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="LayoutSetupToolWnd.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

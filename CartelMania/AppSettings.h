@@ -23,6 +23,7 @@ public:
 	POINT lastColorEditToolPos = { -1,-1 };
 	POINT lastShapeEditToolPos = { -1,-1 };
 	POINT lastShapeEditToolSize = { -1,-1 };
+	POINT lastLayoutEditToolPos = { -1,-1 };
 
 private:
 	LSTATUS PackDWORDs(CRegKey& k, const wchar_t* valueName, DWORD dwHi, DWORD dwLo);
