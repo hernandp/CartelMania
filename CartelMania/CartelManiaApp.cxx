@@ -18,17 +18,39 @@ CartelManiaApp::CartelManiaApp()
 	m_mainWindow = std::make_unique<CManiaMainWnd>();
 }
 
-Gdiplus::Size CartelManiaApp::GetPaperSize() const
+Gdiplus::Size CartelManiaApp::GetPaperSizeMm() const
 {
 	Gdiplus::Size paperSize(0, 0);
 
 	CDevMode dm;
 	if (dm.CopyFromPrinter(m_printer.m_hPrinter))
 	{
-		paperSize.Height = dm.m_pDevMode->dmPaperLength;
-		paperSize.Width  = dm.m_pDevMode->dmPaperWidth;
+		paperSize.Height = dm.m_pDevMode->dmPaperLength / 10;
+		paperSize.Width  = dm.m_pDevMode->dmPaperWidth / 10;
 	}
 	return paperSize;
+}
+
+int CartelManiaApp::GetPaperOrientation() const
+{
+	CDevMode dm;
+	if (dm.CopyFromPrinter(m_printer.m_hPrinter))
+	{
+		return dm.m_pDevMode->dmOrientation;
+	}
+
+	return -1;
+}
+
+std::wstring CartelManiaApp::GetPaperName() const
+{
+	/*CDevMode dm;
+	if (dm.CopyFromPrinter(m_printer.m_hPrinter))
+	{
+		dm.m_pDevMode->dmMediaType
+	}*/
+
+	return L"";
 }
 
 CartelManiaApp::~CartelManiaApp()

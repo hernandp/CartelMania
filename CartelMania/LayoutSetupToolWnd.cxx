@@ -63,7 +63,13 @@ void LayoutSetupToolWnd::SetupAlignComboCtls()
 
 void LayoutSetupToolWnd::UpdatePrintPageCountUI()
 {
+	Gdiplus::Size paperSize = App()->GetPaperSizeMm();
+	Gdiplus::Size pageCount = App()->GetBanner()->CalcPrintOutputPageCount(paperSize);
 
+	wchar_t maxString[255];
+	StringCchPrintf(maxString, _countof(maxString), L"Print-out page count: %d x %d",
+		pageCount.Width, pageCount.Height);
+	SetDlgItemText(IDC_PAGECOUNT, maxString);
 }
 
 void LayoutSetupToolWnd::OnMove(CPoint pos)
@@ -96,8 +102,23 @@ LRESULT LayoutSetupToolWnd::OnApply(WORD wNotifyCode, WORD wID, HWND hWndCtl, BO
 {
 	auto banner = App()->GetBanner();
 
-	// Validate first
+	// Validate input.  Height and width cannot be less than the
+	// current selected paper size and orientation.
 
+	int width = GetDlgItemInt(IDC_BANNERWIDTH); 
+	int height =  GetDlgItemInt(IDC_BANNERHEIGHT); 
+
+	Gdiplus::Size paperSize = App()->GetPaperSizeMm();
+
+	if (height < paperSize.Height || width < paperSize.Width)
+	{
+		MessageBox(L"Your banner height or width cannot be less than the ones for the current paper",
+			L"Banner size", MB_ICONWARNING | MB_OK);
+		
+		GetDlgItem(IDC_BANNERWIDTH).SetFocus();
+		return 0L;
+	}
+	
 	// Set and request redraw
 	CComboBox cboVAlign, cboHAlign;
 	cboVAlign.Attach(GetDlgItem(IDC_VALIGN));
@@ -111,7 +132,8 @@ LRESULT LayoutSetupToolWnd::OnApply(WORD wNotifyCode, WORD wID, HWND hWndCtl, BO
 	banner->SetHorizontalFill(m_horzFillTrackbar.GetPos());
 	banner->SetVerticalFill(m_vertFillTrackbar.GetPos());
 
-	banner->Redraw();
+	UpdatePrintPageCountUI();
 
+	banner->Redraw();
 	return 0;
 }

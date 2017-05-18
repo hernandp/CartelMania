@@ -151,12 +151,6 @@ void CManiaMainWnd::DoPageSetupDialog()
 
 bool CManiaMainWnd::GetPageDisplayAreaRect(RECT* lpRect)
 {
-	Gdiplus::Size paperSize = App()->GetPaperSize();
-	if (paperSize.Empty())
-	{
-		return false;
-	}
-
 	const Gdiplus::Size bannerSize = App()->GetBanner()->GetSizeMm();
 	Gdiplus::RectF pageRect(0, 0, float(bannerSize.Width), float(bannerSize.Height));
 
