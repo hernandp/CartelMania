@@ -87,8 +87,9 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 	banner->PaintOn(hDC, &rcPageDA);
 
 	// Draw page divisions, if needed
+
 	Gdiplus::Graphics gr(hDC);
-	Gdiplus::Size pageCount = App()->GetBanner()->CalcPrintOutputPageCount(App()->GetPaperSizeMm());
+	Gdiplus::Size pageCount = App()->GetBanner()->CalcPrintOutputPageCount(App()->GetPrintableAreaMm());
 
 	Gdiplus::Pen dashPen(Gdiplus::Color::Gray, 1);
 	dashPen.SetDashStyle(Gdiplus::DashStyleDot);

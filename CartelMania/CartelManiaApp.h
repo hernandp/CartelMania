@@ -21,6 +21,7 @@ public:
 	const Gdiplus::Brush*	GetBrushFromColorTable(const std::wstring& name){ return m_colorTable.LookupName(name).get(); }
 	CPrinter*				GetPrinter()  { return &m_printer; }
 	Gdiplus::Size			GetPaperSizeMm() const;
+	Gdiplus::Size			GetPrintableAreaMm() const;
 	std::wstring			GetPaperName() const;
 	int						GetPaperOrientation() const;
 	AppSettings*			GetSettings() { return &m_settings;  }

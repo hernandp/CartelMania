@@ -63,8 +63,8 @@ void LayoutSetupToolWnd::SetupAlignComboCtls()
 
 void LayoutSetupToolWnd::UpdatePrintPageCountUI()
 {
-	Gdiplus::Size paperSize = App()->GetPaperSizeMm();
-	Gdiplus::Size pageCount = App()->GetBanner()->CalcPrintOutputPageCount(paperSize);
+	Gdiplus::Size printArea = App()->GetPrintableAreaMm();
+	Gdiplus::Size pageCount = App()->GetBanner()->CalcPrintOutputPageCount(printArea);
 
 	wchar_t maxString[255];
 	StringCchPrintf(maxString, _countof(maxString), L"Print-out page count: %d x %d",
@@ -108,11 +108,11 @@ LRESULT LayoutSetupToolWnd::OnApply(WORD wNotifyCode, WORD wID, HWND hWndCtl, BO
 	int width = GetDlgItemInt(IDC_BANNERWIDTH); 
 	int height =  GetDlgItemInt(IDC_BANNERHEIGHT); 
 
-	Gdiplus::Size paperSize = App()->GetPaperSizeMm();
+	Gdiplus::Size printArea = App()->GetPrintableAreaMm();
 
-	if (height < paperSize.Height || width < paperSize.Width)
+	if (height < printArea.Height || width < printArea.Width)
 	{
-		MessageBox(L"Your banner height or width cannot be less than the ones for the current paper",
+		MessageBox(L"Your banner height or width cannot be less than the printable area for the current paper",
 			L"Banner size", MB_ICONWARNING | MB_OK);
 		
 		GetDlgItem(IDC_BANNERWIDTH).SetFocus();

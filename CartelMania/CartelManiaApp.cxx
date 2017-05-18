@@ -31,6 +31,18 @@ Gdiplus::Size CartelManiaApp::GetPaperSizeMm() const
 	return paperSize;
 }
 
+Gdiplus::Size CartelManiaApp::GetPrintableAreaMm() const
+{
+	CDC printerDC(m_printer.CreatePrinterDC());
+	int dpiX = printerDC.GetDeviceCaps(LOGPIXELSX);
+	int dpiY = printerDC.GetDeviceCaps(LOGPIXELSY);
+	int cxPrintableArea = printerDC.GetDeviceCaps(HORZRES);
+	int cyPrintableArea = printerDC.GetDeviceCaps(VERTRES);
+	float cxPrintableAreaMm = cxPrintableArea / dpiX  * 25.4f;
+	float cyPrintableAreaMm = cyPrintableArea / dpiX  * 25.4f;
+	return Size((int) cxPrintableAreaMm, (int) cyPrintableAreaMm);
+}
+
 int CartelManiaApp::GetPaperOrientation() const
 {
 	CDevMode dm;
@@ -84,7 +96,7 @@ int CartelManiaApp::Run()
 		return GetLastError();
 	}
 
-	m_banner.SetSizeMm(Size(dm.m_pDevMode->dmPaperWidth / 10, dm.m_pDevMode->dmPaperLength / 10));
+	m_banner.SetSizeMm(GetPrintableAreaMm());
 	
 	// Main window setup and message loop
 

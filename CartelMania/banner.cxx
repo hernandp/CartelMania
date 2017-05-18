@@ -111,10 +111,10 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	}		
 }
 
-Gdiplus::Size Banner::CalcPrintOutputPageCount(const Gdiplus::Size & paperSize)
+Gdiplus::Size Banner::CalcPrintOutputPageCount(const Gdiplus::Size & printableAreaInMillimeters)
 {
-	return Size((int) ceilf((float) m_size.Width / paperSize.Width), 
-		(int) ceilf((float) m_size.Height / paperSize.Height));
+	return Size((int) ceilf((float) m_size.Width / printableAreaInMillimeters.Width), 
+		(int) ceilf((float) m_size.Height / printableAreaInMillimeters.Height));
 }
 
 void Banner::GetLineRects(const RectF& bannerRect, RectF& rcLine1, RectF& rcLine2) const
