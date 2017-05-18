@@ -80,18 +80,41 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 {
 	DrawClientArea(hDC);
 
-	RECT rc;
-	GetPageDisplayAreaRect(&rc);
+	CRect rcPageDA;
+	GetPageDisplayAreaRect(&rcPageDA);
 
 	auto banner = App()->GetBanner();
-	banner->PaintOn(hDC, &rc);
+	banner->PaintOn(hDC, &rcPageDA);
+
+	// Draw page divisions, if needed
+	Gdiplus::Graphics gr(hDC);
+	Gdiplus::Size pageCount = App()->GetBanner()->CalcPrintOutputPageCount(App()->GetPaperSizeMm());
+
+	Gdiplus::Pen dashPen(Gdiplus::Color::Gray, 1);
+	dashPen.SetDashStyle(Gdiplus::DashStyleDot);
+
+	for (int i = 1; i < pageCount.Width; ++i)
+	{
+		gr.DrawLine(&dashPen,
+			rcPageDA.left + (int) (rcPageDA.Width() * ((float) i / pageCount.Width)),
+			rcPageDA.top,
+			rcPageDA.left + (int) (rcPageDA.Width() * ((float) i / pageCount.Width)),
+			rcPageDA.bottom);
+	}
+
+	for (int i = 1; i < pageCount.Height; ++i)
+	{
+		gr.DrawLine(&dashPen,
+			rcPageDA.left,
+			rcPageDA.top + (int) (rcPageDA.Height() * ((float) i / pageCount.Height)),
+			rcPageDA.right,
+			rcPageDA.top + (int) (rcPageDA.Height() * ((float) i / pageCount.Height)));
+	}
 
 	// Selection marks
-	//
-	Gdiplus::Graphics gr(hDC);
 
 	Gdiplus::RectF line1Rect, line2Rect;
-	banner->GetLineRects(banner->GetRect(&rc), line1Rect, line2Rect);
+	banner->GetLineRects(banner->GetRect(&rcPageDA), line1Rect, line2Rect);
 
 	//gr.TranslateTransform(rc.left + BANNER_MARGIN_PX / 2, (rc.bottom-rc.top) / 2.0f - banner->GetRect(&rc).Height / 2.0f);
 
@@ -219,6 +242,8 @@ void CManiaMainWnd::DrawClientArea(CDCHandle hDC)
 
 	gr.FillRectangle(&Gdiplus::SolidBrush(Gdiplus::Color::White),
 		Gdiplus::Rect(rcPageDA.left, rcPageDA.top, rcPageDA.Width(), rcPageDA.Height()));
+
+	
 }
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
