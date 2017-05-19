@@ -5,13 +5,19 @@
 BOOL LayoutSetupToolWnd::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 {
 	auto banner = App()->GetBanner();
-	m_bannerHeight.Attach(GetDlgItem(IDC_BANNERHEIGHT));
-	m_bannerWidth.Attach(GetDlgItem(IDC_BANNERWIDTH));
+
+	m_spinPageCountX.Attach(GetDlgItem(IDC_SPIN_PAGECOUNT_X));
+	m_spinPageCountY.Attach(GetDlgItem(IDC_SPIN_PAGECOUNT_Y));
 	m_horzFillTrackbar.Attach(GetDlgItem(IDC_HORZFILL));
 	m_vertFillTrackbar.Attach(GetDlgItem(IDC_VERTFILL));
 
-	SetDlgItemInt(IDC_BANNERHEIGHT, banner->GetSizeMm().Height, FALSE);
-	SetDlgItemInt(IDC_BANNERWIDTH, banner->GetSizeMm().Width, FALSE);
+	m_spinPageCountX.SetRange(1, 60);
+	m_spinPageCountY.SetRange(1, 60);
+	m_spinPageCountX.SetBuddy(GetDlgItem(IDC_EDIT_PAGECOUNT_X));
+	m_spinPageCountY.SetBuddy(GetDlgItem(IDC_EDIT_PAGECOUNT_Y));
+	m_spinPageCountX.SetPos(banner->GetPageCountXAxis());
+	m_spinPageCountY.SetPos(banner->GetPageCountYAxis());
+
 	m_horzFillTrackbar.SetRange(10, 100);
 	m_vertFillTrackbar.SetRange(10, 100);
 	m_horzFillTrackbar.SetPos(banner->GetHorizontalFill());
@@ -23,7 +29,7 @@ BOOL LayoutSetupToolWnd::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	SetDlgItemText(IDC_HORZFILL_TEXT, hFillText);
 	SetDlgItemText(IDC_VERTFILL_TEXT, vFillText);
 	SetupAlignComboCtls();
-	UpdatePrintPageCountUI();
+	UpdateBannerSizeUI();
 	return TRUE;
 }
 
@@ -61,15 +67,32 @@ void LayoutSetupToolWnd::SetupAlignComboCtls()
 	}
 }
 
-void LayoutSetupToolWnd::UpdatePrintPageCountUI()
+void LayoutSetupToolWnd::UpdateBannerSizeUI()
 {
-	Gdiplus::Size printArea = App()->GetPrintableAreaMm();
-	Gdiplus::Size pageCount = App()->GetBanner()->CalcPrintOutputPageCount(printArea);
+	Gdiplus::Size bannerSizeMm = App()->GetBanner()->GetSizeMm();
 
+	DWORD dwMeasureSystem;
+	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE | LOCALE_RETURN_NUMBER,
+		(LPWSTR)&dwMeasureSystem, sizeof(DWORD));
+
+	wchar_t measureSys[3] = { 0 };
+	if (dwMeasureSystem == 0)
+	{
+		// metric
+		measureSys[0] = L'm';
+		measureSys[1] = L'm';
+	}
+	else if (dwMeasureSystem == 1)
+	{
+		// U.S 
+		measureSys[0] = L'i';
+		measureSys[1] = L'n';
+	}
+		
 	wchar_t maxString[255];
-	StringCchPrintf(maxString, _countof(maxString), L"Print-out page count: %d x %d",
-		pageCount.Width, pageCount.Height);
-	SetDlgItemText(IDC_PAGECOUNT, maxString);
+	StringCchPrintf(maxString, _countof(maxString), L"%d %s x %d %s", bannerSizeMm.Width,
+		measureSys, bannerSizeMm.Height, measureSys);
+	SetDlgItemText(IDC_BANNERSIZE_TEXT, maxString);
 }
 
 void LayoutSetupToolWnd::OnMove(CPoint pos)
@@ -93,47 +116,41 @@ void LayoutSetupToolWnd::OnHScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBa
 			StringCchPrintf(vFillText, 10, L"%d%%", m_vertFillTrackbar.GetPos());
 			SetDlgItemText(IDC_HORZFILL_TEXT, hFillText);
 			SetDlgItemText(IDC_VERTFILL_TEXT, vFillText);
+			App()->GetBanner()->SetHorizontalFill(m_horzFillTrackbar.GetPos());
+			App()->GetBanner()->SetVerticalFill(m_vertFillTrackbar.GetPos());
+			App()->GetBanner()->Redraw();
 		}
 		break;
 	}
 }
 
-LRESULT LayoutSetupToolWnd::OnApply(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+void LayoutSetupToolWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBar)
 {
-	auto banner = App()->GetBanner();
-
-	// Validate input.  Height and width cannot be less than the
-	// current selected paper size and orientation.
-
-	int width = GetDlgItemInt(IDC_BANNERWIDTH); 
-	int height =  GetDlgItemInt(IDC_BANNERHEIGHT); 
-
-	Gdiplus::Size printArea = App()->GetPrintableAreaMm();
-
-	if (height < printArea.Height || width < printArea.Width)
+	switch (pScrollBar.GetDlgCtrlID())
 	{
-		MessageBox(L"Your banner height or width cannot be less than the printable area for the current paper",
-			L"Banner size", MB_ICONWARNING | MB_OK);
-		
-		GetDlgItem(IDC_BANNERWIDTH).SetFocus();
-		return 0L;
+		case IDC_SPIN_PAGECOUNT_X:
+		case IDC_SPIN_PAGECOUNT_Y:
+			App()->GetBanner()->SetPageCount(m_spinPageCountX.GetPos(), m_spinPageCountY.GetPos());
+			UpdateBannerSizeUI();
+			App()->GetBanner()->Redraw();
+			break;
 	}
-	
-	// Set and request redraw
-	CComboBox cboVAlign, cboHAlign;
+}
+
+LRESULT LayoutSetupToolWnd::OnVAlignChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{	
+	CComboBox cboVAlign;
 	cboVAlign.Attach(GetDlgItem(IDC_VALIGN));
+	App()->GetBanner()->SetVerticalAlignment(static_cast<BannerVerticalAlignment>(cboVAlign.GetItemData(cboVAlign.GetCurSel())));
+	App()->GetBanner()->Redraw();
+	return 0L;
+}
+
+LRESULT LayoutSetupToolWnd::OnHAlignChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	CComboBox cboHAlign;
 	cboHAlign.Attach(GetDlgItem(IDC_HALIGN));
-
-	banner->SetSizeMm(Gdiplus::Size(GetDlgItemInt(IDC_BANNERWIDTH), GetDlgItemInt(IDC_BANNERHEIGHT)));
-	banner->SetVerticalAlignment(static_cast<BannerVerticalAlignment>
-		(cboVAlign.GetItemData(cboVAlign.GetCurSel())));
-	banner->SetHorizontalAlignment(static_cast<BannerHorizontalAlignment>
-		(cboHAlign.GetItemData(cboHAlign.GetCurSel())));
-	banner->SetHorizontalFill(m_horzFillTrackbar.GetPos());
-	banner->SetVerticalFill(m_vertFillTrackbar.GetPos());
-
-	UpdatePrintPageCountUI();
-
-	banner->Redraw();
-	return 0;
+	App()->GetBanner()->SetHorizontalAlignment(static_cast<BannerHorizontalAlignment>(cboHAlign.GetItemData(cboHAlign.GetCurSel())));
+	App()->GetBanner()->Redraw();
+	return 0L;
 }

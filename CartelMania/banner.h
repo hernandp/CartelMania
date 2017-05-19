@@ -90,11 +90,14 @@ public:
 	void			PaintOn(HDC hdc, const LPRECT rcClient);
 	void			RegenPathAndRedraw();
 	void			Redraw();
-	Gdiplus::Size	CalcPrintOutputPageCount(const Gdiplus::Size& paperSize);
+	//Gdiplus::Size	CalcPrintOutputPageCount(const Gdiplus::Size& paperSize);
 	void			GetLineRects(const Gdiplus::RectF& bannerRect, Gdiplus::RectF& line1, Gdiplus::RectF& line2) const;
 	Gdiplus::RectF	GetRect(const Gdiplus::RectF& clientArea) const;
 	Gdiplus::RectF	GetRect(const LPRECT) const;
 
+	int				GetPageCountXAxis() const { return m_pageCountXAxis;  }
+	int				GetPageCountYAxis() const { return m_pageCountYAxis;  }
+	void			SetPageCount(int xAxisPageCount, int yAxisPageCount);
 	BannerLine*		GetTopLine() const { return m_topLine.get(); }
 	BannerLine*		GetBottomLine() const { return m_bottomLine.get(); }
 	BannerLayout	GetLayout() const { return m_layout; }
@@ -103,8 +106,7 @@ public:
 	void			SetShapeName(const std::wstring& name) { m_shapeName = name; }
 	void			SetScalePolicy(ScalePolicy sp) { m_scalePolicy = sp; }
 	ScalePolicy		GetScalePolicy() const { return m_scalePolicy; }
-	Gdiplus::Size	GetSizeMm() const { return m_size; }
-	void			SetSizeMm(const Gdiplus::Size& size) { m_size = size; }
+	Gdiplus::Size	GetSizeMm() const;
 	int				GetVerticalFill() const { return m_verticalFill; };
 	int				GetHorizontalFill() const { return m_horizontalFill; }
 	void			SetHorizontalFill(int pct) { m_horizontalFill = pct;  }
@@ -120,7 +122,8 @@ private:
 	void BuildPaths();
 
 	BannerLayout								m_layout;
-	Gdiplus::Size								m_size;
+	int											m_pageCountXAxis;
+	int											m_pageCountYAxis;
 	std::wstring								m_shapeName;
 	std::unique_ptr<BannerLine>					m_topLine;
 	std::unique_ptr<BannerLine>					m_bottomLine;

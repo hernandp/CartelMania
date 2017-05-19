@@ -13,13 +13,14 @@ using namespace std;
 
 Banner::Banner() :
 m_layout(BannerLayout::SingleLine),
-m_size(0,0),
+m_pageCountXAxis(2),
+m_pageCountYAxis(1),
 m_shapeName(L"Rectangle"),
 m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
 m_bottomLine(make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
 m_scalePolicy(ScalePolicy::ScaleToFit),
-m_verticalFill(25),
-m_horizontalFill(95),
+m_verticalFill(50),
+m_horizontalFill(100),
 m_verticalAlign(BannerVerticalAlignment::Center),
 m_horizontalAlign(BannerHorizontalAlignment::Center)
 {	
@@ -77,6 +78,18 @@ Gdiplus::RectF Banner::GetRect(const LPRECT rcClient) const
 	return GetRect(rcClientArea);
 }
 
+void Banner::SetPageCount(int xAxisPageCount, int yAxisPageCount)
+{
+	m_pageCountXAxis = xAxisPageCount;
+	m_pageCountYAxis = yAxisPageCount;
+}
+
+Gdiplus::Size Banner::GetSizeMm() const
+{	
+	return (Gdiplus::Size(m_pageCountXAxis * App()->GetPrintableAreaMm().Width,
+		m_pageCountYAxis * App()->GetPrintableAreaMm().Height));
+}
+
 //----------------------------------------------------------------------------
 void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 {
@@ -111,11 +124,11 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	}		
 }
 
-Gdiplus::Size Banner::CalcPrintOutputPageCount(const Gdiplus::Size & printableAreaInMillimeters)
-{
-	return Size((int) ceilf((float) m_size.Width / printableAreaInMillimeters.Width), 
-		(int) ceilf((float) m_size.Height / printableAreaInMillimeters.Height));
-}
+//Gdiplus::Size Banner::CalcPrintOutputPageCount(const Gdiplus::Size & printableAreaInMillimeters)
+//{
+//	return Size((int) ceilf((float) m_size.Width / printableAreaInMillimeters.Width), 
+//		(int) ceilf((float) m_size.Height / printableAreaInMillimeters.Height));
+//}
 
 void Banner::GetLineRects(const RectF& bannerRect, RectF& rcLine1, RectF& rcLine2) const
 {

@@ -96,8 +96,10 @@ int CartelManiaApp::Run()
 		return GetLastError();
 	}
 
-	m_banner.SetSizeMm(GetPrintableAreaMm());
-	
+	// Orient by default as landscape
+	//
+	dm.m_pDevMode->dmOrientation = DMORIENT_LANDSCAPE;
+
 	// Main window setup and message loop
 
 	HMENU hMenu = LoadMenu(GetModuleHandle(0), MAKEINTRESOURCE(IDR_MENU1));

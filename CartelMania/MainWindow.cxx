@@ -89,27 +89,29 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 	// Draw page divisions, if needed
 
 	Gdiplus::Graphics gr(hDC);
-	Gdiplus::Size pageCount = App()->GetBanner()->CalcPrintOutputPageCount(App()->GetPrintableAreaMm());
 
-	Gdiplus::Pen dashPen(Gdiplus::Color::Gray, 1);
+	Gdiplus::Pen dashPen(Gdiplus::Color::Gray, 2);
 	dashPen.SetDashStyle(Gdiplus::DashStyleDot);
 
-	for (int i = 1; i < pageCount.Width; ++i)
+	auto pageCountX = App()->GetBanner()->GetPageCountXAxis();
+	auto pageCountY = App()->GetBanner()->GetPageCountYAxis();
+
+	for (int i = 1; i < pageCountX; ++i)
 	{
 		gr.DrawLine(&dashPen,
-			rcPageDA.left + (int) (rcPageDA.Width() * ((float) i / pageCount.Width)),
+			rcPageDA.left + (int) (rcPageDA.Width() * ((float) i / pageCountX)),
 			rcPageDA.top,
-			rcPageDA.left + (int) (rcPageDA.Width() * ((float) i / pageCount.Width)),
+			rcPageDA.left + (int) (rcPageDA.Width() * ((float) i / pageCountX)),
 			rcPageDA.bottom);
 	}
 
-	for (int i = 1; i < pageCount.Height; ++i)
+	for (int i = 1; i < pageCountY; ++i)
 	{
 		gr.DrawLine(&dashPen,
 			rcPageDA.left,
-			rcPageDA.top + (int) (rcPageDA.Height() * ((float) i / pageCount.Height)),
+			rcPageDA.top + (int) (rcPageDA.Height() * ((float) i / pageCountY)),
 			rcPageDA.right,
-			rcPageDA.top + (int) (rcPageDA.Height() * ((float) i / pageCount.Height)));
+			rcPageDA.top + (int) (rcPageDA.Height() * ((float) i / pageCountY)));
 	}
 
 	// Selection marks
