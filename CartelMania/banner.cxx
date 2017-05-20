@@ -124,12 +124,6 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	}		
 }
 
-//Gdiplus::Size Banner::CalcPrintOutputPageCount(const Gdiplus::Size & printableAreaInMillimeters)
-//{
-//	return Size((int) ceilf((float) m_size.Width / printableAreaInMillimeters.Width), 
-//		(int) ceilf((float) m_size.Height / printableAreaInMillimeters.Height));
-//}
-
 void Banner::GetLineRects(const RectF& bannerRect, RectF& rcLine1, RectF& rcLine2) const
 {
 	const REAL line1Height = g_proportionTable.at(m_layout).first * bannerRect.Height;
@@ -137,12 +131,6 @@ void Banner::GetLineRects(const RectF& bannerRect, RectF& rcLine1, RectF& rcLine
 	
 	rcLine1 = RectF(0, 0, bannerRect.Width, line1Height);
 	rcLine2 = RectF(0, 0, bannerRect.Width, line2Height);
-}
-
-void Banner::BuildPaths()
-{
-	/*GraphicsPath path1, path2;
-	path1.AddString(m_lines[0].)*/
 }
 
 void Banner::Redraw()

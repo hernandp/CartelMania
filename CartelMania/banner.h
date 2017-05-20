@@ -90,7 +90,6 @@ public:
 	void			PaintOn(HDC hdc, const LPRECT rcClient);
 	void			RegenPathAndRedraw();
 	void			Redraw();
-	//Gdiplus::Size	CalcPrintOutputPageCount(const Gdiplus::Size& paperSize);
 	void			GetLineRects(const Gdiplus::RectF& bannerRect, Gdiplus::RectF& line1, Gdiplus::RectF& line2) const;
 	Gdiplus::RectF	GetRect(const Gdiplus::RectF& clientArea) const;
 	Gdiplus::RectF	GetRect(const LPRECT) const;
@@ -119,7 +118,6 @@ public:
 
 
 private:
-	void BuildPaths();
 
 	BannerLayout								m_layout;
 	int											m_pageCountXAxis;
