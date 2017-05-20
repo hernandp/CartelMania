@@ -25,6 +25,8 @@ public:
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_SIZE, OnSize)
+		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)
+
 		COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
 
 		COMMAND_ID_HANDLER(ID_CMD_EDITTEXT, OnEditText)
@@ -67,7 +69,8 @@ public:
 
 	std::pair<bool, bool>	GetLineSelState() const { return m_lineSelState; }
 
-	int GetClientRect(_Out_ LPRECT lpRect) const;
+	int		GetClientRect(_Out_ LPRECT lpRect) const;
+	void	SetPageAreaDADirty() { m_pageDADirty = true; }
 
 private:
 	void	DoPaint(CDCHandle hDC);
@@ -80,6 +83,7 @@ private:
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+	LRESULT OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 
 	LRESULT OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnFileExit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -101,7 +105,7 @@ private:
 	LRESULT OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnPageSetup(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-
+	
 	void UpdateMenu();
 
 	template <class T, typename ...U> void CManiaMainWnd::ApplyFx(U...);
@@ -116,5 +120,6 @@ private:
 	CmPrintJobInfo			m_printJobInfo;
 	CStatusBarCtrl			m_statusBar;
 	std::pair<bool, bool>	m_lineSelState = { true,true };
-
+	RECT					m_cachedPageDA;
+	bool					m_pageDADirty = true;
 };

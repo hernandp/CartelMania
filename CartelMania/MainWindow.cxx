@@ -61,8 +61,18 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 
 LRESULT CManiaMainWnd::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
+	m_pageDADirty = true;
 	m_toolbar.SendMessageW(WM_SIZE, wParam, lParam);
 	m_statusBar.SendMessageW(WM_SIZE, wParam, lParam);
+	return 0L;
+}
+
+LRESULT CManiaMainWnd::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+{
+	int xPos = GET_X_LPARAM(lParam);
+	int yPos = GET_Y_LPARAM(lParam);
+
+	//App()->GetBanner()->GetLineRects()
 	return 0L;
 }
 
@@ -177,27 +187,46 @@ void CManiaMainWnd::DoPageSetupDialog()
 
 bool CManiaMainWnd::GetPageDisplayAreaRect(RECT* lpRect)
 {
-	const Gdiplus::Size bannerSize = App()->GetBanner()->GetSizeMm();
-	Gdiplus::RectF pageRect(0, 0, float(bannerSize.Width), float(bannerSize.Height));
+	if (!m_pageDADirty)
+	{
+		*lpRect = m_cachedPageDA;
+	}
+	else
+	{
+		const Gdiplus::Size bannerSize = App()->GetBanner()->GetSizeMm();
+		Gdiplus::RectF pageRect(0, 0, float(bannerSize.Width), float(bannerSize.Height));
 
-	// Adjust the preliminary rect to ratio to fill window client area
-	CRect rcClient;
-	GetClientRect(&rcClient);
-	const Gdiplus::RectF rcClientArea((float) rcClient.left, (float) rcClient.top, float(rcClient.Width()), float(rcClient.Height()));
+		const int clientAreaMarginTop = 16;
+		const int clientAreaMarginBottom = 16;
+		const int clientAreaMarginSides = 16;
 
-	const float bannerRectRatio = CalcAspectRatioToFit((float) bannerSize.Width, (float) bannerSize.Height,
-		rcClientArea.Width, rcClientArea.Height);
+		// Adjust the preliminary rect to ratio to fill window client area
+		CRect rcClient;
+		GetClientRect(&rcClient);
+		const Gdiplus::RectF rcClientArea(
+			float(rcClient.left + clientAreaMarginSides),
+			float(rcClient.top + clientAreaMarginTop),
+			float(rcClient.Width() - clientAreaMarginSides),
+			float(rcClient.Height() - clientAreaMarginBottom)
+		);
 
-	//const int cxRulerTop = int(14.0f * gr.GetDpiY() / 72.0f);
-	pageRect.Height *= bannerRectRatio;
-	pageRect.Width *= bannerRectRatio;
-	pageRect.X = (rcClient.Width() / 2) - (pageRect.Width / 2);
-	pageRect.Y = rcClient.top + (rcClient.Height() / 2) - (pageRect.Height / 2);
+		const float bannerRectRatio = CalcAspectRatioToFit((float) bannerSize.Width, (float) bannerSize.Height,
+			rcClientArea.Width, rcClientArea.Height);
 
-	lpRect->top = (LONG) pageRect.Y;
-	lpRect->left = (LONG) pageRect.X;
-	lpRect->bottom = LONG(pageRect.Y + pageRect.Height);
-	lpRect->right = LONG(pageRect.X + pageRect.Width);
+		//const int cxRulerTop = int(14.0f * gr.GetDpiY() / 72.0f);
+		pageRect.Height *= bannerRectRatio;
+		pageRect.Width *= bannerRectRatio;
+		pageRect.X = (rcClient.Width() / 2) - (pageRect.Width / 2);
+		pageRect.Y = rcClient.top + (rcClient.Height() / 2) - (pageRect.Height / 2);
+
+		lpRect->top = (LONG) pageRect.Y + clientAreaMarginTop;
+		lpRect->left = (LONG) pageRect.X + clientAreaMarginSides;
+		lpRect->bottom = LONG(pageRect.Y + pageRect.Height - clientAreaMarginBottom);
+		lpRect->right = LONG(pageRect.X + pageRect.Width - clientAreaMarginSides);
+
+		m_cachedPageDA = *lpRect;
+		m_pageDADirty = false;
+	}
 
 	return true;
 }
@@ -244,9 +273,7 @@ void CManiaMainWnd::DrawClientArea(CDCHandle hDC)
 	}
 
 	gr.FillRectangle(&Gdiplus::SolidBrush(Gdiplus::Color::White),
-		Gdiplus::Rect(rcPageDA.left, rcPageDA.top, rcPageDA.Width(), rcPageDA.Height()));
-
-	
+		Gdiplus::Rect(rcPageDA.left, rcPageDA.top, rcPageDA.Width(), rcPageDA.Height()));	
 }
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)

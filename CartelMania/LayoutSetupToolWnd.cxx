@@ -132,6 +132,7 @@ void LayoutSetupToolWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBa
 		case IDC_SPIN_PAGECOUNT_Y:
 			App()->GetBanner()->SetPageCount(m_spinPageCountX.GetPos(), m_spinPageCountY.GetPos());
 			UpdateBannerSizeUI();
+			App()->GetMainWindow()->SetPageAreaDADirty();
 			App()->GetBanner()->Redraw();
 			break;
 	}
