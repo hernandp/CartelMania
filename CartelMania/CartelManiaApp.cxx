@@ -74,31 +74,17 @@ int CartelManiaApp::Run()
 {
 	m_settings.Load();
 
-	if (!m_printer.OpenDefaultPrinter())
+	DWORD dwPrintErr;
+	if (dwPrintErr = (SetupPrinter() != ERROR_SUCCESS))
 	{
-		MessageBox(0,
-			L"Cannot open your default printer.\n\nCartelMania requires an installed printer to run. ",
-			L"CartelMania",
-			MB_OK | MB_ICONERROR);
-		return GetLastError();
+		wchar_t msg[255];
+		StringCchPrintf(msg, _countof(msg), L"Cannot configure your default printer.\n"
+			L"CartelMania requires an installed and properly configured printer to run.\n"
+			L"\nWin32 error code = %d", dwPrintErr);
+
+		MessageBox(0, msg, L"CartelMania",	MB_OK | MB_ICONERROR);
+		return dwPrintErr;
 	}
-
-	// We can set the default banner dimensions: One page of the current selected paper on the
-	// default printer.
-
-	CDevMode dm;
-	if (!dm.CopyFromPrinter(m_printer.m_hPrinter))
-	{
-		MessageBox(0,
-			L"Error accessing your printer settings. Verify your printer configuration and installation and try again.",
-			L"CartelMania",
-			MB_OK | MB_ICONERROR);
-		return GetLastError();
-	}
-
-	// Orient by default as landscape
-	//
-	dm.m_pDevMode->dmOrientation = DMORIENT_LANDSCAPE;
 
 	// Main window setup and message loop
 
@@ -128,4 +114,38 @@ int CartelManiaApp::Run()
 
 	m_settings.Save();
 	return static_cast<int>(msg.wParam);
+}
+
+DWORD CartelManiaApp::SetupPrinter()
+{
+	if (m_printer.OpenDefaultPrinter())
+	{
+		CDevMode dm;
+		if (dm.CopyFromPrinter(m_printer.m_hPrinter))
+		{
+			// Orient by default as landscape
+			dm.m_pDevMode->dmOrientation = DMORIENT_LANDSCAPE;
+			HANDLE hDevMode = dm.CopyToHDEVMODE();
+
+			if (hDevMode == NULL)
+				return ERROR_NOT_ENOUGH_MEMORY;
+
+			if (!m_devMode.CopyFromHDEVMODE(hDevMode))
+				return ERROR_NOT_ENOUGH_MEMORY;
+
+			m_printer.ClosePrinter();
+
+			if (!m_printer.OpenDefaultPrinter(m_devMode))
+			{
+				GlobalFree(hDevMode);
+				return GetLastError();
+			}
+
+			GlobalFree(hDevMode);
+		}
+		
+		return ERROR_SUCCESS;
+	}
+
+	return GetLastError();
 }

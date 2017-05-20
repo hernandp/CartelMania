@@ -88,7 +88,7 @@ public:
 class TextFxShadow : public TextFx
 {
 public:
-	TextFxShadow(ShadowType shType) : m_shadowType(shType), TextFx()
+	explicit TextFxShadow(ShadowType shType) : m_shadowType(shType), TextFx()
 	{
 		m_colorPropList.emplace_back(ColorPropertyClass::Shadow, L"Black");
 		m_colorPropList.emplace_back(ColorPropertyClass::Shadow_Outline, L"Black");

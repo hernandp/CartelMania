@@ -502,13 +502,15 @@ LRESULT CManiaMainWnd::OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 {
 	CPrintJob job;
 	CPrintDialogEx printDlg;
+	printDlg.m_pdex.hDevMode = App()->GetDevMode()->CopyToHDEVMODE();
 	printDlg.DoModal();
-
+	
 	CPrinter printer;
 	if (printer.OpenPrinterW(printDlg.GetDeviceName(), printDlg.GetDevMode()))
 	{
 		job.StartPrintJob(false, printer.m_hPrinter, printDlg.GetDevMode(), &m_printJobInfo, L"xxx", 0, 0);
 	}
+	GlobalFree(printDlg.m_pdex.hDevMode);
 	return 0L;
 }
 

@@ -13,6 +13,7 @@ class CartelManiaApp
 public:	
 	CartelManiaApp();
 	int						Run();
+	
 	CManiaMainWnd*			GetMainWindow() const { return m_mainWindow.get(); }
 	Banner*					GetBanner() { return &m_banner; }
 	ColorTable*				GetColorTable() { return &m_colorTable; }
@@ -24,6 +25,7 @@ public:
 	Gdiplus::Size			GetPrintableAreaMm() const;
 	std::wstring			GetPaperName() const;
 	int						GetPaperOrientation() const;
+	CDevMode*				GetDevMode() { return &m_devMode;  }
 	AppSettings*			GetSettings() { return &m_settings;  }
 	static CartelManiaApp*	Instance() { return s_appPtr;  }
 	virtual ~CartelManiaApp();
@@ -32,15 +34,16 @@ private:
 	
 	CartelManiaApp(CartelManiaApp&) = delete;
 	CartelManiaApp operator= (CartelManiaApp&) = delete;
+	DWORD					SetupPrinter();
 
 	static CartelManiaApp*					s_appPtr;
 	CPrinter								m_printer;
+	CDevMode								m_devMode;
 	ColorTable								m_colorTable;
 	ShapeTable								m_shapeTable;
 	std::unique_ptr<CManiaMainWnd>			m_mainWindow;
 	Banner									m_banner;
 	AppSettings								m_settings;
-	
 };
 
 

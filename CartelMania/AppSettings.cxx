@@ -26,6 +26,7 @@ DWORD AppSettings::Save()
 	LRESULT lr = regKey.Create(HKEY_CURRENT_USER, L"SOFTWARE\\CartelMania");
 	if (lr == ERROR_SUCCESS)
 	{
+		regKey.SetDWORDValue(L"debugLog", debugLog);
 		PackDWORDs(regKey, L"lastTextEditToolPos", lastTextEditToolPos.x, lastTextEditToolPos.y);
 		PackDWORDs(regKey, L"lastColorEditToolPos", lastColorEditToolPos.x, lastColorEditToolPos.y);
 		PackDWORDs(regKey, L"lastShapeEditToolPos", lastShapeEditToolPos.x, lastShapeEditToolPos.y);
@@ -42,6 +43,7 @@ DWORD AppSettings::Load()
 	LRESULT lr = regKey.Create(HKEY_CURRENT_USER, L"SOFTWARE\\CartelMania");
 	if (lr == ERROR_SUCCESS)
 	{
+		regKey.QueryDWORDValue(L"debugLog", debugLog);
 		UnpackDWORDs(regKey, L"lastTextEditToolPos", lastTextEditToolPos.x, lastTextEditToolPos.y);
 		UnpackDWORDs(regKey, L"lastColorEditToolPos", lastColorEditToolPos.x, lastColorEditToolPos.y);
 		UnpackDWORDs(regKey, L"lastShapeEditToolPos", lastShapeEditToolPos.x, lastShapeEditToolPos.y);

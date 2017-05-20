@@ -18,6 +18,7 @@ public:
 	bool debugDrawBoundingRects = false;
 	int pathSubDivInterval = DEFAULT_PATH_SUBDIV_INTERVAL;
 	int maxTextLength = DEFAULT_MAX_TEXT_LENGTH;
+	DWORD debugLog = 0;
 
 	POINT lastTextEditToolPos = { -1,-1 };
 	POINT lastColorEditToolPos = { -1,-1 };
