@@ -39,7 +39,7 @@ Gdiplus::Size CartelManiaApp::GetPrintableAreaMm() const
 	int cxPrintableArea = printerDC.GetDeviceCaps(HORZRES);
 	int cyPrintableArea = printerDC.GetDeviceCaps(VERTRES);
 	float cxPrintableAreaMm = cxPrintableArea / dpiX  * 25.4f;
-	float cyPrintableAreaMm = cyPrintableArea / dpiX  * 25.4f;
+	float cyPrintableAreaMm = cyPrintableArea / dpiY  * 25.4f;
 	return Size((int) cxPrintableAreaMm, (int) cyPrintableAreaMm);
 }
 
