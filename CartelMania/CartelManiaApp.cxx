@@ -40,7 +40,15 @@ Gdiplus::Size CartelManiaApp::GetPrintableAreaMm() const
 	int cyPrintableArea = printerDC.GetDeviceCaps(VERTRES);
 	float cxPrintableAreaMm = cxPrintableArea / dpiX  * 25.4f;
 	float cyPrintableAreaMm = cyPrintableArea / dpiY  * 25.4f;
-	return Size((int) cxPrintableAreaMm, (int) cyPrintableAreaMm);
+
+	if (m_devMode.m_pDevMode->dmOrientation == DMORIENT_PORTRAIT)
+	{
+		return Size((int) cxPrintableAreaMm, (int) cyPrintableAreaMm);
+	}
+	else //DMORIENT_LANDSCAPE
+	{
+		return Size((int) cyPrintableAreaMm, (int) cxPrintableAreaMm);
+	}
 }
 
 int CartelManiaApp::GetPaperOrientation() const
