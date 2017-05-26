@@ -25,6 +25,7 @@ public:
 	Gdiplus::Size			GetPrintableAreaMm() const;
 	std::wstring			GetPaperName() const;
 	int						GetPaperOrientation() const;
+	std::wstring			GetDocumentName() const { return m_documentName;  }
 	CDevMode*				GetDevMode() { return &m_devMode;  }
 	AppSettings*			GetSettings() { return &m_settings;  }
 	static CartelManiaApp*	Instance() { return s_appPtr;  }
@@ -44,6 +45,7 @@ private:
 	std::unique_ptr<CManiaMainWnd>			m_mainWindow;
 	Banner									m_banner;
 	AppSettings								m_settings;
+	std::wstring							m_documentName;
 };
 
 

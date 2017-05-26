@@ -53,9 +53,6 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	m_toolbar.AutoSize();
 
 	UpdateMenu();
-
-	//UpdateBannerSize();
-
 	return 1L;
 }
 
@@ -127,9 +124,7 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 	// Selection marks
 
 	Gdiplus::RectF line1Rect, line2Rect;
-	banner->GetLineRects(banner->GetRect(&rcPageDA), line1Rect, line2Rect);
-
-	//gr.TranslateTransform(rc.left + BANNER_MARGIN_PX / 2, (rc.bottom-rc.top) / 2.0f - banner->GetRect(&rc).Height / 2.0f);
+	banner->GetLineRects(banner->CalcRect(&rcPageDA), line1Rect, line2Rect);
 
 	if (App()->GetMainWindow()->GetLineSelState().first || App()->GetBanner()->GetLayout() == BannerLayout::SingleLine)
 		DrawSelectionMark(gr, line1Rect);
@@ -508,21 +503,37 @@ LRESULT CManiaMainWnd::OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& b
 	CPrinter printer;
 	if (printer.OpenPrinterW(printDlg.GetDeviceName(), printDlg.GetDevMode()))
 	{
-		job.StartPrintJob(false, printer.m_hPrinter, printDlg.GetDevMode(), &m_printJobInfo, L"xxx", 0, 0);
+		int pageCountX = App()->GetBanner()->GetPageCountXAxis();
+		int pageCountY = App()->GetBanner()->GetPageCountYAxis();
+		int totalPageCount = pageCountX * pageCountY;
+		m_printJobInfo.m_pageCountX = pageCountX;
+		m_printJobInfo.m_pageCountY = pageCountY;
+
+		job.StartPrintJob(false, printer.m_hPrinter, 
+			printDlg.GetDevMode(), 
+			&m_printJobInfo, 
+			App()->GetDocumentName().c_str(),
+			0,
+			totalPageCount - 1);
 	}
+
 	GlobalFree(printDlg.m_pdex.hDevMode);
 	return 0L;
 }
 
 LRESULT CManiaMainWnd::OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	CPrintDialogEx printDlg;
-	printDlg.DoModal();
 	CPrinter printer;
-	if (printer.OpenPrinterW(printDlg.GetDeviceName(), printDlg.GetDevMode()))
+	if (printer.OpenDefaultPrinter(App()->GetDevMode()->m_pDevMode))
 	{
 		CPrintPreviewWindow* prnPreWnd = new CPrintPreviewWindow;
-		prnPreWnd->SetPrintPreviewInfo(printer, printDlg.GetDevMode(), &m_printJobInfo, 0, 0);
+		int pageCountX = App()->GetBanner()->GetPageCountXAxis();
+		int pageCountY = App()->GetBanner()->GetPageCountYAxis();
+		int totalPageCount = pageCountX * pageCountY;
+		m_printJobInfo.m_pageCountX = pageCountX;
+		m_printJobInfo.m_pageCountY = pageCountY;
+
+		prnPreWnd->SetPrintPreviewInfo(printer, App()->GetDevMode()->m_pDevMode, &m_printJobInfo, 0, totalPageCount-1);
 		prnPreWnd->SetPage(0);
 		XASSERT(prnPreWnd->Create(*this, rcDefault, L"Print Preview", WS_OVERLAPPEDWINDOW, WS_EX_CLIENTEDGE));
 		prnPreWnd->ShowWindow(SW_SHOWNORMAL);

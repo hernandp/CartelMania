@@ -9,7 +9,7 @@ using namespace Gdiplus;
 CartelManiaApp* CartelManiaApp::s_appPtr = nullptr;
 
 // ---------------------------------------------------------------------------
-CartelManiaApp::CartelManiaApp()
+CartelManiaApp::CartelManiaApp() : m_documentName(L"Untitled.cmdoc")
 {
 	dprintf(__FUNCTIONW__);
 	XASSERT(!s_appPtr);

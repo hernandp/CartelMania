@@ -32,7 +32,7 @@ Banner::~Banner()
 {
 }
 
-Gdiplus::RectF Banner::GetRect(const Gdiplus::RectF& rcClientArea) const
+Gdiplus::RectF Banner::CalcRect(const Gdiplus::RectF& rcClientArea) const
 {
 	REAL topMargin;
 	REAL leftMargin;
@@ -68,14 +68,14 @@ Gdiplus::RectF Banner::GetRect(const Gdiplus::RectF& rcClientArea) const
 	return RectF(rcClientArea.X + leftMargin, rcClientArea.Y + topMargin, width, height);
 }
 
-Gdiplus::RectF Banner::GetRect(const LPRECT rcClient) const
+Gdiplus::RectF Banner::CalcRect(const LPRECT rcClient) const
 {
 	const RectF rcClientArea((REAL) rcClient->left,
 		(REAL) rcClient->top,
 		(REAL) (rcClient->right - rcClient->left),
 		(REAL) (rcClient->bottom - rcClient->top));
 
-	return GetRect(rcClientArea);
+	return CalcRect(rcClientArea);
 }
 
 void Banner::SetPageCount(int xAxisPageCount, int yAxisPageCount)
@@ -91,7 +91,7 @@ Gdiplus::Size Banner::GetSizeMm() const
 }
 
 //----------------------------------------------------------------------------
-void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
+void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPageY)
 {
 	Graphics gr(hdc);
 	gr.SetPageUnit(Gdiplus::Unit::UnitPixel);
@@ -105,12 +105,38 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient)
 	if (App()->GetSettings()->debugDrawBoundingRects)
 		gr.DrawRectangle(&Pen(Color::Blue), rcClientArea);
 	
-	const RectF bannerRect = GetRect(rcClientArea);
+	const RectF bannerRect = CalcRect(rcClientArea);
+	REAL leftMargin = bannerRect.X - rcClientArea.X;
+	REAL topMargin = bannerRect.Y - rcClientArea.Y;
+
+	// Zoom on the banner area matching the page to print if necessary
+	//
+
+	gr.TranslateTransform(bannerRect.X, bannerRect.Y);
+
+	if (printPageX != -1 && printPageY != -1)
+	{
+		// To do zoom, let p = center of rectangle delimiting the graphics
+		// area targeted for the current page.
+		// p' = translate p to center of physical page
+		// scale to sx/sy factors matching the number of printout pages
+		
+		const REAL pageWidth = rcClientArea.Width / m_pageCountXAxis;
+		const REAL pageHeight = rcClientArea.Height / m_pageCountYAxis;
+
+		const REAL tx = (rcClientArea.Width * ((float) printPageX / m_pageCountXAxis));
+		const REAL ty = rcClientArea.Height* ((float) printPageY / m_pageCountYAxis);
+
+		// Take margin into account (if HorzFill != 100%)
+
+		gr.TranslateTransform(-leftMargin, -topMargin);
+		gr.ScaleTransform((float) m_pageCountXAxis, (float) m_pageCountYAxis);
+		gr.TranslateTransform(leftMargin, topMargin);
+		gr.TranslateTransform(-tx, -ty);
+	}
 
 	// The banner coordinate space is divided by number of lines, considering the current layout.
 	// Each line has it's own local space with x+/y+ pointing left and down in display.
-
-	gr.TranslateTransform(bannerRect.X, bannerRect.Y);
 
 	RectF line1Rect, line2Rect;
 	GetLineRects(bannerRect, line1Rect, line2Rect);
