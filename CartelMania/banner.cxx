@@ -9,24 +9,41 @@
 using namespace Gdiplus;
 using namespace std;
 
-//----------------------------------------------------------------------------
+//
+// Default banner values
+//
+
+const BannerLayout g_defaultBannerLayout = BannerLayout::SingleLine;
+const int g_defaultNumPagesWide = 2;
+const int g_defaultNumPagesTall = 1;
+const wchar_t* g_defaultShapeName = L"Rectangle";
+const wchar_t* g_defaultTopLineText =  L"CartelMania";
+const wchar_t* g_defaultBottomLineText = L"Line 2";
+const wchar_t* g_defaultFontFamilyName = L"Arial";
+const int g_defaultVerticalFill = 50;
+const int g_defaultHorizontalFill = 100;
+const auto g_defaultVAlign = BannerVerticalAlignment::Center;
+const auto g_defaultHAlign = BannerHorizontalAlignment::Center;
+const int  g_defaultEasyGlueMarginMm = 15;
 
 Banner::Banner() :
-m_layout(BannerLayout::SingleLine),
-m_pageCountXAxis(2),
-m_pageCountYAxis(1),
-m_shapeName(L"Rectangle"),
-m_topLine(make_unique<BannerLine>(DEFAULT_TOPLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
-m_bottomLine(make_unique<BannerLine>(DEFAULT_BOTTOMLINE_TEXT, DEFAULT_FONT_NAME, FontStyleRegular, make_unique<TextFxSolid>())),
+m_layout(g_defaultBannerLayout),
+m_pageCountXAxis(g_defaultNumPagesWide),
+m_pageCountYAxis(g_defaultNumPagesTall),
+m_shapeName(g_defaultShapeName),
+m_topLine(make_unique<BannerLine>(g_defaultTopLineText, g_defaultFontFamilyName, FontStyleRegular, make_unique<TextFxSolid>())),
+m_bottomLine(make_unique<BannerLine>(g_defaultBottomLineText, g_defaultFontFamilyName, FontStyleRegular, make_unique<TextFxSolid>())),
 m_scalePolicy(ScalePolicy::ScaleToFit),
-m_verticalFill(50),
-m_horizontalFill(100),
-m_verticalAlign(BannerVerticalAlignment::Center),
-m_horizontalAlign(BannerHorizontalAlignment::Center)
+m_verticalFill(g_defaultVerticalFill),
+m_horizontalFill(g_defaultHorizontalFill),
+m_verticalAlign(g_defaultVAlign),
+m_horizontalAlign(g_defaultHAlign),
+m_easyGluePrintActive(true),
+m_easyGlueMarginVisible(true),
+m_easyGlueMarginMm(g_defaultEasyGlueMarginMm)
 {	
 	
 }
-//----------------------------------------------------------------------------
 
 Banner::~Banner()
 {
@@ -90,7 +107,6 @@ Gdiplus::Size Banner::GetSizeMm() const
 		m_pageCountYAxis * App()->GetPrintableAreaMm().Height));
 }
 
-//----------------------------------------------------------------------------
 void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPageY)
 {
 	Graphics gr(hdc);
@@ -170,5 +186,3 @@ void Banner::RegenPathAndRedraw()
 	m_bottomLine->InvalidatePath();
 	InvalidateRect(*App()->GetMainWindow(), NULL, FALSE);
 }
-
-//----------------------------------------------------------------------------

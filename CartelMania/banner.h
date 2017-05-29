@@ -6,18 +6,6 @@
 class BannerLine;
 
 // ----------------------------------------------------------------------------
-//
-// Constants for banners and defaults
-//
-// ----------------------------------------------------------------------------
-
-const float BANNER_MARGIN_PX = 20;
-const float BANNER_HEIGHT_PCT = 50;
-const auto	DEFAULT_TOPLINE_TEXT{ L"CartelMania" };
-const auto	DEFAULT_BOTTOMLINE_TEXT{ L"Line 2" };
-const auto	DEFAULT_FONT_NAME{ L"Arial" };
-
-// ----------------------------------------------------------------------------
 
 enum class BannerLayout
 {
@@ -110,15 +98,19 @@ public:
 	int				GetHorizontalFill() const { return m_horizontalFill; }
 	void			SetHorizontalFill(int pct) { m_horizontalFill = pct;  }
 	void			SetVerticalFill(int pct) { m_verticalFill = pct; }
+	bool			IsEasyGlueActive() const { return m_easyGluePrintActive;  }
+	void			SetEasyGlueActive(bool f) { m_easyGluePrintActive = f; }
+	bool			IsEasyGlueMarginVisible() const { return m_easyGlueMarginVisible;  }
+	void			SetEasyGlueMarginVisible(bool f) { m_easyGlueMarginVisible = f; }
+	int 			GetEasyGlueMarginSizeMm() const { return m_easyGlueMarginMm; }
+	void			SetEasyGlueMarginSizeMm(int sizeInMillimeters) { m_easyGlueMarginMm = sizeInMillimeters; }
 
 	BannerVerticalAlignment GetVerticalAlignment() const { return m_verticalAlign; }
 	BannerHorizontalAlignment GetHorizontalAlignment() const { return m_horizontalAlign; }
 	void			SetVerticalAlignment(BannerVerticalAlignment vAlign) { m_verticalAlign = vAlign; }
 	void			SetHorizontalAlignment(BannerHorizontalAlignment hAlign) { m_horizontalAlign = hAlign; }
 
-
 private:
-
 	BannerLayout								m_layout;
 	int											m_pageCountXAxis;
 	int											m_pageCountYAxis;
@@ -130,4 +122,7 @@ private:
 	int											m_horizontalFill;
 	BannerVerticalAlignment						m_verticalAlign;
 	BannerHorizontalAlignment					m_horizontalAlign;
+	bool										m_easyGluePrintActive;
+	bool										m_easyGlueMarginVisible;
+	int											m_easyGlueMarginMm;
 };

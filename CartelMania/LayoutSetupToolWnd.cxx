@@ -8,6 +8,7 @@ BOOL LayoutSetupToolWnd::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 
 	m_spinPageCountX.Attach(GetDlgItem(IDC_SPIN_PAGECOUNT_X));
 	m_spinPageCountY.Attach(GetDlgItem(IDC_SPIN_PAGECOUNT_Y));
+	m_spinEasyGlueSize.Attach(GetDlgItem(IDC_SPIN_EASYGLUESIZE));
 	m_horzFillTrackbar.Attach(GetDlgItem(IDC_HORZFILL));
 	m_vertFillTrackbar.Attach(GetDlgItem(IDC_VERTFILL));
 
@@ -18,10 +19,21 @@ BOOL LayoutSetupToolWnd::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	m_spinPageCountX.SetPos(banner->GetPageCountXAxis());
 	m_spinPageCountY.SetPos(banner->GetPageCountYAxis());
 
+	m_spinEasyGlueSize.SetRange(5, 150);
+	m_spinEasyGlueSize.SetBuddy(GetDlgItem(IDC_EDIT_EASYGLUESIZE));
+	m_spinEasyGlueSize.SetPos(banner->GetEasyGlueMarginSizeMm());
+
+	m_chkEasyGlueVisible.Attach(GetDlgItem(IDC_CHECK_EASYGLUEVISIBLE));
+	m_chkEnableEasyGlue.Attach(GetDlgItem(IDC_CHECK_EASYGLUE));
+	m_chkEasyGlueVisible.SetCheck(banner->IsEasyGlueActive());
+	m_chkEnableEasyGlue.SetCheck(banner->IsEasyGlueMarginVisible());
+
 	m_horzFillTrackbar.SetRange(10, 100);
 	m_vertFillTrackbar.SetRange(10, 100);
 	m_horzFillTrackbar.SetPos(banner->GetHorizontalFill());
 	m_vertFillTrackbar.SetPos(banner->GetVerticalFill());
+
+	SetDlgItemText(IDC_UNITS, App()->GetMeasureStringShort().c_str());
 	
 	wchar_t hFillText[10], vFillText[10];
 	StringCchPrintf(hFillText, 10, L"%d%%", banner->GetHorizontalFill());
@@ -71,27 +83,9 @@ void LayoutSetupToolWnd::UpdateBannerSizeUI()
 {
 	Gdiplus::Size bannerSizeMm = App()->GetBanner()->GetSizeMm();
 
-	DWORD dwMeasureSystem;
-	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE | LOCALE_RETURN_NUMBER,
-		(LPWSTR)&dwMeasureSystem, sizeof(DWORD));
-
-	wchar_t measureSys[3] = { 0 };
-	if (dwMeasureSystem == 0)
-	{
-		// metric
-		measureSys[0] = L'm';
-		measureSys[1] = L'm';
-	}
-	else if (dwMeasureSystem == 1)
-	{
-		// U.S 
-		measureSys[0] = L'i';
-		measureSys[1] = L'n';
-	}
-		
 	wchar_t maxString[255];
 	StringCchPrintf(maxString, _countof(maxString), L"%d %s x %d %s", bannerSizeMm.Width,
-		measureSys, bannerSizeMm.Height, measureSys);
+		App()->GetMeasureStringShort().c_str(), bannerSizeMm.Height, App()->GetMeasureStringShort().c_str());
 	SetDlgItemText(IDC_BANNERSIZE_TEXT, maxString);
 }
 
@@ -135,6 +129,10 @@ void LayoutSetupToolWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBa
 			App()->GetMainWindow()->SetPageAreaDADirty();
 			App()->GetBanner()->Redraw();
 			break;
+
+		case IDC_SPIN_EASYGLUESIZE:
+			App()->GetBanner()->SetEasyGlueMarginSizeMm(m_spinEasyGlueSize.GetPos());
+			break;
 	}
 }
 
@@ -153,5 +151,22 @@ LRESULT LayoutSetupToolWnd::OnHAlignChange(WORD wNotifyCode, WORD wID, HWND hWnd
 	cboHAlign.Attach(GetDlgItem(IDC_HALIGN));
 	App()->GetBanner()->SetHorizontalAlignment(static_cast<BannerHorizontalAlignment>(cboHAlign.GetItemData(cboHAlign.GetCurSel())));
 	App()->GetBanner()->Redraw();
+	return 0L;
+}
+
+LRESULT LayoutSetupToolWnd::OnCheckEasyGlueClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+	BOOL f = m_chkEnableEasyGlue.GetCheck();
+	App()->GetBanner()->SetEasyGlueActive(f ? true : false);
+	m_chkEasyGlueVisible.EnableWindow(f);
+	m_spinEasyGlueSize.EnableWindow(f);
+	GetDlgItem(IDC_EDIT_EASYGLUESIZE).EnableWindow(f);
+	return 0L;
+}
+
+LRESULT LayoutSetupToolWnd::OnCheckEasyGlueVisibleClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+	BOOL f = m_chkEasyGlueVisible.GetCheck();
+	App()->GetBanner()->SetEasyGlueMarginVisible(f ? true : false);
 	return 0L;
 }

@@ -22,6 +22,8 @@ private:
 		MSG_WM_VSCROLL(OnVScroll);
 		COMMAND_HANDLER(IDC_VALIGN, CBN_SELCHANGE, OnVAlignChange);
 		COMMAND_HANDLER(IDC_HALIGN, CBN_SELCHANGE, OnHAlignChange);
+		COMMAND_HANDLER(IDC_CHECK_EASYGLUE, BN_CLICKED, OnCheckEasyGlueClick);
+		COMMAND_HANDLER(IDC_CHECK_EASYGLUEVISIBLE, BN_CLICKED, OnCheckEasyGlueVisibleClick);
 	END_MSG_MAP()
 
 	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
@@ -33,11 +35,16 @@ private:
 	void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBar);
 	LRESULT OnVAlignChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnHAlignChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnCheckEasyGlueClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnCheckEasyGlueVisibleClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	CEdit			m_pageCountX;
 	CEdit			m_pageCountY;
 	CUpDownCtrl		m_spinPageCountX;
 	CUpDownCtrl		m_spinPageCountY;
+	CUpDownCtrl		m_spinEasyGlueSize;
+	CButton			m_chkEasyGlueVisible;
+	CButton			m_chkEnableEasyGlue;
 	CTrackBarCtrl	m_horzFillTrackbar;
 	CTrackBarCtrl	m_vertFillTrackbar;
 	bool			m_bInitialized = false;

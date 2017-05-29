@@ -28,6 +28,7 @@ public:
 	std::wstring			GetDocumentName() const { return m_documentName;  }
 	CDevMode*				GetDevMode() { return &m_devMode;  }
 	AppSettings*			GetSettings() { return &m_settings;  }
+	std::wstring			GetMeasureStringShort() const;
 	static CartelManiaApp*	Instance() { return s_appPtr;  }
 	virtual ~CartelManiaApp();
 

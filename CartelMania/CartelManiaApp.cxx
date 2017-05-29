@@ -8,6 +8,8 @@ using namespace Gdiplus;
 
 CartelManiaApp* CartelManiaApp::s_appPtr = nullptr;
 
+const float MM_PER_INCH = 25.4f;
+
 // ---------------------------------------------------------------------------
 CartelManiaApp::CartelManiaApp() : m_documentName(L"Untitled.cmdoc")
 {
@@ -38,8 +40,8 @@ Gdiplus::Size CartelManiaApp::GetPrintableAreaMm() const
 	int dpiY = printerDC.GetDeviceCaps(LOGPIXELSY);
 	int cxPrintableArea = printerDC.GetDeviceCaps(HORZRES);
 	int cyPrintableArea = printerDC.GetDeviceCaps(VERTRES);
-	float cxPrintableAreaMm = cxPrintableArea / dpiX  * 25.4f;
-	float cyPrintableAreaMm = cyPrintableArea / dpiY  * 25.4f;
+	float cxPrintableAreaMm = cxPrintableArea / dpiX  * MM_PER_INCH;
+	float cyPrintableAreaMm = cyPrintableArea / dpiY  * MM_PER_INCH;
 
 	if (m_devMode.m_pDevMode->dmOrientation == DMORIENT_PORTRAIT)
 	{
@@ -156,4 +158,26 @@ DWORD CartelManiaApp::SetupPrinter()
 	}
 
 	return GetLastError();
+}
+
+
+std::wstring CartelManiaApp::GetMeasureStringShort() const
+{
+	DWORD dwMeasureSystem;
+	GetLocaleInfo(LOCALE_USER_DEFAULT, LOCALE_IMEASURE | LOCALE_RETURN_NUMBER,
+		(LPWSTR) &dwMeasureSystem, sizeof(DWORD));
+
+	if (dwMeasureSystem == 0)
+	{
+		return L"mm";
+	}
+	else if (dwMeasureSystem == 1)
+	{
+		// U.S 
+		return L"in";
+	}
+	else
+	{
+		throw(std::runtime_error("Unexpected measure from locale"));
+	}
 }
