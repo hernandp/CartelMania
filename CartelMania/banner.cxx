@@ -149,13 +149,13 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPa
 		const REAL pageWidth = rcClientArea.Width / m_pageCountXAxis;
 		const REAL pageHeight = rcClientArea.Height / m_pageCountYAxis;
 
-		const REAL tx = (rcClientArea.Width * ((float) printPageX / m_pageCountXAxis));
-		const REAL ty = rcClientArea.Height* ((float) printPageY / m_pageCountYAxis);
+		const REAL tx = rcClientArea.Width * ((float) printPageX / m_pageCountXAxis);
+		const REAL ty = rcClientArea.Height * ((float) printPageY / m_pageCountYAxis);
 
-		// Take margin into account (if HorzFill != 100%)
+		float sx = (App()->GetPrintableAreaMm().Width * m_pageCountXAxis) / (float)GetSizeMm().Width;
 
 		gr.TranslateTransform(-leftMargin, -topMargin);
-		gr.ScaleTransform((float) m_pageCountXAxis, (float) m_pageCountYAxis);
+		gr.ScaleTransform(sx * m_pageCountXAxis, (float) m_pageCountYAxis);
 		gr.TranslateTransform(leftMargin, topMargin);
 		gr.TranslateTransform(-tx, -ty);
 	}

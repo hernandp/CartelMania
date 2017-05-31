@@ -110,7 +110,7 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 
 	auto pageCountX = banner->GetPageCountXAxis();
 	auto pageCountY = banner->GetPageCountYAxis();	
-	float easyGlueMarginMm = (float) banner->GetEasyGlueMarginSizeMm();
+	float easyGlueMarginMm = (float) banner->IsEasyGlueActive() ? banner->GetEasyGlueMarginSizeMm() : 0.0f;
 	float xPixelsPerMm, yPixelsPerMm;
 
 	CalcPixelsPerMm(xPixelsPerMm, yPixelsPerMm);
