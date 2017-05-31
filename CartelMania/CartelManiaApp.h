@@ -8,6 +8,8 @@
 #include "ShapeTable.h"
 #include <memory>
 
+const float MM_PER_INCH = 25.4f;
+
 class CartelManiaApp
 {
 public:	

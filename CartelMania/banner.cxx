@@ -117,6 +117,8 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPa
 	gr.SetPageUnit(Gdiplus::Unit::UnitPixel);
 	gr.SetSmoothingMode(Gdiplus::SmoothingModeHighQuality);
 
+	bool isPrinting = (printPageX != -1) && (printPageY != -1);
+
 	const RectF rcClientArea((REAL) rcClient->left,
 		(REAL) rcClient->top,
 		(REAL) (rcClient->right - rcClient->left),
@@ -134,7 +136,10 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPa
 
 	gr.TranslateTransform(bannerRect.X, bannerRect.Y);
 
-	if (printPageX != -1 && printPageY != -1)
+	const REAL cpxEasyGlueMargin = m_easyGlueMarginMm / MM_PER_INCH * gr.GetDpiX();
+	const REAL cpyEasyGlueMargin = m_easyGlueMarginMm / MM_PER_INCH * gr.GetDpiY();
+
+	if (isPrinting)
 	{
 		// To do zoom, let p = center of rectangle delimiting the graphics
 		// area targeted for the current page.
@@ -167,7 +172,25 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPa
 	{	
 		gr.TranslateTransform(0, line1Rect.Height);
 		m_bottomLine->DrawOn(gr, line2Rect);
-	}		
+	}
+
+	// Draw EasyGlue Margin, if visible and active
+
+	if (isPrinting && m_easyGluePrintActive && m_easyGlueMarginVisible)
+	{
+		gr.ResetTransform();
+
+		Pen pen(Color::Black, 0.25f / MM_PER_INCH * gr.GetDpiY());
+		if (printPageX < m_pageCountXAxis - 1)
+		{
+			gr.DrawLine(&pen, rcClientArea.Width - cpxEasyGlueMargin, 0.0f, rcClientArea.Width - cpxEasyGlueMargin, rcClientArea.Height);
+		}
+
+		if (printPageY < m_pageCountYAxis - 1)
+		{
+			gr.DrawLine(&pen, 0.0f, rcClientArea.Height - cpyEasyGlueMargin, 0.0f, rcClientArea.Height - cpyEasyGlueMargin);
+		}
+	}
 }
 
 void Banner::GetLineRects(const RectF& bannerRect, RectF& rcLine1, RectF& rcLine2) const

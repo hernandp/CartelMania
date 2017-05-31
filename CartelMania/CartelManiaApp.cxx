@@ -8,7 +8,6 @@ using namespace Gdiplus;
 
 CartelManiaApp* CartelManiaApp::s_appPtr = nullptr;
 
-const float MM_PER_INCH = 25.4f;
 
 // ---------------------------------------------------------------------------
 CartelManiaApp::CartelManiaApp() : m_documentName(L"Untitled.cmdoc")

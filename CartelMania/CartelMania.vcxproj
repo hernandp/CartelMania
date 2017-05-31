@@ -132,6 +132,7 @@
       <FloatingPointExceptions>false</FloatingPointExceptions>
       <AdditionalIncludeDirectories>$(SolutionDir)wtl\include;C:\Program Files (x86)\Visual Leak Detector\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <StringPooling>true</StringPooling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
