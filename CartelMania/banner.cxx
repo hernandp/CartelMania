@@ -103,8 +103,12 @@ void Banner::SetPageCount(int xAxisPageCount, int yAxisPageCount)
 
 Gdiplus::Size Banner::GetSizeMm() const
 {	
-	return (Gdiplus::Size(m_pageCountXAxis * App()->GetPrintableAreaMm().Width,
-		m_pageCountYAxis * App()->GetPrintableAreaMm().Height));
+	const int printW = App()->GetPrintableAreaMm().Width;
+	const int printH = App()->GetPrintableAreaMm().Height;
+	const int easyGlueMargin = m_easyGluePrintActive ? m_easyGlueMarginMm : 0;
+	return (Gdiplus::Size(
+		((m_pageCountXAxis - 1)  * (printW - easyGlueMargin)) +  printW,
+		((m_pageCountYAxis - 1)  * (printH - easyGlueMargin)) +  printH));
 }
 
 void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPageY)

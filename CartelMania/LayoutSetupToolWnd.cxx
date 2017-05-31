@@ -132,6 +132,7 @@ void LayoutSetupToolWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBa
 
 		case IDC_SPIN_EASYGLUESIZE:
 			App()->GetBanner()->SetEasyGlueMarginSizeMm(m_spinEasyGlueSize.GetPos());
+			UpdateBannerSizeUI();
 			break;
 	}
 }
@@ -161,6 +162,7 @@ LRESULT LayoutSetupToolWnd::OnCheckEasyGlueClick(WORD wNotifyCode, WORD wID, HWN
 	m_chkEasyGlueVisible.EnableWindow(f);
 	m_spinEasyGlueSize.EnableWindow(f);
 	GetDlgItem(IDC_EDIT_EASYGLUESIZE).EnableWindow(f);
+	UpdateBannerSizeUI();
 	return 0L;
 }
 
