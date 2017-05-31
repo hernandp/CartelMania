@@ -83,6 +83,14 @@ int CManiaMainWnd::GetClientRect(_Out_ LPRECT lpRect) const
 	return TRUE;
 }
 
+void CManiaMainWnd::CalcPixelsPerMm(float& horizontalRatio, float& verticalRatio)
+{
+	CRect rc;
+	GetPageDisplayAreaRect(&rc);
+	horizontalRatio = float(rc.Width()) / float(App()->GetBanner()->GetSizeMm().Width);
+	verticalRatio = float(rc.Height()) / float(App()->GetBanner()->GetSizeMm().Height);
+}
+
 void CManiaMainWnd::DoPaint(CDCHandle hDC)
 {
 	DrawClientArea(hDC);
@@ -100,25 +108,26 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 	Gdiplus::Pen dashPen(Gdiplus::Color::Gray, 2);
 	dashPen.SetDashStyle(Gdiplus::DashStyleDot);
 
-	auto pageCountX = App()->GetBanner()->GetPageCountXAxis();
-	auto pageCountY = App()->GetBanner()->GetPageCountYAxis();
+	auto pageCountX = banner->GetPageCountXAxis();
+	auto pageCountY = banner->GetPageCountYAxis();	
+	float easyGlueMarginMm = (float) banner->GetEasyGlueMarginSizeMm();
+	float xPixelsPerMm, yPixelsPerMm;
 
+	CalcPixelsPerMm(xPixelsPerMm, yPixelsPerMm);
+	
+	int x = rcPageDA.left;
+	
 	for (int i = 1; i < pageCountX; ++i)
 	{
-		gr.DrawLine(&dashPen,
-			rcPageDA.left + (int) (rcPageDA.Width() * ((float) i / pageCountX)),
-			rcPageDA.top,
-			rcPageDA.left + (int) (rcPageDA.Width() * ((float) i / pageCountX)),
-			rcPageDA.bottom);
+		x += int((App()->GetPrintableAreaMm().Width * xPixelsPerMm) - (easyGlueMarginMm * xPixelsPerMm));
+		gr.DrawLine(&dashPen, x, rcPageDA.top, x, rcPageDA.bottom);
 	}
 
+	int y = rcPageDA.top;
 	for (int i = 1; i < pageCountY; ++i)
 	{
-		gr.DrawLine(&dashPen,
-			rcPageDA.left,
-			rcPageDA.top + (int) (rcPageDA.Height() * ((float) i / pageCountY)),
-			rcPageDA.right,
-			rcPageDA.top + (int) (rcPageDA.Height() * ((float) i / pageCountY)));
+		y += int((App()->GetPrintableAreaMm().Height * yPixelsPerMm) - (easyGlueMarginMm * yPixelsPerMm));
+		gr.DrawLine(&dashPen, rcPageDA.left, y, rcPageDA.right, y);
 	}
 
 	// Selection marks

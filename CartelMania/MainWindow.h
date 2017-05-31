@@ -78,6 +78,7 @@ private:
 	void	DoPageSetupDialog();
 	void	DrawClientArea(CDCHandle hDC);
 	bool	GetPageDisplayAreaRect(RECT*);
+	void	CalcPixelsPerMm(float& horizontalRatio, float& verticalRatio);
 
 	LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);

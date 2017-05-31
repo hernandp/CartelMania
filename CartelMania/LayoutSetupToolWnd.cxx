@@ -125,16 +125,16 @@ void LayoutSetupToolWnd::OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBa
 		case IDC_SPIN_PAGECOUNT_X:
 		case IDC_SPIN_PAGECOUNT_Y:
 			App()->GetBanner()->SetPageCount(m_spinPageCountX.GetPos(), m_spinPageCountY.GetPos());
-			UpdateBannerSizeUI();
-			App()->GetMainWindow()->SetPageAreaDADirty();
-			App()->GetBanner()->Redraw();
 			break;
 
 		case IDC_SPIN_EASYGLUESIZE:
 			App()->GetBanner()->SetEasyGlueMarginSizeMm(m_spinEasyGlueSize.GetPos());
-			UpdateBannerSizeUI();
 			break;
 	}
+
+	UpdateBannerSizeUI();
+	App()->GetMainWindow()->SetPageAreaDADirty();
+	App()->GetBanner()->Redraw();
 }
 
 LRESULT LayoutSetupToolWnd::OnVAlignChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
@@ -163,6 +163,8 @@ LRESULT LayoutSetupToolWnd::OnCheckEasyGlueClick(WORD wNotifyCode, WORD wID, HWN
 	m_spinEasyGlueSize.EnableWindow(f);
 	GetDlgItem(IDC_EDIT_EASYGLUESIZE).EnableWindow(f);
 	UpdateBannerSizeUI();
+	App()->GetMainWindow()->SetPageAreaDADirty();
+	App()->GetBanner()->Redraw();
 	return 0L;
 }
 
