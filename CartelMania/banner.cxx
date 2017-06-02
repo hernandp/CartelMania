@@ -144,20 +144,24 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPa
 		// To do zoom, let p = center of rectangle delimiting the graphics
 		// area targeted for the current page.
 		// p' = translate p to center of physical page
-		// scale to sx/sy factors matching the number of printout pages
-		
-		const REAL pageWidth = rcClientArea.Width / m_pageCountXAxis;
-		const REAL pageHeight = rcClientArea.Height / m_pageCountYAxis;
+		// scale to sx/sy factors matching the number of printout pages		
+	
+		// Calculate the desired view area to focus on
 
-		const REAL tx = rcClientArea.Width * ((float) printPageX / m_pageCountXAxis);
-		const REAL ty = rcClientArea.Height * ((float) printPageY / m_pageCountYAxis);
+		float offsetEasyGlueX = ((printPageX > 0) ? cpxEasyGlueMargin : 0.0f);
+		float offsetEasyGlueY = ((printPageY > 0) ? cpxEasyGlueMargin : 0.0f);
+		float pctX = ((float) printPageX / m_pageCountXAxis);
+		float pctY = ((float) printPageY / m_pageCountYAxis);
 
-		float sx = (App()->GetPrintableAreaMm().Width * m_pageCountXAxis) / (float)GetSizeMm().Width;
+		const float sx = (float) GetSizeMm().Width / (App()->GetPrintableAreaMm().Width * m_pageCountXAxis);
+		const float sy = (float) GetSizeMm().Height / (App()->GetPrintableAreaMm().Height * m_pageCountYAxis);		
+		const float tx = printPageX * (-rcClientArea.Width + cpxEasyGlueMargin);
+		const float ty = printPageY * (-rcClientArea.Height + cpyEasyGlueMargin);
 
 		gr.TranslateTransform(-leftMargin, -topMargin);
-		gr.ScaleTransform(sx * m_pageCountXAxis, (float) m_pageCountYAxis);
+		gr.TranslateTransform(tx, ty);
+		gr.ScaleTransform(m_pageCountXAxis * sx, m_pageCountYAxis * sy);
 		gr.TranslateTransform(leftMargin, topMargin);
-		gr.TranslateTransform(-tx, -ty);
 	}
 
 	// The banner coordinate space is divided by number of lines, considering the current layout.
@@ -181,6 +185,8 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPa
 		gr.ResetTransform();
 
 		Pen pen(Color::Black, 0.25f / MM_PER_INCH * gr.GetDpiY());
+		pen.SetDashStyle(DashStyleDashDotDot);
+
 		if (printPageX < m_pageCountXAxis - 1)
 		{
 			gr.DrawLine(&pen, rcClientArea.Width - cpxEasyGlueMargin, 0.0f, rcClientArea.Width - cpxEasyGlueMargin, rcClientArea.Height);

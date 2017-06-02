@@ -543,7 +543,7 @@ LRESULT CManiaMainWnd::OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 		m_printJobInfo.m_pageCountY = pageCountY;
 
 		prnPreWnd->SetPrintPreviewInfo(printer, App()->GetDevMode()->m_pDevMode, &m_printJobInfo, 0, totalPageCount-1);
-		prnPreWnd->SetPage(0);
+		prnPreWnd->SetPage(1);
 		XASSERT(prnPreWnd->Create(*this, rcDefault, L"Print Preview", WS_OVERLAPPEDWINDOW, WS_EX_CLIENTEDGE));
 		prnPreWnd->ShowWindow(SW_SHOWNORMAL);
 	}
