@@ -42,6 +42,7 @@ private:
 
 	static CartelManiaApp*					s_appPtr;
 	CPrinter								m_printer;
+	CDC										m_printerDC;
 	CDevMode								m_devMode;
 	ColorTable								m_colorTable;
 	ShapeTable								m_shapeTable;

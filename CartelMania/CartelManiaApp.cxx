@@ -34,11 +34,10 @@ Gdiplus::Size CartelManiaApp::GetPaperSizeMm() const
 
 Gdiplus::Size CartelManiaApp::GetPrintableAreaMm() const
 {
-	CDC printerDC(m_printer.CreatePrinterDC());
-	int dpiX = printerDC.GetDeviceCaps(LOGPIXELSX);
-	int dpiY = printerDC.GetDeviceCaps(LOGPIXELSY);
-	int cxPrintableArea = printerDC.GetDeviceCaps(HORZRES);
-	int cyPrintableArea = printerDC.GetDeviceCaps(VERTRES);
+	int dpiX = m_printerDC.GetDeviceCaps(LOGPIXELSX);
+	int dpiY = m_printerDC.GetDeviceCaps(LOGPIXELSY);
+	int cxPrintableArea = m_printerDC.GetDeviceCaps(HORZRES);
+	int cyPrintableArea = m_printerDC.GetDeviceCaps(VERTRES);
 	float cxPrintableAreaMm = cxPrintableArea / dpiX  * MM_PER_INCH;
 	float cyPrintableAreaMm = cyPrintableArea / dpiY  * MM_PER_INCH;
 
@@ -152,7 +151,14 @@ DWORD CartelManiaApp::SetupPrinter()
 
 			GlobalFree(hDevMode);
 		}
-		
+
+		m_printerDC = m_printer.CreatePrinterDC();
+		if (!m_printerDC.m_hDC)
+		{
+			dprintf(L"ERROR: Cannot get printer DC. (Win32Err=%d)\n", GetLastError());
+			return GetLastError();
+		}
+
 		return ERROR_SUCCESS;
 	}
 
