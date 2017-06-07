@@ -30,7 +30,7 @@ BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 
 void ColorSelectToolWnd::CreateControls()
 {
-	TextFx* textrend = App()->GetBanner()->GetTopLine()->GetTextFx();
+	TextFx* textrend = App()->GetMainWindow()->GetBannerLineFromSelState()->GetTextFx();
 
 	const int colPropCount = textrend->GetColorPropertyCount();
 	
@@ -83,7 +83,7 @@ void ColorSelectToolWnd::CreateControls()
 	AdjustWindowRectEx(&rcDesiredClient, this->GetStyle(), FALSE, this->GetExStyle());
 
 	SetWindowPos(NULL, 0, 0, rcDesiredClient.right - rcDesiredClient.left,
-		rcDesiredClient.bottom - rcDesiredClient.top, SWP_NOREPOSITION | SWP_NOZORDER);
+		rcDesiredClient.bottom - rcDesiredClient.top, SWP_NOREPOSITION | SWP_NOZORDER | SWP_NOMOVE);
 }
 
 HWND ColorSelectToolWnd::Create(HWND hWndParent)
@@ -118,7 +118,7 @@ LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 			ColorPropertyClass colorPropClass = (ColorPropertyClass) comboBox->GetTag().intVal;
 			wstring colorValue = comboBox->GetCurSelColorName();
 
-			App()->GetBanner()->GetTopLine()->GetTextFx()->SetColorPropertyValue(colorPropClass, colorValue);
+			App()->GetMainWindow()->GetBannerLineFromSelState()->GetTextFx()->SetColorPropertyValue(colorPropClass, colorValue);
 		}
 
 		App()->GetBanner()->RegenPathAndRedraw();
@@ -131,4 +131,9 @@ void ColorSelectToolWnd::OnMove(CPoint pt)
 {
 	App()->GetSettings()->lastColorEditToolPos.x = pt.x;
 	App()->GetSettings()->lastColorEditToolPos.y = pt.y;
+}
+
+LRESULT ColorSelectToolWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+{
+	return DefWindowProc(WM_NCACTIVATE, TRUE, lParam);
 }

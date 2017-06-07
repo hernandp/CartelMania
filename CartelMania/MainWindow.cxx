@@ -33,13 +33,15 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	XASSERT(m_statusBar.Create(*this, rcDefault, NULL, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, NULL, IDC_STATUSBAR));
 	XASSERT(m_imgList.Create(24, 24, ILC_COLOR16 | ILC_MASK, 10, 10));
 	XASSERT(m_toolbar.Create(*this, 0, nullptr, WS_VISIBLE | WS_CHILD, TBSTYLE_FLAT, IDC_TOOLBAR));
+
+	m_imgList.AddIcon(LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_COLORTOOLBOX)));
 	m_toolbar.SetImageList(m_imgList, 0);
 	m_toolbar.LoadStdImages(IDB_STD_LARGE_COLOR);
 
 	const DWORD buttonStyles = BTNS_AUTOSIZE;
 	TBBUTTON tbButtons[] =
 	{
-		{ MAKELONG(STD_FILENEW,  0),  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ 0,  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_FILESAVE,  0), ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_FIND,      0), ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_FIND,      0), ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
@@ -81,16 +83,51 @@ LRESULT CManiaMainWnd::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 	{
 		m_lineSelState.first = true;
 		m_lineSelState.second = false;
-		Invalidate(FALSE);
+		InvalidatePageDA();
+		NotifyActiveToolboxes();
 	}
 	else if (banner->GetLayout() != BannerLayout::SingleLine && line2Rect.Contains((float)pt.x, (float)pt.y))
 	{
 		m_lineSelState.first = false;
 		m_lineSelState.second = true;
-		Invalidate(FALSE);
+		InvalidatePageDA();
+		NotifyActiveToolboxes();
 	}
 
 	return 0L;
+}
+
+LRESULT CManiaMainWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+{
+	// The window to be activated is one of our toolboxes? Do not show us as inactive,
+	// as it's common with floating toolboxes behavior in Windows applications
+	//
+
+	HWND hWndOther = reinterpret_cast<HWND>(lParam);
+
+	if (hWndOther && 
+		(hWndOther == m_shapeSelectToolWnd.m_hWnd ||
+		 hWndOther == m_textEditToolWnd.m_hWnd ||
+		 hWndOther == m_colorSelectToolWnd.m_hWnd)
+		)
+	{
+		return DefWindowProc(WM_NCACTIVATE, TRUE, lParam);
+	}
+
+	return DefWindowProc(WM_NCACTIVATE, wParam, lParam);
+}
+
+void CManiaMainWnd::NotifyActiveToolboxes()
+{
+	if (m_colorSelectToolWnd)
+		m_colorSelectToolWnd.UpdateUI();
+}
+
+void CManiaMainWnd::InvalidatePageDA()
+{
+	RECT rc;
+	GetPageDisplayAreaRect(&rc);
+	InvalidateRect(&rc, FALSE);
 }
 
 int CManiaMainWnd::GetClientRect(_Out_ LPRECT lpRect) const
@@ -490,11 +527,36 @@ void CManiaMainWnd::ApplyFx(U... v)
 		App()->GetBanner()->GetBottomLine()->SetTextFx(make_unique<T>(v...));
 }
 
+BannerLine* CManiaMainWnd::GetBannerLineFromSelState()
+{
+	if (m_lineSelState.first)
+		return App()->GetBanner()->GetTopLine();
+	else if (m_lineSelState.second)
+		return App()->GetBanner()->GetBottomLine();
+	else
+		return nullptr; // This should not happen.
+}
+
 LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
+	auto lastX = App()->GetSettings()->lastColorEditToolPos.x;
+	auto lastY = App()->GetSettings()->lastColorEditToolPos.y;
+
+	if (lastX == -1 && lastY == -1)
+	{
+		// Position defaults
+
+		RECT rc;
+		GetClientRect(&rc);
+		ClientToScreen(&rc);
+		lastX = rc.left;
+		lastY = rc.top;
+	}
+
 	if (m_colorSelectToolWnd.m_hWnd == nullptr)
 		XASSERT(m_colorSelectToolWnd.Create(m_hWnd));
-
+	
+	m_colorSelectToolWnd.SetWindowPos(nullptr, lastX, lastY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
 	m_colorSelectToolWnd.ShowWindow(SW_SHOWNA);
 	return 0L;
 }

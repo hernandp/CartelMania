@@ -21,15 +21,15 @@ private:
 		MSG_WM_CREATE(OnCreate)
 		MSG_WM_MOVE(OnMove)
 		MESSAGE_HANDLER(WM_COMMAND, OnCommand)
+		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
 		REFLECT_NOTIFICATIONS_EX()
 	END_MSG_MAP()
 
-
 	LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
-
-	int  OnCreate(LPCREATESTRUCT);
-	void OnMove(CPoint pt);
-	void CreateControls();
+	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+	int		OnCreate(LPCREATESTRUCT);
+	void	OnMove(CPoint pt);
+	void	CreateControls();
 
 	std::vector<CStatic>							m_labelCtlList;
 	std::vector<std::unique_ptr<CmColorComboBox>>	m_comboCtlList;

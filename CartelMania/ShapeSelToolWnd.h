@@ -21,13 +21,14 @@ private:
 		MSG_WM_MOVE(OnMove)
 		MSG_WM_SIZE(OnSize)
 		MESSAGE_HANDLER(WM_COMMAND, OnCommand)
+		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
 		REFLECT_NOTIFICATIONS_EX()
 	END_MSG_MAP()
 
 	const int LISTBOX_MARGIN = 2;
 
 	LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
-
+	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	int  OnCreate(LPCREATESTRUCT);
 	void OnMove(CPoint pt);
 	void OnSize(UINT type, CSize size);

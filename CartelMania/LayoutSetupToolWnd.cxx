@@ -174,3 +174,8 @@ LRESULT LayoutSetupToolWnd::OnCheckEasyGlueVisibleClick(WORD wNotifyCode, WORD w
 	App()->GetBanner()->SetEasyGlueMarginVisible(f ? true : false);
 	return 0L;
 }
+
+LRESULT LayoutSetupToolWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+{
+	return DefWindowProc();
+}

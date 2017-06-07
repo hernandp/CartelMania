@@ -26,6 +26,7 @@ public:
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_SIZE, OnSize)
 		MESSAGE_HANDLER(WM_LBUTTONDOWN, OnLButtonDown)
+		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
 
 		COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
 
@@ -68,9 +69,9 @@ public:
 	END_MSG_MAP()
 
 	std::pair<bool, bool>	GetLineSelState() const { return m_lineSelState; }
-
-	int		GetClientRect(_Out_ LPRECT lpRect) const;
-	void	SetPageAreaDADirty() { m_pageDADirty = true; }
+	int						GetClientRect(_Out_ LPRECT lpRect) const;
+	void					SetPageAreaDADirty() { m_pageDADirty = true; }
+	BannerLine*				GetBannerLineFromSelState();
 
 private:
 	void	DoPaint(CDCHandle hDC);
@@ -79,12 +80,15 @@ private:
 	void	DrawClientArea(CDCHandle hDC);
 	bool	GetPageDisplayAreaRect(RECT*);
 	void	CalcPixelsPerMm(float& horizontalRatio, float& verticalRatio);
+	void	NotifyActiveToolboxes();
+	void	InvalidatePageDA();
 
 	LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 
 	LRESULT OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnFileExit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);

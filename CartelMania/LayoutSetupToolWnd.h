@@ -20,6 +20,7 @@ private:
 		MSG_WM_CLOSE(OnClose);
 		MSG_WM_HSCROLL(OnHScroll);
 		MSG_WM_VSCROLL(OnVScroll);
+		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate);
 		COMMAND_HANDLER(IDC_VALIGN, CBN_SELCHANGE, OnVAlignChange);
 		COMMAND_HANDLER(IDC_HALIGN, CBN_SELCHANGE, OnHAlignChange);
 		COMMAND_HANDLER(IDC_CHECK_EASYGLUE, BN_CLICKED, OnCheckEasyGlueClick);
@@ -37,7 +38,8 @@ private:
 	LRESULT OnHAlignChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnCheckEasyGlueClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnCheckEasyGlueVisibleClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-
+	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+	
 	CEdit			m_pageCountX;
 	CEdit			m_pageCountY;
 	CUpDownCtrl		m_spinPageCountX;

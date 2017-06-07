@@ -22,12 +22,14 @@ private:
 		MSG_WM_MOVE(OnMove);
 		COMMAND_HANDLER(IDC_EDIT1, EN_CHANGE, OnEdit1Change)
 		COMMAND_HANDLER(IDC_EDIT2, EN_CHANGE, OnEdit2Change)
-	MSG_WM_CLOSE(OnClose);
+		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
+		MSG_WM_CLOSE(OnClose);
 	END_MSG_MAP()
 
 	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
 	void OnMove(CPoint pos);
 	void OnClose();
+	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnEdit1Change(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnEdit2Change(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 

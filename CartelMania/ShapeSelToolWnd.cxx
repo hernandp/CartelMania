@@ -61,3 +61,8 @@ void ShapeSelectToolWnd::OnSize(UINT type, CSize size)
 	App()->GetSettings()->lastShapeEditToolSize.x = size.cx;
 	App()->GetSettings()->lastShapeEditToolSize.y = size.cy;
 }
+
+LRESULT ShapeSelectToolWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+{
+	return DefWindowProc(WM_NCACTIVATE, TRUE, lParam);
+}

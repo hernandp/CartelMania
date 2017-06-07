@@ -80,3 +80,8 @@ void TextEditToolWnd::LayoutUpdate(BannerLayout newLayout)
 		m_edit2.ShowWindow(SW_SHOW);
 	}
 }
+
+LRESULT TextEditToolWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+{
+	return TRUE;// DefWindowProc(WM_NCACTIVATE, TRUE, lParam);
+}
