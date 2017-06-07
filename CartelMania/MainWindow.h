@@ -25,7 +25,7 @@ public:
 		MESSAGE_HANDLER(WM_DESTROY, OnDestroy)
 		MESSAGE_HANDLER(WM_CREATE, OnCreate)
 		MESSAGE_HANDLER(WM_SIZE, OnSize)
-		MESSAGE_HANDLER(WM_MOUSEMOVE, OnMouseMove)
+		MESSAGE_HANDLER(WM_LBUTTONDOWN, OnLButtonDown)
 
 		COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
 
@@ -84,7 +84,7 @@ private:
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
-	LRESULT OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
+	LRESULT OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 
 	LRESULT OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnFileExit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -120,7 +120,7 @@ private:
 	CPrinter				m_printer;
 	CmPrintJobInfo			m_printJobInfo;
 	CStatusBarCtrl			m_statusBar;
-	std::pair<bool, bool>	m_lineSelState = { true,true };
+	std::pair<bool, bool>	m_lineSelState = { true,false };
 	RECT					m_cachedPageDA;
 	bool					m_pageDADirty = true;
 };

@@ -64,12 +64,32 @@ LRESULT CManiaMainWnd::OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHa
 	return 0L;
 }
 
-LRESULT CManiaMainWnd::OnMouseMove(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
+LRESULT CManiaMainWnd::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
-	int xPos = GET_X_LPARAM(lParam);
-	int yPos = GET_Y_LPARAM(lParam);
+	POINT pt;
+	pt.x = GET_X_LPARAM(lParam);
+	pt.y = GET_Y_LPARAM(lParam);
 
-	//App()->GetBanner()->GetLineRects()
+	auto banner = App()->GetBanner();
+
+	CRect rcPageDA;
+	Gdiplus::RectF line1Rect, line2Rect;
+	GetPageDisplayAreaRect(&rcPageDA);
+	banner->GetLineRects(banner->CalcRect(&rcPageDA), line1Rect, line2Rect, true);
+
+	if (line1Rect.Contains((float)pt.x, (float)pt.y))
+	{
+		m_lineSelState.first = true;
+		m_lineSelState.second = false;
+		Invalidate(FALSE);
+	}
+	else if (banner->GetLayout() != BannerLayout::SingleLine && line2Rect.Contains((float)pt.x, (float)pt.y))
+	{
+		m_lineSelState.first = false;
+		m_lineSelState.second = true;
+		Invalidate(FALSE);
+	}
+
 	return 0L;
 }
 
@@ -133,15 +153,21 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 	// Selection marks
 
 	Gdiplus::RectF line1Rect, line2Rect;
-	banner->GetLineRects(banner->CalcRect(&rcPageDA), line1Rect, line2Rect);
+	Gdiplus::RectF bannerRect = banner->CalcRect(&rcPageDA);
+	banner->GetLineRects(bannerRect, line1Rect, line2Rect, true);
 
 	if (App()->GetMainWindow()->GetLineSelState().first || App()->GetBanner()->GetLayout() == BannerLayout::SingleLine)
-		DrawSelectionMark(gr, line1Rect);
-
-	if (App()->GetMainWindow()->GetLineSelState().second && App()->GetBanner()->GetLayout() != BannerLayout::SingleLine)
 	{
-		gr.TranslateTransform(0, line1Rect.Height);
+		gr.TranslateTransform(line1Rect.X, line1Rect.Y);
+		DrawSelectionMark(gr, line1Rect);
+		gr.TranslateTransform(-line1Rect.X, -line1Rect.Y);
+	}
+
+	if (App()->GetMainWindow()->GetLineSelState().second )
+	{
+		gr.TranslateTransform(line2Rect.X, line2Rect.Y);
 		DrawSelectionMark(gr, line2Rect);
+		gr.TranslateTransform(-line2Rect.X, -line2Rect.Y);
 	}
 }
 

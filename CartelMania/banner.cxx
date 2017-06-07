@@ -194,18 +194,33 @@ void Banner::PaintOn(HDC hdc, const LPRECT rcClient, int printPageX, int printPa
 
 		if (printPageY < m_pageCountYAxis - 1)
 		{
-			gr.DrawLine(&pen, 0.0f, rcClientArea.Height - cpyEasyGlueMargin, 0.0f, rcClientArea.Height - cpyEasyGlueMargin);
+			gr.DrawLine(&pen, 0.0f, rcClientArea.Height - cpyEasyGlueMargin, rcClientArea.Width, rcClientArea.Height - cpyEasyGlueMargin);
 		}
 	}
 }
 
-void Banner::GetLineRects(const RectF& bannerRect, RectF& rcLine1, RectF& rcLine2) const
+void Banner::GetLineRects(const RectF& bannerRect, RectF& rcLine1, RectF& rcLine2, 
+						  bool useClientWindowCoordinates) const
 {
 	const REAL line1Height = g_proportionTable.at(m_layout).first * bannerRect.Height;
 	const REAL line2Height = g_proportionTable.at(m_layout).second * bannerRect.Height;
 	
-	rcLine1 = RectF(0, 0, bannerRect.Width, line1Height);
-	rcLine2 = RectF(0, 0, bannerRect.Width, line2Height);
+	if (useClientWindowCoordinates)
+	{
+		rcLine1 = RectF(bannerRect.X, 
+			bannerRect.Y, 
+			bannerRect.Width, 
+			line1Height);
+		rcLine2 = RectF(bannerRect.X, 
+			bannerRect.Y + line1Height + 1, 
+			bannerRect.Width, 
+			line2Height);
+	}
+	else
+	{
+		rcLine1 = RectF(0, 0, bannerRect.Width, line1Height);
+		rcLine2 = RectF(0, 0, bannerRect.Width, line2Height);
+	}
 }
 
 void Banner::Redraw()

@@ -78,7 +78,8 @@ public:
 	void			PaintOn(HDC hdc, const LPRECT rcClient, int printPageX = -1, int printPageY = -1);
 	void			RegenPathAndRedraw();
 	void			Redraw();
-	void			GetLineRects(const Gdiplus::RectF& bannerRect, Gdiplus::RectF& line1, Gdiplus::RectF& line2) const;
+	void			GetLineRects(const Gdiplus::RectF& bannerRect, Gdiplus::RectF& line1, Gdiplus::RectF& line2,
+		                         bool useClientWindowCoordinates = false) const;
 	Gdiplus::RectF	CalcRect(const Gdiplus::RectF& clientArea) const;
 	Gdiplus::RectF	CalcRect(const LPRECT) const;
 
