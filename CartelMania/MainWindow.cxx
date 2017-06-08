@@ -31,10 +31,14 @@ LRESULT CManiaMainWnd::OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &
 LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
 	XASSERT(m_statusBar.Create(*this, rcDefault, NULL, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, NULL, IDC_STATUSBAR));
-	XASSERT(m_imgList.Create(24, 24, ILC_COLOR16 | ILC_MASK, 10, 10));
+	XASSERT(m_imgList.Create(32,32, ILC_COLOR32 | ILC_MASK, 10, 10));
 	XASSERT(m_toolbar.Create(*this, 0, nullptr, WS_VISIBLE | WS_CHILD, TBSTYLE_FLAT, IDC_TOOLBAR));
 
-	m_imgList.AddIcon(LoadIcon(GetModuleHandle(NULL), MAKEINTRESOURCE(IDI_COLORTOOLBOX)));
+	auto hMod = GetModuleHandle(0);
+	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_COLORTOOLBOX)));
+	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_TEXTEDIT)));
+	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_PAGELAYOUT)));
+	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_SHAPETOOL)));
 	m_toolbar.SetImageList(m_imgList, 0);
 	m_toolbar.LoadStdImages(IDB_STD_LARGE_COLOR);
 
@@ -42,9 +46,9 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	TBBUTTON tbButtons[] =
 	{
 		{ 0,  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ MAKELONG(STD_FILESAVE,  0), ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ MAKELONG(STD_FIND,      0), ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ MAKELONG(STD_FIND,      0), ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ 1,  ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ 3, ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ 2, ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(0       ,      0), NULL, NULL, TBSTYLE_SEP, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINTPRE,  0), ID_CMD_PRINTPRE, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINT,     0), ID_CMD_PRINT, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },

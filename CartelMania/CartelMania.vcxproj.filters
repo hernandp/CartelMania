@@ -153,5 +153,14 @@
     <Image Include="..\res\colorTool.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\res\textedit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\pagelayout.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\shapeedit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

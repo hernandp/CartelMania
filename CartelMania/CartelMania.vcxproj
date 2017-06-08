@@ -302,6 +302,9 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\colorTool.ico" />
+    <Image Include="..\res\pagelayout.ico" />
+    <Image Include="..\res\shapeedit.ico" />
+    <Image Include="..\res\textedit.ico" />
     <Image Include="icon1.ico" />
     <Image Include="icon2.ico" />
   </ItemGroup>
