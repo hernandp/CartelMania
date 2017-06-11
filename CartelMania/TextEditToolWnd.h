@@ -13,7 +13,7 @@ class TextEditToolWnd : public CDialogImpl<TextEditToolWnd>
 public:
 	const int IDD = IDD_TEXTEDIT;
 
-	void LayoutUpdate(BannerLayout);
+	void UpdateUI();
 
 private:
 
@@ -21,7 +21,6 @@ private:
 		MSG_WM_INITDIALOG(OnInitDialog);
 		MSG_WM_MOVE(OnMove);
 		COMMAND_HANDLER(IDC_EDIT1, EN_CHANGE, OnEdit1Change)
-		COMMAND_HANDLER(IDC_EDIT2, EN_CHANGE, OnEdit2Change)
 		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
 		MSG_WM_CLOSE(OnClose);
 	END_MSG_MAP()
@@ -31,9 +30,7 @@ private:
 	void OnClose();
 	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnEdit1Change(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-	LRESULT OnEdit2Change(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	CEdit	m_edit1;
-	CEdit	m_edit2;
 	bool	m_bInitialized = false;
 };

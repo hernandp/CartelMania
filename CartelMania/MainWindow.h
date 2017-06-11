@@ -17,7 +17,7 @@ class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits
 	friend class CDoubleBufferImpl<CManiaMainWnd>;
 
 public:
-	DECLARE_WND_CLASS_EX(L"CartelMania_Window_Class", CS_HREDRAW | CS_VREDRAW | CS_OWNDC, COLOR_WINDOW);
+	DECLARE_WND_CLASS_EX(L"CartelMania_Window_Class", CS_HREDRAW | CS_VREDRAW | CS_OWNDC, COLOR_MENUHILIGHT);
 
 	BEGIN_MSG_MAP(CManiaMainWnd)
 		CHAIN_MSG_MAP(CDoubleBufferImpl)

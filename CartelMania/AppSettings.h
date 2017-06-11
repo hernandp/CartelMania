@@ -4,7 +4,7 @@
 //
 
 const int DEFAULT_PATH_SUBDIV_INTERVAL =64;
-const int DEFAULT_MAX_TEXT_LENGTH = 16;
+const int DEFAULT_MAX_TEXT_LENGTH = 256;
 
 class AppSettings
 {

@@ -6,11 +6,14 @@
 using namespace Gdiplus;
 using namespace std;
 
-BannerLine::BannerLine(const wstring & text,
-	const wstring & fontName, 
+BannerLine::BannerLine(
+	const wstring& defaultText,
+	const wstring& text,
+	const wstring& fontName, 
 	FontStyle fontStyle,
 	unique_ptr<TextFx> effect) :
 	m_textFx(std::move(effect)),
+	m_defaultText(defaultText),
 	m_text(text),
 	m_fontName(fontName),
 	m_fontStyle(fontStyle),

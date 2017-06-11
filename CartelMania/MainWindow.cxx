@@ -32,8 +32,8 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 {
 	XASSERT(m_statusBar.Create(*this, rcDefault, NULL, WS_CHILD | WS_VISIBLE | SBARS_SIZEGRIP, NULL, IDC_STATUSBAR));
 	XASSERT(m_imgList.Create(32,32, ILC_COLOR32 | ILC_MASK, 10, 10));
-	XASSERT(m_toolbar.Create(*this, 0, nullptr, WS_VISIBLE | WS_CHILD, TBSTYLE_FLAT, IDC_TOOLBAR));
-
+	XASSERT(m_toolbar.Create(*this, 0, nullptr, WS_VISIBLE | WS_CHILD , TBSTYLE_EX_DOUBLEBUFFER, IDC_TOOLBAR));
+	
 	auto hMod = GetModuleHandle(0);
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_COLORTOOLBOX)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_TEXTEDIT)));
@@ -45,10 +45,10 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	const DWORD buttonStyles = BTNS_AUTOSIZE;
 	TBBUTTON tbButtons[] =
 	{
-		{ 0,  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ 1,  ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ 3, ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ 2, ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
+		{ 0,  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR)L"Color" },
+		{ 1,  ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR)L"Text" },
+		{ 3, ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR)L"Shape" },
+		{ 2, ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles, {0}, 0,(INT_PTR)L"Page Layout" },
 		{ MAKELONG(0       ,      0), NULL, NULL, TBSTYLE_SEP, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINTPRE,  0), ID_CMD_PRINTPRE, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINT,     0), ID_CMD_PRINT, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
@@ -125,6 +125,9 @@ void CManiaMainWnd::NotifyActiveToolboxes()
 {
 	if (m_colorSelectToolWnd)
 		m_colorSelectToolWnd.UpdateUI();
+
+	if (m_textEditToolWnd)
+		m_textEditToolWnd.UpdateUI();
 }
 
 void CManiaMainWnd::InvalidatePageDA()
@@ -464,7 +467,7 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 		if (m_textEditToolWnd.m_hWnd &&
 			(!AreCompatibleLayouts(currentLayout, selectedLayout)))
 		{
-			m_textEditToolWnd.LayoutUpdate(selectedLayout);
+			m_textEditToolWnd.UpdateUI();
 		}
 
 		App()->GetBanner()->SetLayout(selectedLayout);
