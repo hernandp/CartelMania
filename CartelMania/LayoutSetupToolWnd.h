@@ -16,7 +16,7 @@ private:
 
 	BEGIN_MSG_MAP(LayoutSetupToolWnd)
 		MSG_WM_INITDIALOG(OnInitDialog);
-		MSG_WM_MOVE(OnMove);
+		MSG_WM_WINDOWPOSCHANGED(OnWindowPosChanged);
 		MSG_WM_CLOSE(OnClose);
 		MSG_WM_HSCROLL(OnHScroll);
 		MSG_WM_VSCROLL(OnVScroll);
@@ -34,6 +34,7 @@ private:
 	void OnClose();
 	void OnHScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBar);
 	void OnVScroll(UINT nSBCode, UINT nPos, CScrollBar pScrollBar);
+	void OnWindowPosChanged(LPWINDOWPOS lpwp);
 	LRESULT OnVAlignChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnHAlignChange(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnCheckEasyGlueClick(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);

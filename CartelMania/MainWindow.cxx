@@ -46,7 +46,7 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	const DWORD buttonStyles = BTNS_AUTOSIZE;
 	TBBUTTON tbButtons[] =
 	{
-		{ 0, ID_COLOR_OPEN,			TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Color" },
+		{ 0, ID_CMD_COLORTOOL,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Color" },
 		{ 1, ID_CMD_EDITTEXT,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Text" },
 		{ 2, ID_CMD_LINELAYOUTTOOL,	TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Line Layout" },
 		{ 4, ID_CMD_OPENSHAPETOOL,	TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Shape" },
@@ -114,8 +114,9 @@ LRESULT CManiaMainWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	if (hWndOther && 
 		(hWndOther == m_shapeSelectToolWnd.m_hWnd ||
 		 hWndOther == m_textEditToolWnd.m_hWnd ||
-		 hWndOther == m_colorSelectToolWnd.m_hWnd)
-		)
+		 hWndOther == m_colorSelectToolWnd.m_hWnd ||
+		 hWndOther == m_lineLayoutToolWnd.m_hWnd ||
+		 hWndOther == m_layoutSetupToolWnd.m_hWnd ) )
 	{
 		return DefWindowProc(WM_NCACTIVATE, TRUE, lParam);
 	}
@@ -481,21 +482,28 @@ LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, 
 
 LRESULT CManiaMainWnd::OnLayoutSetupTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	if (!m_layoutSetupToolWnd.m_hWnd)
-		XASSERT(m_layoutSetupToolWnd.Create(m_hWnd));
-
-	auto lastX = App()->GetSettings()->lastLayoutEditToolPos.x;
-	auto lastY = App()->GetSettings()->lastLayoutEditToolPos.y;
-
-	if (lastX == -1 && lastY == -1)
+	if (m_layoutSetupToolWnd && m_layoutSetupToolWnd.IsWindowVisible())
 	{
-		// Position default 
-		lastX = 0;
-		lastY = 0;
+		m_layoutSetupToolWnd.ShowWindow(SW_HIDE);
 	}
+	else
+	{
+		if (!m_layoutSetupToolWnd.m_hWnd)
+			XASSERT(m_layoutSetupToolWnd.Create(m_hWnd));
 
-	m_layoutSetupToolWnd.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);
-	m_layoutSetupToolWnd.ShowWindow(SW_SHOWNA);
+		auto lastX = App()->GetSettings()->lastLayoutEditToolPos.x;
+		auto lastY = App()->GetSettings()->lastLayoutEditToolPos.y;
+
+		if (lastX == -1 && lastY == -1)
+		{
+			// Position default 
+			lastX = 0;
+			lastY = 0;
+		}
+
+		m_layoutSetupToolWnd.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);
+		m_layoutSetupToolWnd.ShowWindow(SW_SHOWNA);
+	}
 	return 0L;
 }
 
@@ -575,27 +583,47 @@ BannerLine* CManiaMainWnd::GetBannerLineFromSelState()
 		return nullptr; // This should not happen.
 }
 
-LRESULT CManiaMainWnd::OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+void CManiaMainWnd::NotifyToolboxClose(HWND hWnd)
 {
-	auto lastX = App()->GetSettings()->lastColorEditToolPos.x;
-	auto lastY = App()->GetSettings()->lastColorEditToolPos.y;
-
-	if (lastX == -1 && lastY == -1)
+	if (m_colorSelectToolWnd.m_hWnd == hWnd)
 	{
-		// Position defaults
-
-		RECT rc;
-		GetClientRect(&rc);
-		ClientToScreen(&rc);
-		lastX = rc.left;
-		lastY = rc.top;
+		m_toolbar.CheckButton(ID_CMD_COLORTOOL, FALSE);
 	}
 
-	if (m_colorSelectToolWnd.m_hWnd == nullptr)
-		XASSERT(m_colorSelectToolWnd.Create(m_hWnd));
-	
-	m_colorSelectToolWnd.SetWindowPos(nullptr, lastX, lastY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
-	m_colorSelectToolWnd.ShowWindow(SW_SHOWNA);
+	if (m_layoutSetupToolWnd.m_hWnd == hWnd)
+	{
+		m_toolbar.CheckButton(ID_CMD_LAYOUTSETUPTOOL, FALSE);
+	}
+}
+
+LRESULT CManiaMainWnd::OnOpenColorTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	if (m_colorSelectToolWnd && m_colorSelectToolWnd.IsWindowVisible())
+	{
+		m_colorSelectToolWnd.ShowWindow(SW_HIDE);
+	}
+	else
+	{
+		auto lastX = App()->GetSettings()->lastColorEditToolPos.x;
+		auto lastY = App()->GetSettings()->lastColorEditToolPos.y;
+
+		if (lastX == -1 && lastY == -1)
+		{
+			// Position defaults
+			RECT rc;
+			GetClientRect(&rc);
+			ClientToScreen(&rc);
+			lastX = rc.left;
+			lastY = rc.top;
+		}
+
+		if (m_colorSelectToolWnd.m_hWnd == nullptr)
+			XASSERT(m_colorSelectToolWnd.Create(m_hWnd));
+
+		m_colorSelectToolWnd.SetWindowPos(nullptr, lastX, lastY, 0, 0, SWP_NOSIZE | SWP_NOZORDER);
+		m_colorSelectToolWnd.ShowWindow(SW_SHOWNA);
+	}
+
 	return 0L;
 }
 

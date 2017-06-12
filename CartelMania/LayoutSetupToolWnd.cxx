@@ -89,12 +89,15 @@ void LayoutSetupToolWnd::UpdateBannerSizeUI()
 	SetDlgItemText(IDC_BANNERSIZE_TEXT, maxString);
 }
 
-void LayoutSetupToolWnd::OnMove(CPoint pos)
+void LayoutSetupToolWnd::OnWindowPosChanged(LPWINDOWPOS lpwp)
 {
+	App()->GetSettings()->lastLayoutEditToolPos.x = lpwp->x;
+	App()->GetSettings()->lastLayoutEditToolPos.y = lpwp->y;
 }
 
 void LayoutSetupToolWnd::OnClose()
 {
+	App()->GetMainWindow()->NotifyToolboxClose(m_hWnd);
 	ShowWindow(SW_HIDE);
 }
 
@@ -177,5 +180,5 @@ LRESULT LayoutSetupToolWnd::OnCheckEasyGlueVisibleClick(WORD wNotifyCode, WORD w
 
 LRESULT LayoutSetupToolWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
-	return DefWindowProc();
+	return ::DefWindowProc(m_hWnd, WM_NCACTIVATE, TRUE, lParam);
 }

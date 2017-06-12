@@ -19,7 +19,8 @@ public:
 private:
 	BEGIN_MSG_MAP_EX(ColorSelectToolWnd)
 		MSG_WM_CREATE(OnCreate)
-		MSG_WM_MOVE(OnMove)
+		MSG_WM_WINDOWPOSCHANGED(OnWindowPosChanged)
+		MSG_WM_CLOSE(OnClose)
 		MESSAGE_HANDLER(WM_COMMAND, OnCommand)
 		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
 		REFLECT_NOTIFICATIONS_EX()
@@ -30,6 +31,8 @@ private:
 	int		OnCreate(LPCREATESTRUCT);
 	void	OnMove(CPoint pt);
 	void	CreateControls();
+	void	OnClose();
+	void	OnWindowPosChanged(LPWINDOWPOS lpwPos);
 
 	std::vector<CStatic>							m_labelCtlList;
 	std::vector<std::unique_ptr<CmColorComboBox>>	m_comboCtlList;

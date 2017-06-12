@@ -62,7 +62,7 @@ public:
 		COMMAND_ID_HANDLER(ID_FX_SHADOWREAR, OnSelectFx)
 		COMMAND_ID_HANDLER(ID_FX_SHADOWFORE, OnSelectFx)
 
-		COMMAND_ID_HANDLER(ID_COLOR_OPEN, OnColorOpen)
+		COMMAND_ID_HANDLER(ID_CMD_COLORTOOL, OnOpenColorTool)
 
 		COMMAND_ID_HANDLER(ID_CMD_PRINT, OnPrint)
 		COMMAND_ID_HANDLER(ID_CMD_PRINTPRE, OnPrintPreview)
@@ -74,6 +74,7 @@ public:
 	int						GetClientRect(_Out_ LPRECT lpRect) const;
 	void					SetPageAreaDADirty() { m_pageDADirty = true; }
 	BannerLine*				GetBannerLineFromSelState();
+	void					NotifyToolboxClose(HWND hWnd);
 
 private:
 	void	DoPaint(CDCHandle hDC);
@@ -91,7 +92,7 @@ private:
 	LRESULT OnSize(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
-
+	
 	LRESULT OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnFileExit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnEditSelLine(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -105,7 +106,7 @@ private:
 	LRESULT OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnLayoutScaleToFit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
-	LRESULT OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
+	LRESULT OnOpenColorTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnLayoutSetupTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnLineLayoutTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);

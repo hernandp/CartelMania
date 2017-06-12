@@ -127,13 +127,19 @@ LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 	return 0L;
 }
 
-void ColorSelectToolWnd::OnMove(CPoint pt)
-{
-	App()->GetSettings()->lastColorEditToolPos.x = pt.x;
-	App()->GetSettings()->lastColorEditToolPos.y = pt.y;
-}
-
 LRESULT ColorSelectToolWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
 	return DefWindowProc(WM_NCACTIVATE, TRUE, lParam);
+}
+
+void ColorSelectToolWnd::OnClose()
+{
+	App()->GetMainWindow()->NotifyToolboxClose(this->m_hWnd);
+	DefWindowProc();
+}
+
+void ColorSelectToolWnd::OnWindowPosChanged(LPWINDOWPOS lpwPos)
+{
+	App()->GetSettings()->lastColorEditToolPos.x = lpwPos->x;
+	App()->GetSettings()->lastColorEditToolPos.y = lpwPos->y;
 }
