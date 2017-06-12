@@ -9,6 +9,7 @@
 #include "TextEditToolWnd.h"
 #include "ShapeSelToolWnd.h"
 #include "LayoutSetupToolWnd.h"
+#include "LineLayoutToolWnd.h"
 #include "PrintJobInfo.h"
 #include "resource.h"
 
@@ -37,6 +38,7 @@ public:
 
 		COMMAND_ID_HANDLER(ID_CMD_OPENSHAPETOOL, OnOpenShapeTool)
 		COMMAND_ID_HANDLER(ID_CMD_LAYOUTSETUPTOOL, OnLayoutSetupTool)
+		COMMAND_ID_HANDLER(ID_CMD_LINELAYOUTTOOL, OnLineLayoutTool)
 
 		COMMAND_ID_HANDLER(ID_DEBUG_DRAWVERTICES, OnDebugDrawVertices)
 		COMMAND_ID_HANDLER(ID_DEBUG_DISABLEPATHFILL, OnDebugDisablePathFill)
@@ -106,6 +108,7 @@ private:
 	LRESULT OnColorOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnLayoutSetupTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnLineLayoutTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	LRESULT OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnPrintPreview(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -120,6 +123,7 @@ private:
 	ColorSelectToolWnd		m_colorSelectToolWnd;
 	TextEditToolWnd			m_textEditToolWnd;
 	LayoutSetupToolWnd		m_layoutSetupToolWnd;
+	LineLayoutToolWnd		m_lineLayoutToolWnd;
 	ShapeSelectToolWnd		m_shapeSelectToolWnd;
 	CPrinter				m_printer;
 	CmPrintJobInfo			m_printJobInfo;

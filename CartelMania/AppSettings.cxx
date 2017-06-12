@@ -32,6 +32,8 @@ DWORD AppSettings::Save()
 		PackDWORDs(regKey, L"lastShapeEditToolPos", lastShapeEditToolPos.x, lastShapeEditToolPos.y);
 		PackDWORDs(regKey, L"lastShapeEditToolSize", lastShapeEditToolSize.x, lastShapeEditToolSize.y);
 		PackDWORDs(regKey, L"lastLayoutEditToolPos", lastLayoutEditToolPos.x, lastLayoutEditToolPos.y);
+		PackDWORDs(regKey, L"lastLineLayoutToolPos", lastLineLayoutToolPos.x, lastLineLayoutToolPos.y);
+		PackDWORDs(regKey, L"lastLineLayoutToolSize", lastLineLayoutToolSize.x, lastLineLayoutToolSize.y);
 		regKey.Close();
 	}
 	return (DWORD) lr;
@@ -49,6 +51,8 @@ DWORD AppSettings::Load()
 		UnpackDWORDs(regKey, L"lastShapeEditToolPos", lastShapeEditToolPos.x, lastShapeEditToolPos.y);
 		UnpackDWORDs(regKey, L"lastShapeEditToolSize", lastShapeEditToolSize.x, lastShapeEditToolSize.y);
 		UnpackDWORDs(regKey, L"lastLayoutEditToolPos", lastLayoutEditToolPos.x, lastLayoutEditToolPos.y);
+		UnpackDWORDs(regKey, L"lastLineLayoutToolPos", lastLineLayoutToolPos.x, lastLineLayoutToolPos.y);
+		UnpackDWORDs(regKey, L"lastLineLayoutToolSize", lastLineLayoutToolSize.x, lastLineLayoutToolSize.y);
 		regKey.Close();
 	}
 	return (DWORD) lr;

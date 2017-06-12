@@ -37,6 +37,7 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	auto hMod = GetModuleHandle(0);
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_COLORTOOLBOX)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_TEXTEDIT)));
+	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_LINELAYOUT)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_PAGELAYOUT)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_SHAPETOOL)));
 	m_toolbar.SetImageList(m_imgList, 0);
@@ -45,10 +46,11 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	const DWORD buttonStyles = BTNS_AUTOSIZE;
 	TBBUTTON tbButtons[] =
 	{
-		{ 0,  ID_COLOR_OPEN,  TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR)L"Color" },
-		{ 1,  ID_CMD_EDITTEXT,  TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR)L"Text" },
-		{ 3, ID_CMD_OPENSHAPETOOL, TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR)L"Shape" },
-		{ 2, ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles, {0}, 0,(INT_PTR)L"Page Layout" },
+		{ 0, ID_COLOR_OPEN,			TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Color" },
+		{ 1, ID_CMD_EDITTEXT,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Text" },
+		{ 2, ID_CMD_LINELAYOUTTOOL,	TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Line Layout" },
+		{ 4, ID_CMD_OPENSHAPETOOL,	TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Shape" },
+		{ 3, ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Page Layout" },
 		{ MAKELONG(0       ,      0), NULL, NULL, TBSTYLE_SEP, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINTPRE,  0), ID_CMD_PRINTPRE, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINT,     0), ID_CMD_PRINT, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
@@ -494,6 +496,35 @@ LRESULT CManiaMainWnd::OnLayoutSetupTool(WORD wNotifyCode, WORD wID, HWND hWndCt
 
 	m_layoutSetupToolWnd.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);
 	m_layoutSetupToolWnd.ShowWindow(SW_SHOWNA);
+	return 0L;
+}
+
+LRESULT CManiaMainWnd::OnLineLayoutTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+	auto lastX = App()->GetSettings()->lastLineLayoutToolPos.x;
+	auto lastY = App()->GetSettings()->lastLineLayoutToolPos.y;
+	auto lastSizeX = App()->GetSettings()->lastLineLayoutToolSize.x;
+	auto lastSizeY = App()->GetSettings()->lastLineLayoutToolSize.y;
+
+	if (lastX == -1 && lastY == -1)
+	{
+		// Position defaults
+		lastX = 0;
+		lastY = 0;
+	}
+
+	if (lastSizeX == -1 && lastSizeY == -1)
+	{
+		// Size defaults
+		lastSizeX = 150;
+		lastSizeY = 275;
+	}
+
+	if (m_lineLayoutToolWnd.m_hWnd == nullptr)
+		XASSERT(m_lineLayoutToolWnd.Create(m_hWnd, RECT{ lastX,lastY,lastX + lastSizeX,lastY + lastSizeY }));
+
+	m_lineLayoutToolWnd.SetWindowPos(nullptr, lastX, lastY, lastSizeX, lastSizeY, SWP_NOZORDER);
+	m_lineLayoutToolWnd.ShowWindow(SW_SHOWNA);
 	return 0L;
 }
 

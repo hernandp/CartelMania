@@ -81,6 +81,9 @@
     <ClInclude Include="LayoutSetupToolWnd.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="LineLayoutToolWnd.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc">
@@ -142,6 +145,9 @@
     <ClCompile Include="LayoutSetupToolWnd.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="LineLayoutToolWnd.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">
@@ -160,6 +166,9 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\res\shapeedit.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\linelayout.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>
