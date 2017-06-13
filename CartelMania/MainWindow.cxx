@@ -355,21 +355,29 @@ void CManiaMainWnd::DrawClientArea(CDCHandle hDC)
 
 LRESULT CManiaMainWnd::OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	if (!m_textEditToolWnd.m_hWnd)
-		XASSERT(m_textEditToolWnd.Create(m_hWnd));
-
-	auto lastX = App()->GetSettings()->lastTextEditToolPos.x;
-	auto lastY = App()->GetSettings()->lastTextEditToolPos.y;
-
-	if (lastX == -1 && lastY == -1)
+	if (m_textEditToolWnd && m_textEditToolWnd.IsWindowVisible())
 	{
-		// Position default 
-		lastX = 0;
-		lastY = 0;
+		m_textEditToolWnd.ShowWindow(SW_HIDE);
+	}
+	else
+	{
+		if (!m_textEditToolWnd.m_hWnd)
+			XASSERT(m_textEditToolWnd.Create(m_hWnd));
+
+		auto lastX = App()->GetSettings()->lastTextEditToolPos.x;
+		auto lastY = App()->GetSettings()->lastTextEditToolPos.y;
+
+		if (lastX == -1 && lastY == -1)
+		{
+			// Position default 
+			lastX = 0;
+			lastY = 0;
+		}
+
+		m_textEditToolWnd.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);
+		m_textEditToolWnd.ShowWindow(SW_SHOWNA);
 	}
 
-	m_textEditToolWnd.SetWindowPos(nullptr, lastX, lastY, -1, -1, SWP_NOZORDER | SWP_NOSIZE);
-	m_textEditToolWnd.ShowWindow(SW_SHOWNA);
 	return 0;
 }
 
@@ -509,30 +517,38 @@ LRESULT CManiaMainWnd::OnLayoutSetupTool(WORD wNotifyCode, WORD wID, HWND hWndCt
 
 LRESULT CManiaMainWnd::OnLineLayoutTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {
-	auto lastX = App()->GetSettings()->lastLineLayoutToolPos.x;
-	auto lastY = App()->GetSettings()->lastLineLayoutToolPos.y;
-	auto lastSizeX = App()->GetSettings()->lastLineLayoutToolSize.x;
-	auto lastSizeY = App()->GetSettings()->lastLineLayoutToolSize.y;
-
-	if (lastX == -1 && lastY == -1)
+	if (m_lineLayoutToolWnd.m_hWnd && m_lineLayoutToolWnd.IsWindowVisible())
 	{
-		// Position defaults
-		lastX = 0;
-		lastY = 0;
+		m_lineLayoutToolWnd.ShowWindow(SW_HIDE);
+	}
+	else
+	{
+		auto lastX = App()->GetSettings()->lastLineLayoutToolPos.x;
+		auto lastY = App()->GetSettings()->lastLineLayoutToolPos.y;
+		auto lastSizeX = App()->GetSettings()->lastLineLayoutToolSize.x;
+		auto lastSizeY = App()->GetSettings()->lastLineLayoutToolSize.y;
+
+		if (lastX == -1 && lastY == -1)
+		{
+			// Position defaults
+			lastX = 0;
+			lastY = 0;
+		}
+
+		if (lastSizeX == -1 && lastSizeY == -1)
+		{
+			// Size defaults
+			lastSizeX = 150;
+			lastSizeY = 275;
+		}
+
+		if (m_lineLayoutToolWnd.m_hWnd == nullptr)
+			XASSERT(m_lineLayoutToolWnd.Create(m_hWnd, RECT{ lastX,lastY,lastX + lastSizeX,lastY + lastSizeY }));
+
+		m_lineLayoutToolWnd.SetWindowPos(nullptr, lastX, lastY, lastSizeX, lastSizeY, SWP_NOZORDER);
+		m_lineLayoutToolWnd.ShowWindow(SW_SHOWNA);
 	}
 
-	if (lastSizeX == -1 && lastSizeY == -1)
-	{
-		// Size defaults
-		lastSizeX = 150;
-		lastSizeY = 275;
-	}
-
-	if (m_lineLayoutToolWnd.m_hWnd == nullptr)
-		XASSERT(m_lineLayoutToolWnd.Create(m_hWnd, RECT{ lastX,lastY,lastX + lastSizeX,lastY + lastSizeY }));
-
-	m_lineLayoutToolWnd.SetWindowPos(nullptr, lastX, lastY, lastSizeX, lastSizeY, SWP_NOZORDER);
-	m_lineLayoutToolWnd.ShowWindow(SW_SHOWNA);
 	return 0L;
 }
 
@@ -586,19 +602,24 @@ BannerLine* CManiaMainWnd::GetBannerLineFromSelState()
 void CManiaMainWnd::NotifyToolboxClose(HWND hWnd)
 {
 	if (m_colorSelectToolWnd.m_hWnd == hWnd)
-	{
 		m_toolbar.CheckButton(ID_CMD_COLORTOOL, FALSE);
-	}
 
 	if (m_layoutSetupToolWnd.m_hWnd == hWnd)
-	{
 		m_toolbar.CheckButton(ID_CMD_LAYOUTSETUPTOOL, FALSE);
-	}
+
+	if (m_textEditToolWnd.m_hWnd == hWnd)
+		m_toolbar.CheckButton(ID_CMD_EDITTEXT, FALSE);
+
+	if (m_lineLayoutToolWnd.m_hWnd == hWnd)
+		m_toolbar.CheckButton(ID_CMD_LINELAYOUTTOOL, FALSE);
+
+	if (m_shapeSelectToolWnd.m_hWnd == hWnd)
+		m_toolbar.CheckButton(ID_CMD_OPENSHAPETOOL, FALSE);
 }
 
 LRESULT CManiaMainWnd::OnOpenColorTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	if (m_colorSelectToolWnd && m_colorSelectToolWnd.IsWindowVisible())
+	if (m_colorSelectToolWnd.m_hWnd && m_colorSelectToolWnd.IsWindowVisible())
 	{
 		m_colorSelectToolWnd.ShowWindow(SW_HIDE);
 	}
@@ -629,30 +650,38 @@ LRESULT CManiaMainWnd::OnOpenColorTool(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 
 LRESULT CManiaMainWnd::OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	auto lastX = App()->GetSettings()->lastShapeEditToolPos.x;
-	auto lastY = App()->GetSettings()->lastShapeEditToolPos.y;
-	auto lastSizeX = App()->GetSettings()->lastShapeEditToolSize.x;
-	auto lastSizeY = App()->GetSettings()->lastShapeEditToolSize.y;
-
-	if (lastX == -1 && lastY == -1)
+	if (m_shapeSelectToolWnd && m_shapeSelectToolWnd.IsWindowVisible())
 	{
-		// Position defaults
-		lastX = 0;
-		lastY = 0;
+		m_shapeSelectToolWnd.ShowWindow(SW_HIDE);
+	}
+	else
+	{
+		auto lastX = App()->GetSettings()->lastShapeEditToolPos.x;
+		auto lastY = App()->GetSettings()->lastShapeEditToolPos.y;
+		auto lastSizeX = App()->GetSettings()->lastShapeEditToolSize.x;
+		auto lastSizeY = App()->GetSettings()->lastShapeEditToolSize.y;
+
+		if (lastX == -1 && lastY == -1)
+		{
+			// Position defaults
+			lastX = 0;
+			lastY = 0;
+		}
+
+		if (lastSizeX == -1 && lastSizeY == -1)
+		{
+			// Size defaults
+			lastSizeX = 150;
+			lastSizeY = 275;
+		}
+
+		if (m_shapeSelectToolWnd.m_hWnd == nullptr)
+			XASSERT(m_shapeSelectToolWnd.Create(m_hWnd, RECT{ lastX,lastY,lastX + lastSizeX,lastY + lastSizeY }));
+
+		m_shapeSelectToolWnd.SetWindowPos(nullptr, lastX, lastY, lastSizeX, lastSizeY, SWP_NOZORDER);
+		m_shapeSelectToolWnd.ShowWindow(SW_SHOWNA);
 	}
 
-	if (lastSizeX == -1 && lastSizeY == -1)
-	{
-		// Size defaults
-		lastSizeX = 150;
-		lastSizeY = 275;
-	}
-
-	if (m_shapeSelectToolWnd.m_hWnd == nullptr)
-		XASSERT(m_shapeSelectToolWnd.Create(m_hWnd, RECT{ lastX,lastY,lastX + lastSizeX,lastY + lastSizeY }));
-
-	m_shapeSelectToolWnd.SetWindowPos(nullptr, lastX, lastY, lastSizeX, lastSizeY, SWP_NOZORDER);
-	m_shapeSelectToolWnd.ShowWindow(SW_SHOWNA);
 	return 0L;
 }
 

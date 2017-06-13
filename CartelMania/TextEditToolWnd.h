@@ -19,14 +19,14 @@ private:
 
 	BEGIN_MSG_MAP(TextEditToolWnd)
 		MSG_WM_INITDIALOG(OnInitDialog);
-		MSG_WM_MOVE(OnMove);
+		MSG_WM_WINDOWPOSCHANGED(OnWindowPosChanged);
 		COMMAND_HANDLER(IDC_EDIT1, EN_CHANGE, OnEdit1Change)
 		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
 		MSG_WM_CLOSE(OnClose);
 	END_MSG_MAP()
 
 	BOOL OnInitDialog(CWindow wndFocus, LPARAM lInitParam);
-	void OnMove(CPoint pos);
+	void OnWindowPosChanged(LPWINDOWPOS);
 	void OnClose();
 	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnEdit1Change(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);

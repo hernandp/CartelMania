@@ -11,14 +11,13 @@ BOOL TextEditToolWnd::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	m_edit1.Attach(GetDlgItem(IDC_EDIT1));
 	m_edit1.SetLimitText(App()->GetSettings()->maxTextLength);
 	UpdateUI();
-	m_bInitialized = true;
 	return TRUE;
 }
 
-void TextEditToolWnd::OnMove(CPoint pos)
+void TextEditToolWnd::OnWindowPosChanged(LPWINDOWPOS lpwp)
 {
-	App()->GetSettings()->lastTextEditToolPos.x = pos.x;
-	App()->GetSettings()->lastTextEditToolPos.y = pos.y;
+	App()->GetSettings()->lastTextEditToolPos.x = lpwp->x;
+	App()->GetSettings()->lastTextEditToolPos.y = lpwp->y;
 }
 
 void TextEditToolWnd::OnClose()

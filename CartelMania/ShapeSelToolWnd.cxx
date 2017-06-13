@@ -25,6 +25,12 @@ void ShapeSelectToolWnd::UpdateUI()
 {
 }
 
+void ShapeSelectToolWnd::OnClose()
+{
+	App()->GetMainWindow()->NotifyToolboxClose(this->m_hWnd);
+	DefWindowProc();
+}
+
 LRESULT ShapeSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {	
 	if (HIWORD(wParam) == LBN_SELCHANGE)
@@ -49,20 +55,16 @@ int ShapeSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 	return TRUE;
 }
 
-void ShapeSelectToolWnd::OnMove(CPoint pt)
-{
-	App()->GetSettings()->lastShapeEditToolPos.x = pt.x;
-	App()->GetSettings()->lastShapeEditToolPos.y = pt.y;
-}
-
-void ShapeSelectToolWnd::OnSize(UINT type, CSize size)
-{
-	lb.SetWindowPos(NULL, 0, 0, size.cx, size.cy, SWP_NOZORDER);
-	App()->GetSettings()->lastShapeEditToolSize.x = size.cx;
-	App()->GetSettings()->lastShapeEditToolSize.y = size.cy;
-}
-
 LRESULT ShapeSelectToolWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
 	return DefWindowProc(WM_NCACTIVATE, TRUE, lParam);
+}
+
+void ShapeSelectToolWnd::OnWindowPosChanged(LPWINDOWPOS lpwp)
+{
+	App()->GetSettings()->lastShapeEditToolPos.x = lpwp->x;
+	App()->GetSettings()->lastShapeEditToolPos.y = lpwp->y;
+	App()->GetSettings()->lastShapeEditToolSize.x = lpwp->cx;
+	App()->GetSettings()->lastShapeEditToolSize.y = lpwp->cy;
+	lb.SetWindowPos(NULL, 0, 0, lpwp->cx, lpwp->cy, SWP_NOMOVE);
 }

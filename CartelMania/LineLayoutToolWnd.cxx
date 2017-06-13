@@ -52,20 +52,22 @@ int LineLayoutToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 	return TRUE;
 }
 
-void LineLayoutToolWnd::OnMove(CPoint pt)
+void LineLayoutToolWnd::OnClose()
 {
-	App()->GetSettings()->lastLineLayoutToolPos.x = pt.x;
-	App()->GetSettings()->lastLineLayoutToolPos.y = pt.y;
+	App()->GetMainWindow()->NotifyToolboxClose(this->m_hWnd);
+	DefWindowProc();
 }
 
-void LineLayoutToolWnd::OnSize(UINT type, CSize size)
+void LineLayoutToolWnd::OnWindowPosChanged(LPWINDOWPOS lpwp)
 {
-	lb.SetWindowPos(NULL, 0, 0, size.cx, size.cy, SWP_NOZORDER);
-	App()->GetSettings()->lastLineLayoutToolSize.x = size.cx;
-	App()->GetSettings()->lastLineLayoutToolSize.y = size.cy;
+	App()->GetSettings()->lastLineLayoutToolPos.x = lpwp->x;
+	App()->GetSettings()->lastLineLayoutToolPos.y = lpwp->y;
+	App()->GetSettings()->lastLineLayoutToolSize.x = lpwp->cx;
+	App()->GetSettings()->lastLineLayoutToolSize.y = lpwp->cy;
+	lb.SetWindowPos(NULL, 0, 0, lpwp->cx, lpwp->cy, SWP_NOMOVE);
 }
 
 LRESULT LineLayoutToolWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
-	return DefWindowProc(WM_NCACTIVATE, TRUE, lParam);
+	return ::DefWindowProc(m_hWnd, WM_NCACTIVATE, TRUE, lParam);
 }

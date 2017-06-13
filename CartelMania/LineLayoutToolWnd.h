@@ -19,8 +19,8 @@ public:
 private:
 	BEGIN_MSG_MAP_EX(ColorSelectToolWnd)
 		MSG_WM_CREATE(OnCreate)
-		MSG_WM_MOVE(OnMove)
-		MSG_WM_SIZE(OnSize)
+		MSG_WM_WINDOWPOSCHANGED(OnWindowPosChanged)
+		MSG_WM_CLOSE(OnClose)
 		MESSAGE_HANDLER(WM_COMMAND, OnCommand)
 		MESSAGE_HANDLER(WM_NCACTIVATE, OnNcActivate)
 		REFLECT_NOTIFICATIONS_EX()
@@ -30,11 +30,11 @@ private:
 
 	LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
-	int  OnCreate(LPCREATESTRUCT);
-	void OnMove(CPoint pt);
-	void OnSize(UINT type, CSize size);
-	void CreateControls();
-
+	int		OnCreate(LPCREATESTRUCT);
+	void	OnClose();
+	void	OnWindowPosChanged(LPWINDOWPOS lpwp);
+	void	CreateControls();
+	
 	CListBox lb;
 };
 
