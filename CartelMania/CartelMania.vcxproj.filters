@@ -171,5 +171,14 @@
     <Image Include="..\res\linelayout.ico">
       <Filter>Resource Files</Filter>
     </Image>
+    <Image Include="..\res\new.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\open.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\save.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>

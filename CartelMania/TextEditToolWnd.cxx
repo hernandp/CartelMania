@@ -11,6 +11,7 @@ BOOL TextEditToolWnd::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	m_edit1.Attach(GetDlgItem(IDC_EDIT1));
 	m_edit1.SetLimitText(App()->GetSettings()->maxTextLength);
 	UpdateUI();
+	m_bInitialized = true;
 	return TRUE;
 }
 
