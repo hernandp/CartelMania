@@ -16,6 +16,27 @@ using namespace std;
 
 // ---------------------------------------------------------------------------
 
+LRESULT CManiaMainWnd::OnFileNew(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	return LRESULT();
+}
+
+LRESULT CManiaMainWnd::OnFileOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	return LRESULT();
+}
+
+LRESULT CManiaMainWnd::OnFileSave(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	CFileDialog fd(FALSE, L".cmania", NULL, 6,L"Cartelmania Files (*.cmania)\0*.cmania\0\0", this->m_hWnd);
+	if ( (fd.DoModal(m_hWnd) == IDOK) && fd.m_szFileName)
+	{
+		App()->GetBanner()->Serialize(fd.m_szFileName);
+	}
+
+	return 0;
+}
+
 LRESULT CManiaMainWnd::OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled)
 {
 	DestroyWindow();
@@ -49,9 +70,9 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	const DWORD buttonStyles = BTNS_AUTOSIZE;
 	TBBUTTON tbButtons[] =
 	{
-		{ 0, ID_CMD_NEW,			TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"New" },
-		{ 1, ID_CMD_OPEN,			TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"Open" },
-		{ 2, ID_CMD_SAVE,			TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"Save" },
+		{ 0, ID_FILE_NEW,			TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"New" },
+		{ 1, ID_FILE_OPEN,			TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"Open" },
+		{ 2, ID_FILE_SAVE,			TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"Save" },
 		{ MAKELONG(0       ,      0), NULL, NULL, BTNS_SEP, {0}, 0, 0 },
 		{ 3, ID_CMD_COLORTOOL,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Color" },
 		{ 4, ID_CMD_EDITTEXT,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Text" },
@@ -146,6 +167,8 @@ void CManiaMainWnd::InvalidatePageDA()
 	GetPageDisplayAreaRect(&rc);
 	InvalidateRect(&rc, FALSE);
 }
+
+
 
 int CManiaMainWnd::GetClientRect(_Out_ LPRECT lpRect) const
 {

@@ -234,3 +234,61 @@ void Banner::RegenPathAndRedraw()
 	m_bottomLine->InvalidatePath();
 	InvalidateRect(*App()->GetMainWindow(), NULL, FALSE);
 }
+
+void Banner::Serialize(const std::wstring & file)
+{
+	pugi::xml_document doc;
+	pugi::xml_node root = doc.append_child(L"CartelManiaFile");
+	root.append_attribute(L"version").set_value(L"1");
+
+	pugi::xml_node lineLayoutNode =root.append_child(L"LineLayout");
+	lineLayoutNode.append_attribute(L"type").set_value((int)m_layout);
+
+	pugi::xml_node pageLayoutNode = root.append_child(L"PageLayout");
+	pageLayoutNode.append_attribute(L"PageCountX").set_value(m_pageCountXAxis);
+	pageLayoutNode.append_attribute(L"PageCountY").set_value(m_pageCountYAxis);
+	pageLayoutNode.append_attribute(L"VFill").set_value(m_verticalFill);
+	pageLayoutNode.append_attribute(L"HFill").set_value(m_horizontalFill);
+	pageLayoutNode.append_attribute(L"VAlign").set_value((int) m_verticalAlign);
+	pageLayoutNode.append_attribute(L"HAlign").set_value((int) m_horizontalAlign);
+	pageLayoutNode.append_attribute(L"EasyGlueEnable").set_value(m_easyGluePrintActive);
+	pageLayoutNode.append_attribute(L"EasyGlueVisible").set_value(m_easyGlueMarginVisible);
+	pageLayoutNode.append_attribute(L"EasyGlueMarginMm").set_value(m_easyGlueMarginMm);
+
+	pugi::xml_node topLineNode = root.append_child(L"TopLine");
+	topLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(m_topLine->GetText().c_str());
+	topLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(m_topLine->GetFontName().c_str());
+	topLineNode.append_attribute(L"ShapeId").set_value(1);
+	topLineNode.append_attribute(L"EffectId").set_value(1);
+
+	pugi::xml_node bottomLineNode = root.append_child(L"BottomLine");
+	bottomLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(m_bottomLine->GetText().c_str());
+	bottomLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(m_bottomLine->GetFontName().c_str());
+	bottomLineNode.append_attribute(L"ShapeId").set_value(1);
+	bottomLineNode.append_attribute(L"EffectId").set_value(1);
+
+	doc.save_file(file.c_str());
+
+	//fo << static_cast<int>(m_layout)
+	//	<< m_pageCountXAxis
+	//	<< m_pageCountYAxis
+	//	<< 1 // shapeid
+	//	<< m_topLine->GetText()
+	//	<< m_topLine->GetFontName()
+	//	<< m_bottomLine->GetFontName()
+	//	<< m_bottomLine->GetText()
+	//	<< m_verticalFill
+	//	<< m_horizontalFill
+	//	<< (int) m_verticalAlign
+	//	<< (int) m_horizontalAlign
+	//	<< m_easyGluePrintActive
+	//	<< m_easyGlueMarginMm
+	//	<< m_easyGlueMarginVisible;				
+
+	//fo.close();
+
+}
+
+void Banner::Deserialize(const std::wstring & file)
+{
+}

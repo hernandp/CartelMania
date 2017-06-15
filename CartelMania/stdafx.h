@@ -25,3 +25,8 @@
 #include <array>
 #include <limits>
 #include <stdexcept>
+#include <fstream>
+
+// PugiXML
+#define PUGIXML_WCHAR_MODE 
+#include <../../pugixml/pugixml.hpp>

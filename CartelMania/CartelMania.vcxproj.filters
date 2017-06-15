@@ -148,6 +148,9 @@
     <ClCompile Include="LineLayoutToolWnd.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\pugixml\pugixml.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">

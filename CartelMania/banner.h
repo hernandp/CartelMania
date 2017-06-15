@@ -111,6 +111,9 @@ public:
 	void			SetVerticalAlignment(BannerVerticalAlignment vAlign) { m_verticalAlign = vAlign; }
 	void			SetHorizontalAlignment(BannerHorizontalAlignment hAlign) { m_horizontalAlign = hAlign; }
 
+	void			Serialize(const std::wstring& file);
+	void			Deserialize(const std::wstring& file);
+
 private:
 	BannerLayout								m_layout;
 	int											m_pageCountXAxis;

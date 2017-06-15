@@ -31,6 +31,10 @@ public:
 
 		COMMAND_ID_HANDLER(ID_FILE_EXIT, OnFileExit)
 
+		COMMAND_ID_HANDLER(ID_FILE_NEW, OnFileNew)
+		COMMAND_ID_HANDLER(ID_FILE_OPEN, OnFileOpen)
+		COMMAND_ID_HANDLER(ID_FILE_SAVE, OnFileSave)
+
 		COMMAND_ID_HANDLER(ID_CMD_EDITTEXT, OnEditText)
 		COMMAND_ID_HANDLER(ID_EDIT_SEL1, OnEditSelLine)
 		COMMAND_ID_HANDLER(ID_EDIT_SEL2, OnEditSelLine)
@@ -85,6 +89,10 @@ private:
 	void	CalcPixelsPerMm(float& horizontalRatio, float& verticalRatio);
 	void	NotifyActiveToolboxes();
 	void	InvalidatePageDA();
+
+	LRESULT OnFileNew(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnFileOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+	LRESULT OnFileSave(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	LRESULT OnClose(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnDestroy(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
