@@ -23,6 +23,7 @@ void TextEditToolWnd::OnWindowPosChanged(LPWINDOWPOS lpwp)
 
 void TextEditToolWnd::OnClose()
 {
+	App()->GetMainWindow()->NotifyToolboxClose(m_hWnd);
 	ShowWindow(SW_HIDE);
 }
 

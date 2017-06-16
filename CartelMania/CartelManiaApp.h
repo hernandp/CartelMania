@@ -6,6 +6,7 @@
 #include "MainWindow.h"
 #include "debug.h"
 #include "ShapeTable.h"
+#include "EffectTable.h"
 #include <memory>
 
 const float MM_PER_INCH = 25.4f;
@@ -20,6 +21,7 @@ public:
 	Banner*					GetBanner() { return &m_banner; }
 	ColorTable*				GetColorTable() { return &m_colorTable; }
 	ShapeTable*				GetShapeTable() { return &m_shapeTable; }
+	EffectTable*			GetEffectTable() { return &m_effectTable;  }
 	const ShapeFunc&		GetCurrentShapeFunc() { return m_shapeTable.LookupName(m_banner.GetShapeName()); }
 	const Gdiplus::Brush*	GetBrushFromColorTable(const std::wstring& name){ return m_colorTable.LookupName(name).get(); }
 	CPrinter*				GetPrinter()  { return &m_printer; }
@@ -46,6 +48,7 @@ private:
 	CDevMode								m_devMode;
 	ColorTable								m_colorTable;
 	ShapeTable								m_shapeTable;
+	EffectTable								m_effectTable;
 	std::unique_ptr<CManiaMainWnd>			m_mainWindow;
 	Banner									m_banner;
 	AppSettings								m_settings;

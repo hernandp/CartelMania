@@ -63,6 +63,7 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_COLORTOOLBOX)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_TEXTEDIT)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_LINELAYOUT)));
+	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_TEXTEFFECT)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_PAGELAYOUT)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_SHAPETOOL)));
 	m_toolbar.SetImageList(m_imgList, 0);
@@ -77,8 +78,9 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 		{ 3, ID_CMD_COLORTOOL,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Color" },
 		{ 4, ID_CMD_EDITTEXT,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Text" },
 		{ 5, ID_CMD_LINELAYOUTTOOL,	TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Line Layout" },
-		{ 7, ID_CMD_OPENSHAPETOOL,	TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Shape" },
-		{ 6, ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Page Layout" },
+		{ 6, ID_CMD_EFFECTTOOL,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Effect" },
+		{ 8, ID_CMD_OPENSHAPETOOL,	TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Shape" },
+		{ 7, ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Page Layout" },
 		{ MAKELONG(0       ,      0), NULL, NULL, TBSTYLE_SEP, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINTPRE,  0), ID_CMD_PRINTPRE, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
 		{ MAKELONG(STD_PRINT,     0), ID_CMD_PRINT, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
@@ -645,6 +647,9 @@ void CManiaMainWnd::NotifyToolboxClose(HWND hWnd)
 
 	if (m_shapeSelectToolWnd.m_hWnd == hWnd)
 		m_toolbar.CheckButton(ID_CMD_OPENSHAPETOOL, FALSE);
+
+	if (m_effectToolWnd.m_hWnd == hWnd)
+		m_toolbar.CheckButton(ID_CMD_EFFECTTOOL, FALSE);
 }
 
 LRESULT CManiaMainWnd::OnOpenColorTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
@@ -714,6 +719,45 @@ LRESULT CManiaMainWnd::OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl,
 
 	return 0L;
 }
+
+
+LRESULT CManiaMainWnd::OnOpenEffectTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
+{
+	if (m_effectToolWnd && m_effectToolWnd.IsWindowVisible())
+	{
+		m_effectToolWnd.ShowWindow(SW_HIDE);
+	}
+	else
+	{
+		auto lastX = App()->GetSettings()->lastEffectToolPos.x;
+		auto lastY = App()->GetSettings()->lastEffectToolPos.y;
+		auto lastSizeX = App()->GetSettings()->lastEffectToolSize.x;
+		auto lastSizeY = App()->GetSettings()->lastEffectToolSize.y;
+
+		if (lastX == -1 && lastY == -1)
+		{
+			// Position defaults
+			lastX = 0;
+			lastY = 0;
+		}
+
+		if (lastSizeX == -1 && lastSizeY == -1)
+		{
+			// Size defaults
+			lastSizeX = 150;
+			lastSizeY = 275;
+		}
+
+		if (m_effectToolWnd.m_hWnd == nullptr)
+			XASSERT(m_effectToolWnd.Create(m_hWnd, RECT{ lastX,lastY,lastX + lastSizeX,lastY + lastSizeY }));
+
+		m_effectToolWnd.SetWindowPos(nullptr, lastX, lastY, lastSizeX, lastSizeY, SWP_NOZORDER);
+		m_effectToolWnd.ShowWindow(SW_SHOWNA);
+	}
+
+	return 0L;
+}
+
 
 LRESULT CManiaMainWnd::OnPrint(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
 {

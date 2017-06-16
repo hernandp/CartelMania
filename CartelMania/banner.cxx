@@ -235,16 +235,20 @@ void Banner::RegenPathAndRedraw()
 	InvalidateRect(*App()->GetMainWindow(), NULL, FALSE);
 }
 
-void Banner::Serialize(const std::wstring & file)
+bool Banner::Serialize(const std::wstring & file) const
 {
+	//
+	// I18N Warning: We always store English names from shape and other tables
+	//
+
 	pugi::xml_document doc;
-	pugi::xml_node root = doc.append_child(L"CartelManiaFile");
+	auto root = doc.append_child(L"CartelManiaFile");
 	root.append_attribute(L"version").set_value(L"1");
 
-	pugi::xml_node lineLayoutNode =root.append_child(L"LineLayout");
-	lineLayoutNode.append_attribute(L"type").set_value((int)m_layout);
+	auto lineLayoutNode = root.append_child(L"LineLayout");
+	lineLayoutNode.append_attribute(L"type").set_value((int) m_layout);
 
-	pugi::xml_node pageLayoutNode = root.append_child(L"PageLayout");
+	auto pageLayoutNode = root.append_child(L"PageLayout");
 	pageLayoutNode.append_attribute(L"PageCountX").set_value(m_pageCountXAxis);
 	pageLayoutNode.append_attribute(L"PageCountY").set_value(m_pageCountYAxis);
 	pageLayoutNode.append_attribute(L"VFill").set_value(m_verticalFill);
@@ -255,40 +259,69 @@ void Banner::Serialize(const std::wstring & file)
 	pageLayoutNode.append_attribute(L"EasyGlueVisible").set_value(m_easyGlueMarginVisible);
 	pageLayoutNode.append_attribute(L"EasyGlueMarginMm").set_value(m_easyGlueMarginMm);
 
-	pugi::xml_node topLineNode = root.append_child(L"TopLine");
+	auto topLineNode = root.append_child(L"TopLine");
 	topLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(m_topLine->GetText().c_str());
 	topLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(m_topLine->GetFontName().c_str());
-	topLineNode.append_attribute(L"ShapeId").set_value(1);
-	topLineNode.append_attribute(L"EffectId").set_value(1);
+	topLineNode.append_attribute(L"Shape").set_value(m_shapeName.c_str());
+	auto fxNode = topLineNode.append_child(L"Effect");
 
-	pugi::xml_node bottomLineNode = root.append_child(L"BottomLine");
+	auto bottomLineNode = root.append_child(L"BottomLine");
 	bottomLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(m_bottomLine->GetText().c_str());
 	bottomLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(m_bottomLine->GetFontName().c_str());
-	bottomLineNode.append_attribute(L"ShapeId").set_value(1);
+	bottomLineNode.append_attribute(L"ShapeId").set_value(m_shapeName.c_str());
 	bottomLineNode.append_attribute(L"EffectId").set_value(1);
+	fxNode = bottomLineNode.append_child(L"Effect");
+	
+	if (!doc.save_file(file.c_str()))
+	{
+		return false;
+	}
 
-	doc.save_file(file.c_str());
-
-	//fo << static_cast<int>(m_layout)
-	//	<< m_pageCountXAxis
-	//	<< m_pageCountYAxis
-	//	<< 1 // shapeid
-	//	<< m_topLine->GetText()
-	//	<< m_topLine->GetFontName()
-	//	<< m_bottomLine->GetFontName()
-	//	<< m_bottomLine->GetText()
-	//	<< m_verticalFill
-	//	<< m_horizontalFill
-	//	<< (int) m_verticalAlign
-	//	<< (int) m_horizontalAlign
-	//	<< m_easyGluePrintActive
-	//	<< m_easyGlueMarginMm
-	//	<< m_easyGlueMarginVisible;				
-
-	//fo.close();
-
+	return true;
 }
 
-void Banner::Deserialize(const std::wstring & file)
+bool Banner::Deserialize(const std::wstring& file, ptrdiff_t& error_offset)
 {
+	pugi::xml_document doc;
+	auto result = doc.load_file(file.c_str());
+
+	if (result.status != pugi::status_ok)
+	{
+		error_offset = result.offset;
+		return false;
+	}
+
+	auto root = doc.child(L"CartelManiaFile");
+	if (root.empty() || root.attribute(L"version").as_int() != 1)
+	{
+		return false;
+	}
+
+	auto lineLayoutNode = root.child(L"LineLayout");
+	auto layout = lineLayoutNode.attribute(L"type").as_int();
+
+	auto pageLayoutNode = root.child(L"PageLayout");
+	auto pageCountX = pageLayoutNode.attribute(L"PageCountX").as_int(g_defaultNumPagesWide);
+	auto pageCountY = pageLayoutNode.attribute(L"PageCountY").as_int(g_defaultNumPagesTall);
+	auto vFill = pageLayoutNode.attribute(L"VFill").as_int(g_defaultVerticalFill);
+	auto hFill = pageLayoutNode.attribute(L"HFill").as_int(g_defaultHorizontalFill);
+	auto vAlign = pageLayoutNode.attribute(L"VAlign").as_int((int)g_defaultVAlign);
+	auto hAlign = pageLayoutNode.attribute(L"HAlign").as_int((int)g_defaultHAlign);
+	auto easyGlueActive = pageLayoutNode.attribute(L"EasyGlueEnable").as_bool(true);
+	auto easyGlueVisible = pageLayoutNode.attribute(L"EasyGlueVisible").as_bool(true);
+	auto easyGlueMarginMm = pageLayoutNode.attribute(L"EasyGlueMarginMm").as_int(g_defaultEasyGlueMarginMm);
+
+	auto topLineNode = root.append_child(L"TopLine");
+	auto text = topLineNode.child(L"Text").text();
+	auto font = topLineNode.child(L"Font").text();
+	auto shape = topLineNode.attribute(L"Shape").as_string(L"Rectangle");
+	auto fxNode = topLineNode.append_child(L"Effect");
+
+	auto bottomLineNode = root.append_child(L"TopLine");
+	text = bottomLineNode.child(L"Text").text();
+	font = bottomLineNode.child(L"Font").text();
+	shape = bottomLineNode.attribute(L"Shape").as_string(L"Rectangle");
+	fxNode = bottomLineNode.append_child(L"Effect");
+
+	return true;
 }

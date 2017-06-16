@@ -111,8 +111,8 @@ public:
 	void			SetVerticalAlignment(BannerVerticalAlignment vAlign) { m_verticalAlign = vAlign; }
 	void			SetHorizontalAlignment(BannerHorizontalAlignment hAlign) { m_horizontalAlign = hAlign; }
 
-	void			Serialize(const std::wstring& file);
-	void			Deserialize(const std::wstring& file);
+	bool			Serialize(const std::wstring& file) const;
+	bool			Deserialize(const std::wstring & file, ptrdiff_t& error_offset);
 
 private:
 	BannerLayout								m_layout;

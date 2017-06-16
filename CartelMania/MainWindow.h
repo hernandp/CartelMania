@@ -11,6 +11,7 @@
 #include "LayoutSetupToolWnd.h"
 #include "LineLayoutToolWnd.h"
 #include "PrintJobInfo.h"
+#include "EffectToolWnd.h"
 #include "resource.h"
 
 class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits>, public CDoubleBufferImpl<CManiaMainWnd>
@@ -43,6 +44,8 @@ public:
 		COMMAND_ID_HANDLER(ID_CMD_OPENSHAPETOOL, OnOpenShapeTool)
 		COMMAND_ID_HANDLER(ID_CMD_LAYOUTSETUPTOOL, OnLayoutSetupTool)
 		COMMAND_ID_HANDLER(ID_CMD_LINELAYOUTTOOL, OnLineLayoutTool)
+		COMMAND_ID_HANDLER(ID_CMD_COLORTOOL, OnOpenColorTool)
+		COMMAND_ID_HANDLER(ID_CMD_EFFECTTOOL, OnOpenEffectTool)
 
 		COMMAND_ID_HANDLER(ID_DEBUG_DRAWVERTICES, OnDebugDrawVertices)
 		COMMAND_ID_HANDLER(ID_DEBUG_DISABLEPATHFILL, OnDebugDisablePathFill)
@@ -65,8 +68,6 @@ public:
 		COMMAND_ID_HANDLER(ID_FX_SHADEDBLOCK, OnSelectFx)
 		COMMAND_ID_HANDLER(ID_FX_SHADOWREAR, OnSelectFx)
 		COMMAND_ID_HANDLER(ID_FX_SHADOWFORE, OnSelectFx)
-
-		COMMAND_ID_HANDLER(ID_CMD_COLORTOOL, OnOpenColorTool)
 
 		COMMAND_ID_HANDLER(ID_CMD_PRINT, OnPrint)
 		COMMAND_ID_HANDLER(ID_CMD_PRINTPRE, OnPrintPreview)
@@ -114,6 +115,7 @@ private:
 	LRESULT OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnLayoutScaleToFit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
+	LRESULT OnOpenEffectTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnOpenColorTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnLayoutSetupTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnOpenShapeTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
@@ -134,6 +136,7 @@ private:
 	LayoutSetupToolWnd		m_layoutSetupToolWnd;
 	LineLayoutToolWnd		m_lineLayoutToolWnd;
 	ShapeSelectToolWnd		m_shapeSelectToolWnd;
+	EffectToolWnd			m_effectToolWnd;
 	CPrinter				m_printer;
 	CmPrintJobInfo			m_printJobInfo;
 	CStatusBarCtrl			m_statusBar;

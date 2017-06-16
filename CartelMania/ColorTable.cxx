@@ -35,6 +35,12 @@ const Color bm_Black{ 0,0,0 };
 
 void ColorTable::Init()
 {
+	//
+	// I18N Warning: Always keep English names stored HERE AS-IS, as they are
+	//               referenced in saved XML files (see Banner::Serialize method). I18N must be done
+	//               at 'UI level'.
+	//
+
 	dprintf(L"Initializing Color Table...\n");
 
 	m_table.push_back(make_pair(L"White", make_unique<SolidBrush>(bm_White)));

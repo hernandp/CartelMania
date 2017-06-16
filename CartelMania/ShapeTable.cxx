@@ -14,7 +14,13 @@ using namespace std;
 // 
 
 void ShapeTable::Init()
-{	
+{
+	//
+	// I18N Warning: Always keep English names stored HERE AS-IS, as they are
+	//               referenced in saved XML files (see Banner::Serialize method). I18N must be done
+	//               at 'UI level'.
+	//
+
 	dprintf(L"Initializing Shape Function Table...\n");
 
 	m_table.push_back(std::make_pair(L"Rectangle", ShapeFunc(
