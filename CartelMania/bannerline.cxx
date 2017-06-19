@@ -2,6 +2,7 @@
 #include "bannerline.h"
 #include "TextFx.h"
 #include "Geometry.h"
+#include "CartelManiaApp.h"
 
 using namespace Gdiplus;
 using namespace std;
@@ -11,8 +12,8 @@ BannerLine::BannerLine(
 	const wstring& text,
 	const wstring& fontName, 
 	FontStyle fontStyle,
-	unique_ptr<TextFx> effect) :
-	m_textFx(std::move(effect)),
+	TextFx* effect) :
+	m_textFx(effect),
 	m_defaultText(defaultText),
 	m_text(text),
 	m_fontName(fontName),
@@ -22,9 +23,9 @@ BannerLine::BannerLine(
 
 }
 
-void BannerLine::SetTextFx(unique_ptr<TextFx> newFx)
+void BannerLine::SetTextFx(TextFx* newFx)
 {
-	m_textFx = move(newFx);
+	m_textFx = newFx;
 }
 
 void BannerLine::DrawOn(Graphics & gr, const RectF & rect) 
@@ -34,6 +35,13 @@ void BannerLine::DrawOn(Graphics & gr, const RectF & rect)
 	gr.FillRectangle(&HatchBrush(Gdiplus::HatchStyle50Percent,
 		Color(rand() % 255, rand() % 255, rand() % 255),
 		Color(rand() % 255, rand() % 255, rand() % 255)), rect);*/
+
+	// Lazy initialization
+	if (m_textFx == nullptr)
+	{
+		m_textFx = App()->GetEffectTable()->LookupName(L"Solid").get();
+	}
+	
 
 	m_textFx->DrawLine(*this, gr, rect);
 }

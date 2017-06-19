@@ -586,7 +586,7 @@ LRESULT CManiaMainWnd::OnLineLayoutTool(WORD wNotifyCode, WORD wID, HWND hWndCtl
 
 LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	switch (wID)
+	/*switch (wID)
 	{
 		case ID_FX_SOLID:			ApplyFx<TextFxSolid>();			break;
 		case ID_FX_TWOOUTLINES:		ApplyFx<TextFxTwoOutlines>();	break;
@@ -601,7 +601,7 @@ LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 	if (m_colorSelectToolWnd.m_hWnd)
 	{
 		m_colorSelectToolWnd.UpdateUI();
-	}
+	};*/
 	return 0L;
 }
 

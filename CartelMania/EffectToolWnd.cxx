@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CartelManiaApp.h"
 #include "EffectToolWnd.h"
+#include "bannerline.h"
 
 HWND EffectToolWnd::Create(HWND hWndParent, RECT rcInitial)
 {
@@ -33,17 +34,19 @@ void EffectToolWnd::OnClose()
 
 LRESULT EffectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & bHandled)
 {
-	/*if (HIWORD(wParam) == LBN_SELCHANGE)
+	if (HIWORD(wParam) == LBN_SELCHANGE)
 	{
 		int iSel = lb.GetCurSel();
 		if (iSel != LB_ERR)
 		{
+			auto bannerLine = App()->GetMainWindow()->GetBannerLineFromSelState();
 			auto textBuffer = std::make_unique<wchar_t[]>(lb.GetTextLen(iSel) + 1);
 			lb.GetText(iSel, textBuffer.get());
-			App()->GetBanner()->SetShapeName(textBuffer.get());
-			App()->GetBanner()->RegenPathAndRedraw();
+			auto fx = App()->GetEffectTable()->LookupName(textBuffer.get()).get();
+			bannerLine->SetTextFx(fx);
+			App()->GetBanner()->Redraw();
 		}
-	}*/
+	}
 	return 0L;
 }
 
