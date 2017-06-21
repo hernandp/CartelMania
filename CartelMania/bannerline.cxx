@@ -12,37 +12,23 @@ BannerLine::BannerLine(
 	const wstring& text,
 	const wstring& fontName, 
 	FontStyle fontStyle,
-	TextFx* effect) :
-	m_textFx(effect),
+	const wstring& effect) :
 	m_defaultText(defaultText),
 	m_text(text),
 	m_fontName(fontName),
 	m_fontStyle(fontStyle),
 	m_needRegen(true)
 {
-
+	SetTextFx(effect);
 }
 
-void BannerLine::SetTextFx(TextFx* newFx)
+void BannerLine::SetTextFx(const std::wstring& fxName)
 {
-	m_textFx = newFx;
+	m_textFx = App()->GetEffectTable()->LookupName(fxName)();
 }
 
 void BannerLine::DrawOn(Graphics & gr, const RectF & rect) 
 {	
-// Random background for debugging purposes!
-/*
-	gr.FillRectangle(&HatchBrush(Gdiplus::HatchStyle50Percent,
-		Color(rand() % 255, rand() % 255, rand() % 255),
-		Color(rand() % 255, rand() % 255, rand() % 255)), rect);*/
-
-	// Lazy initialization
-	if (m_textFx == nullptr)
-	{
-		m_textFx = App()->GetEffectTable()->LookupName(L"Solid").get();
-	}
-	
-
 	m_textFx->DrawLine(*this, gr, rect);
 }
 

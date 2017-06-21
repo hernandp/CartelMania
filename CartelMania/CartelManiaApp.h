@@ -18,11 +18,11 @@ public:
 	int						Run();
 	
 	CManiaMainWnd*			GetMainWindow() const { return m_mainWindow.get(); }
-	Banner*					GetBanner() { return &m_banner; }
+	Banner*					GetBanner() { return m_banner.get(); }
 	ColorTable*				GetColorTable() { return &m_colorTable; }
 	ShapeTable*				GetShapeTable() { return &m_shapeTable; }
 	EffectTable*			GetEffectTable() { return &m_effectTable;  }
-	const ShapeFunc&		GetCurrentShapeFunc() { return m_shapeTable.LookupName(m_banner.GetShapeName()); }
+	const ShapeFunc&		GetCurrentShapeFunc() { return m_shapeTable.LookupName(m_banner->GetShapeName()); }
 	const Gdiplus::Brush*	GetBrushFromColorTable(const std::wstring& name){ return m_colorTable.LookupName(name).get(); }
 	CPrinter*				GetPrinter()  { return &m_printer; }
 	Gdiplus::Size			GetPaperSizeMm() const;
@@ -50,7 +50,7 @@ private:
 	ShapeTable								m_shapeTable;
 	EffectTable								m_effectTable;
 	std::unique_ptr<CManiaMainWnd>			m_mainWindow;
-	Banner									m_banner;
+	std::unique_ptr<Banner>					m_banner;
 	AppSettings								m_settings;
 	std::wstring							m_documentName;
 };

@@ -42,8 +42,7 @@ LRESULT EffectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &
 			auto bannerLine = App()->GetMainWindow()->GetBannerLineFromSelState();
 			auto textBuffer = std::make_unique<wchar_t[]>(lb.GetTextLen(iSel) + 1);
 			lb.GetText(iSel, textBuffer.get());
-			auto fx = App()->GetEffectTable()->LookupName(textBuffer.get()).get();
-			bannerLine->SetTextFx(fx);
+			bannerLine->SetTextFx(textBuffer.get());
 			App()->GetBanner()->Redraw();
 		}
 	}

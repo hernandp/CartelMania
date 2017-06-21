@@ -14,7 +14,7 @@ void EffectTable::Init()
 
 	dprintf(L"Initializing Effect Table...\n");
 
-	m_table.push_back(make_pair(L"Solid", make_unique<TextFxSolid>()));
-	m_table.push_back(make_pair(L"Rear Shadow", make_unique<TextFxShadow>(ShadowType::Rear)));
-	m_table.push_back(make_pair(L"Fore Shadow", make_unique<TextFxShadow>(ShadowType::Fore)));
+	m_table.push_back(make_pair(L"Solid",       [] { return make_unique<TextFxSolid>(); }));
+	m_table.push_back(make_pair(L"Rear Shadow", [] { return make_unique<TextFxShadow>(ShadowType::Rear); }));
+	m_table.push_back(make_pair(L"Fore Shadow", [] { return make_unique<TextFxShadow>(ShadowType::Fore); }));
 }

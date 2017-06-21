@@ -16,6 +16,7 @@ using namespace std;
 const BannerLayout g_defaultBannerLayout = BannerLayout::SingleLine;
 const int g_defaultNumPagesWide = 2;
 const int g_defaultNumPagesTall = 1;
+const wchar_t* g_defaultFxName = L"Solid";
 const wchar_t* g_defaultShapeName = L"Rectangle";
 const wchar_t* g_defaultTopLineText =  L"CartelMania";
 const wchar_t* g_defaultBottomLineText = L"Line 2";
@@ -31,8 +32,8 @@ m_layout(g_defaultBannerLayout),
 m_pageCountXAxis(g_defaultNumPagesWide),
 m_pageCountYAxis(g_defaultNumPagesTall),
 m_shapeName(g_defaultShapeName),
-m_topLine(make_unique<BannerLine>(g_defaultTopLineText, g_defaultTopLineText, g_defaultFontFamilyName, FontStyleRegular, nullptr)),
-m_bottomLine(make_unique<BannerLine>(g_defaultBottomLineText, g_defaultBottomLineText, g_defaultFontFamilyName, FontStyleRegular, nullptr)),
+m_topLine(make_unique<BannerLine>(g_defaultTopLineText, g_defaultTopLineText, g_defaultFontFamilyName, FontStyleRegular, g_defaultFxName)),
+m_bottomLine(make_unique<BannerLine>(g_defaultBottomLineText, g_defaultBottomLineText, g_defaultFontFamilyName, FontStyleRegular, g_defaultFxName)),
 m_scalePolicy(ScalePolicy::ScaleToFit),
 m_verticalFill(g_defaultVerticalFill),
 m_horizontalFill(g_defaultHorizontalFill),
@@ -264,6 +265,12 @@ bool Banner::Serialize(const std::wstring & file) const
 	topLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(m_topLine->GetFontName().c_str());
 	topLineNode.append_attribute(L"Shape").set_value(m_shapeName.c_str());
 	auto fxNode = topLineNode.append_child(L"Effect");
+	//fxNode.append_attribute(L"Name").set_value(m_topLine->GetTextFx());
+	
+	//for (int i = 0; i < m_topLine->GetTextFx()->GetColorPropertyCount(); ++i)
+	//{
+	//	//m_topLine->GetTextFx->GetColorPropertyValue)
+	//}
 
 	auto bottomLineNode = root.append_child(L"BottomLine");
 	bottomLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(m_bottomLine->GetText().c_str());

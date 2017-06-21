@@ -16,6 +16,8 @@ CartelManiaApp::CartelManiaApp() :
 	dprintf(__FUNCTIONW__);
 	XASSERT(!s_appPtr);
 	s_appPtr = this;
+
+	m_banner = make_unique<Banner>();
 		
 	m_mainWindow = std::make_unique<CManiaMainWnd>();
 }

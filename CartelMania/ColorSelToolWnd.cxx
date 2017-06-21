@@ -30,7 +30,7 @@ BOOL ColorSelectToolWnd::OnCreate(LPCREATESTRUCT lpcs)
 
 void ColorSelectToolWnd::CreateControls()
 {
-	TextFx* textrend = App()->GetMainWindow()->GetBannerLineFromSelState()->GetTextFx();
+	auto textrend = App()->GetMainWindow()->GetBannerLineFromSelState()->GetTextFx();
 
 	const int colPropCount = textrend->GetColorPropertyCount();
 	
@@ -118,7 +118,8 @@ LRESULT ColorSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 			ColorPropertyClass colorPropClass = (ColorPropertyClass) comboBox->GetTag().intVal;
 			wstring colorValue = comboBox->GetCurSelColorName();
 
-			App()->GetMainWindow()->GetBannerLineFromSelState()->GetTextFx()->SetColorPropertyValue(colorPropClass, colorValue);
+			auto textrend = App()->GetMainWindow()->GetBannerLineFromSelState()->GetTextFx();
+			textrend->SetColorPropertyValue(colorPropClass, colorValue);
 		}
 
 		App()->GetBanner()->RegenPathAndRedraw();

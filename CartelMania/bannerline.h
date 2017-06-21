@@ -24,16 +24,15 @@ public:
 		const std::wstring& text,
 		const std::wstring& fontName,
 		Gdiplus::FontStyle fontStyle,
-		TextFx* effect);
+		const std::wstring& effect);
 
-	void				SetTextFx(TextFx* newFx);
-	TextFx*				GetTextFx() const { return m_textFx;  }
+	void				SetTextFx(const std::wstring& fxName);
+	TextFx*				GetTextFx() const { return m_textFx.get(); }
 	void				DrawOn(Gdiplus::Graphics& gr, const Gdiplus::RectF& rect);
 	const std::wstring& GetText() const { return m_text; }
 	void				SetText(const std::wstring& text);
 	std::wstring		GetDefaultText() const { return m_defaultText;  }
 	const std::wstring& GetFontName() const { return m_fontName; }
-
 	Gdiplus::GraphicsPath* GetPath(); 
 	std::unique_ptr<Gdiplus::GraphicsPath> GetPathCopy();
 
@@ -42,7 +41,7 @@ public:
 private:
 	void BuildPath();
 
-	TextFx*									m_textFx;
+	std::unique_ptr<TextFx>					m_textFx;
 	std::wstring							m_text, m_defaultText;
 	std::wstring							m_fontName;
 	Gdiplus::FontStyle						m_fontStyle;
