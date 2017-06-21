@@ -139,7 +139,7 @@ void TextFx::AlignScalePath(vector<GraphicsPath*> pathList, const RectF& lineRec
 //
 //-----------------------------------------------------------------------------
 
-void TextFxSolid::DrawLine(BannerLine& line, _In_ Graphics& gr, _In_ const RectF& lineRect)
+void TextFxSolid::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
     auto path = line.GetPathCopy();
 	

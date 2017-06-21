@@ -102,7 +102,7 @@ int CartelManiaApp::Run()
 	HMENU hMenu = LoadMenu(GetModuleHandle(0), MAKEINTRESOURCE(IDR_MENU1));
 	XASSERT(m_mainWindow->Create(0, CWindow::rcDefault,  L"CartelMania for Windows", 0, 0, hMenu));
 
-	MSG msg;
+	MSG msg = { 0 };
 	if (m_mainWindow->m_hWnd)
 	{
 		m_mainWindow->ShowWindow(SW_SHOWDEFAULT);

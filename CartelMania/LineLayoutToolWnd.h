@@ -13,7 +13,7 @@
 class LineLayoutToolWnd : public CWindowImpl<LineLayoutToolWnd>
 {
 public:
-	HWND Create(_In_opt_ HWND hWndParent, RECT rcInitial);
+	HWND Create(HWND hWndParent, RECT rcInitial);
 	void UpdateUI();
 
 private:

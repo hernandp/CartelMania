@@ -52,8 +52,8 @@ Banner::~Banner()
 
 Gdiplus::RectF Banner::CalcRect(const Gdiplus::RectF& rcClientArea) const
 {
-	REAL topMargin;
-	REAL leftMargin;
+	REAL topMargin = 0.0f;
+	REAL leftMargin = 0.0f;
 	REAL height = rcClientArea.Height * (m_verticalFill / 100.0f);
 	REAL width = rcClientArea.Width  * (m_horizontalFill / 100.0f);
 	

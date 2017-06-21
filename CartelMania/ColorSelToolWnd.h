@@ -13,7 +13,7 @@
 class ColorSelectToolWnd : public CWindowImpl<ColorSelectToolWnd>
 {
 public:
-	HWND Create(_In_opt_ HWND hWndParent);
+	HWND Create(_In_ HWND hWndParent);
 	void UpdateUI();
 
 private:

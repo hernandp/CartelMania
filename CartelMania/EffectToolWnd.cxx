@@ -3,7 +3,7 @@
 #include "EffectToolWnd.h"
 #include "bannerline.h"
 
-HWND EffectToolWnd::Create(HWND hWndParent, RECT rcInitial)
+HWND EffectToolWnd::Create(_In_ HWND hWndParent, _In_ RECT rcInitial)
 {
 	return CWindowImpl::Create(hWndParent, rcInitial, L"Effect", WS_POPUP | WS_CAPTION | WS_SYSMENU | WS_SIZEBOX, WS_EX_PALETTEWINDOW);
 }

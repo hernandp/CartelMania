@@ -12,7 +12,7 @@
 class EffectToolWnd : public CWindowImpl<EffectToolWnd>
 {
 public:
-	HWND Create(_In_opt_ HWND hWndParent, RECT rcInitial);
+	HWND Create(_In_ HWND hWndParent, _In_ RECT rcInitial);
 	void UpdateUI();
 
 private:

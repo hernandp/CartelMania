@@ -37,9 +37,6 @@ public:
 		COMMAND_ID_HANDLER(ID_FILE_SAVE, OnFileSave)
 
 		COMMAND_ID_HANDLER(ID_CMD_EDITTEXT, OnEditText)
-		COMMAND_ID_HANDLER(ID_EDIT_SEL1, OnEditSelLine)
-		COMMAND_ID_HANDLER(ID_EDIT_SEL2, OnEditSelLine)
-		COMMAND_ID_HANDLER(ID_EDIT_SELECTBOTH, OnEditSelLine)
 
 		COMMAND_ID_HANDLER(ID_CMD_OPENSHAPETOOL, OnOpenShapeTool)
 		COMMAND_ID_HANDLER(ID_CMD_LAYOUTSETUPTOOL, OnLayoutSetupTool)
@@ -51,23 +48,6 @@ public:
 		COMMAND_ID_HANDLER(ID_DEBUG_DISABLEPATHFILL, OnDebugDisablePathFill)
 		COMMAND_ID_HANDLER(ID_DEBUG_DISABLEPATHSUBDIVISION, OnDebugDisablePathSubdivision)
 		COMMAND_ID_HANDLER(ID_DEBUG_DRAWBOUNDINGRECTS, OnDebugDrawBoundingRects)
-
-		COMMAND_ID_HANDLER(ID_LAYOUT_SINGLELINE, OnSelectLayout)
-		COMMAND_ID_HANDLER(ID_LAYOUT_LARGEOVERSMALL1, OnSelectLayout)
-		COMMAND_ID_HANDLER(ID_LAYOUT_LARGEOVERSMALL2, OnSelectLayout)
-		COMMAND_ID_HANDLER(ID_LAYOUT_LARGEOVERSMALL3, OnSelectLayout)
-		COMMAND_ID_HANDLER(ID_LAYOUT_MEDIUMOVERMEDIUM, OnSelectLayout)
-		COMMAND_ID_HANDLER(ID_LAYOUT_SMALLOVERLARGE1, OnSelectLayout)
-		COMMAND_ID_HANDLER(ID_LAYOUT_SMALLOVERLARGE2, OnSelectLayout)
-		COMMAND_ID_HANDLER(ID_LAYOUT_SMALLOVERLARGE3, OnSelectLayout)
-		COMMAND_ID_HANDLER(ID_LAYOUT_SCALETOFIT, OnLayoutScaleToFit)
-
-		COMMAND_ID_HANDLER(ID_FX_BLOCK, OnSelectFx)
-		COMMAND_ID_HANDLER(ID_FX_SOLID, OnSelectFx)
-		COMMAND_ID_HANDLER(ID_FX_TWOOUTLINES, OnSelectFx)
-		COMMAND_ID_HANDLER(ID_FX_SHADEDBLOCK, OnSelectFx)
-		COMMAND_ID_HANDLER(ID_FX_SHADOWREAR, OnSelectFx)
-		COMMAND_ID_HANDLER(ID_FX_SHADOWFORE, OnSelectFx)
 
 		COMMAND_ID_HANDLER(ID_CMD_PRINT, OnPrint)
 		COMMAND_ID_HANDLER(ID_CMD_PRINTPRE, OnPrintPreview)
@@ -104,16 +84,11 @@ private:
 	
 	LRESULT OnEditText(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnFileExit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-	LRESULT OnEditSelLine(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	LRESULT OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnDebugDrawBoundingRects(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
-
-	LRESULT OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
-	LRESULT OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
-	LRESULT OnLayoutScaleToFit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 
 	LRESULT OnOpenEffectTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnOpenColorTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
@@ -126,9 +101,7 @@ private:
 	LRESULT OnPageSetup(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	
 	void UpdateMenu();
-
-	template <class T, typename ...U> void CManiaMainWnd::ApplyFx(U...);
-
+	
 	CImageListManaged		m_imgList;
 	CToolBarCtrl			m_toolbar;
 	ColorSelectToolWnd		m_colorSelectToolWnd;

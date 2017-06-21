@@ -86,7 +86,7 @@ void ColorSelectToolWnd::CreateControls()
 		rcDesiredClient.bottom - rcDesiredClient.top, SWP_NOREPOSITION | SWP_NOZORDER | SWP_NOMOVE);
 }
 
-HWND ColorSelectToolWnd::Create(HWND hWndParent)
+HWND ColorSelectToolWnd::Create(_In_ HWND hWndParent)
 {
 	return CWindowImpl::Create(hWndParent, rcDefault, L"Color Selection", WS_POPUP | WS_CAPTION | WS_SYSMENU, WS_EX_PALETTEWINDOW);
 }

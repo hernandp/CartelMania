@@ -146,7 +146,8 @@ LRESULT CManiaMainWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 		 hWndOther == m_textEditToolWnd.m_hWnd ||
 		 hWndOther == m_colorSelectToolWnd.m_hWnd ||
 		 hWndOther == m_lineLayoutToolWnd.m_hWnd ||
-		 hWndOther == m_layoutSetupToolWnd.m_hWnd ) )
+		 hWndOther == m_layoutSetupToolWnd.m_hWnd || 
+		 hWndOther == m_effectToolWnd.m_hWnd ) )
 	{
 		return DefWindowProc(WM_NCACTIVATE, TRUE, lParam);
 	}
@@ -169,8 +170,6 @@ void CManiaMainWnd::InvalidatePageDA()
 	GetPageDisplayAreaRect(&rc);
 	InvalidateRect(&rc, FALSE);
 }
-
-
 
 int CManiaMainWnd::GetClientRect(_Out_ LPRECT lpRect) const
 {
@@ -424,34 +423,6 @@ LRESULT CManiaMainWnd::OnFileExit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 	return 0L;
 }
 
-LRESULT CManiaMainWnd::OnEditSelLine(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
-{
-	switch (wID)
-	{
-		case ID_EDIT_SEL1:
-			m_lineSelState.first = true;
-			m_lineSelState.second = false;
-			UpdateMenu();
-			break;
-
-		case ID_EDIT_SEL2:
-			m_lineSelState.first = false;
-			m_lineSelState.second = true;
-			UpdateMenu();
-			break;
-
-		case ID_EDIT_SELECTBOTH:
-			m_lineSelState.first = true;
-			m_lineSelState.second = true;
-			UpdateMenu();
-			break;
-	}
-
-	InvalidateRect(nullptr, FALSE);
-
-	return 0L;
-}
-
 LRESULT CManiaMainWnd::OnDebugDrawVertices(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
 	App()->GetSettings()->debugDrawVertices = !App()->GetSettings()->debugDrawVertices;
@@ -482,41 +453,6 @@ LRESULT CManiaMainWnd::OnDebugDrawBoundingRects(WORD wNotifyCode, WORD wID, HWND
 	App()->GetSettings()->debugDrawBoundingRects = !App()->GetSettings()->debugDrawBoundingRects;
 	InvalidateRect(nullptr, FALSE);
 	UpdateMenu();
-	return 0L;
-}
-
-LRESULT CManiaMainWnd::OnSelectLayout(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
-{
-	static const map<int, BannerLayout> menuToLayoutMap{
-	{ ID_LAYOUT_SINGLELINE, BannerLayout::SingleLine },
-	{ ID_LAYOUT_LARGEOVERSMALL1, BannerLayout::LargeOverSmall1},
-	{ ID_LAYOUT_LARGEOVERSMALL2, BannerLayout::LargeOverSmall2},
-	{ ID_LAYOUT_LARGEOVERSMALL3, BannerLayout::LargeOverSmall3},
-	{ ID_LAYOUT_MEDIUMOVERMEDIUM, BannerLayout::MediumMedium },
-	{ ID_LAYOUT_SMALLOVERLARGE1, BannerLayout::SmallOverLarge1 },
-	{ ID_LAYOUT_SMALLOVERLARGE2, BannerLayout::SmallOverLarge2 },
-	{ ID_LAYOUT_SMALLOVERLARGE3, BannerLayout::SmallOverLarge3 }
-	};
-
-	XASSERT(menuToLayoutMap.find(wID) != menuToLayoutMap.end());
-
-	auto currentLayout = App()->GetBanner()->GetLayout();
-	auto selectedLayout = menuToLayoutMap.at(wID);
-
-	// Handle layouts menu  (do nothing if layout is the same as selected)
-
-	if (currentLayout != selectedLayout)
-	{
-		if (m_textEditToolWnd.m_hWnd &&
-			(!AreCompatibleLayouts(currentLayout, selectedLayout)))
-		{
-			m_textEditToolWnd.UpdateUI();
-		}
-
-		App()->GetBanner()->SetLayout(selectedLayout);
-		InvalidateRect(nullptr, FALSE);
-	}
-
 	return 0L;
 }
 
@@ -584,42 +520,6 @@ LRESULT CManiaMainWnd::OnLineLayoutTool(WORD wNotifyCode, WORD wID, HWND hWndCtl
 	return 0L;
 }
 
-LRESULT CManiaMainWnd::OnSelectFx(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
-{
-	/*switch (wID)
-	{
-		case ID_FX_SOLID:			ApplyFx<TextFxSolid>();			break;
-		case ID_FX_TWOOUTLINES:		ApplyFx<TextFxTwoOutlines>();	break;
-		case ID_FX_VERTICAL:		break;
-		case ID_FX_BLOCK:			ApplyFx<TextFxBlock>();			break;
-		case ID_FX_SHADOWREAR:		ApplyFx<TextFxShadow>(ShadowType::Rear); break;
-		case ID_FX_SHADOWFORE:		ApplyFx<TextFxShadow>(ShadowType::Fore); break;
-	}
-
-	InvalidateRect(nullptr, FALSE);
-
-	if (m_colorSelectToolWnd.m_hWnd)
-	{
-		m_colorSelectToolWnd.UpdateUI();
-	};*/
-	return 0L;
-}
-
-LRESULT CManiaMainWnd::OnLayoutScaleToFit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
-{
-	App()->GetBanner()->SetScalePolicy(ScalePolicy::ScaleToFit);
-	return 0;
-}
-
-template <class T, typename ...U>
-void CManiaMainWnd::ApplyFx(U... v)
-{
-	if (m_lineSelState.first)
-		App()->GetBanner()->GetTopLine()->SetTextFx(make_unique<T>(v...));
-
-	if (m_lineSelState.second)
-		App()->GetBanner()->GetBottomLine()->SetTextFx(make_unique<T>(v...));
-}
 
 BannerLine* CManiaMainWnd::GetBannerLineFromSelState()
 {
@@ -821,30 +721,7 @@ void CManiaMainWnd::UpdateMenu()
 	HMENU hMenu = GetMenu();
 
 	if (hMenu)
-	{
-		HMENU hEditMenu = GetSubMenu(hMenu, 1);
-		if (hEditMenu)
-		{
-			if (m_lineSelState.first && m_lineSelState.second)
-			{
-				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_UNCHECKED);
-				CheckMenuItem(hEditMenu, ID_EDIT_SEL2, MF_UNCHECKED);
-				CheckMenuItem(hEditMenu, ID_EDIT_SELECTBOTH, MF_CHECKED);
-			}
-			else if (m_lineSelState.first)
-			{
-				CheckMenuItem(hEditMenu, ID_EDIT_SELECTBOTH, MF_UNCHECKED);
-				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_CHECKED);
-				CheckMenuItem(hEditMenu, ID_EDIT_SEL2, MF_UNCHECKED);
-			}
-			else if (m_lineSelState.second)
-			{
-				CheckMenuItem(hEditMenu, ID_EDIT_SELECTBOTH, MF_UNCHECKED);
-				CheckMenuItem(hEditMenu, ID_EDIT_SEL1, MF_UNCHECKED);
-				CheckMenuItem(hEditMenu, ID_EDIT_SEL2, MF_CHECKED);
-			}
-		}
-
+	{		
 		HMENU hDebugMenu = GetSubMenu(hMenu, 7);
 		if (hDebugMenu)
 		{
