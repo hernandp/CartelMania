@@ -38,26 +38,22 @@ public:
 	}
 
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr,
-		const Gdiplus::RectF& rect) = 0;
+		                  const Gdiplus::RectF& rect) = 0;
 	virtual ~TextFx() {}
 
-	void SetOutlineWidth(float w) { m_outlineWidth = w; }
-
-	void SetColorPropertyValue(ColorPropertyClass id, std::wstring colorName);
-	std::wstring GetColorPropertyValue(ColorPropertyClass id);
-
-	int GetColorPropertyCount() const { return static_cast<int>(m_colorPropList.size()); }
-	ColorProperty GetColorPropertyItem(int index) const { return m_colorPropList[index]; }
+	void			SetColorPropertyValue(ColorPropertyClass id, std::wstring colorName);
+	std::wstring	GetColorPropertyValue(ColorPropertyClass id);
+	int				GetColorPropertyCount() const { return static_cast<int>(m_colorPropList.size()); }
+	ColorProperty	GetColorPropertyItem(int index) const { return m_colorPropList[index]; }
 
 protected:
-	void AddColorPropDefault();
-	void DrawLineBackground(Gdiplus::Graphics & gr, const Gdiplus::RectF & lineRect);
+	void			AddColorPropDefault();
+	void			DrawLineBackground(Gdiplus::Graphics & gr, const Gdiplus::RectF & lineRect);
 
-	void AlignScalePath(std::vector<Gdiplus::GraphicsPath*> pathList, 
-		const Gdiplus::RectF& lineRect,
-		AlignMode = AlignMode::Center);
+	void			AlignScalePath(std::vector<Gdiplus::GraphicsPath*> pathList, 
+					const Gdiplus::RectF& lineRect,
+					AlignMode = AlignMode::Center);
 
-	float							m_outlineWidth = 1.0f;
 	ColorPropertyList				m_colorPropList;
 };
 
@@ -93,7 +89,6 @@ public:
 		m_colorPropList.emplace_back(ColorPropertyClass::Shadow, L"Black");
 		m_colorPropList.emplace_back(ColorPropertyClass::Shadow_Outline, L"Black");
 		m_colorPropList.emplace_back(ColorPropertyClass::Face_Outline, L"Black");
-		SetColorPropertyValue(ColorPropertyClass::Face, L"Violet");
 	}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 

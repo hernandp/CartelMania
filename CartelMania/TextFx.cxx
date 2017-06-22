@@ -180,20 +180,28 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 {
 	auto path = line.GetPathCopy();
 
+	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
 	AlignScalePath({ path.get() }, lineRect);
+
+	// Bounding rects
+
 	DrawLineBackground(gr, lineRect);
 
 	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
 	auto innerOutline = GetColorPropertyValue(ColorPropertyClass::Inner_Outline);
 	auto outerOutline = GetColorPropertyValue(ColorPropertyClass::Outer_Outline);
 	
-	Pen penIn(App()->GetBrushFromColorTable(innerOutline), m_outlineWidth);
-	Pen penOut(App()->GetBrushFromColorTable(outerOutline), m_outlineWidth * 2);
+	// TODO: Adjustable outline sizes
+	//
+	Pen penIn(App()->GetBrushFromColorTable(innerOutline), 8);
+	Pen penOut(App()->GetBrushFromColorTable(outerOutline), 4);
 	const Brush* brush = App()->GetBrushFromColorTable(faceColor);
-	
-	gr.DrawPath(&penOut, path.get());
-	gr.DrawPath(&penIn, path.get());
+	penIn.SetAlignment(PenAlignmentInset);
+	penOut.SetAlignment(PenAlignmentInset);
 	gr.FillPath(brush, path.get());
+	gr.DrawPath(&penIn, path.get());
+	gr.DrawPath(&penOut, path.get());
+	
 }
 
 //-----------------------------------------------------------------------------
