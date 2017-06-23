@@ -33,6 +33,7 @@ public:
 	CDevMode*				GetDevMode() { return &m_devMode;  }
 	AppSettings*			GetSettings() { return &m_settings;  }
 	std::wstring			GetMeasureStringShort() const;
+	CDC*					GetPrinterDC() { return &m_printerDC;  }
 	static CartelManiaApp*	Instance() { return s_appPtr;  }
 	virtual ~CartelManiaApp();
 

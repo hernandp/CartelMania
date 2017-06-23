@@ -33,6 +33,9 @@ public:
 	void				SetText(const std::wstring& text);
 	std::wstring		GetDefaultText() const { return m_defaultText;  }
 	const std::wstring& GetFontName() const { return m_fontName; }
+	void				SetFontName(const std::wstring& fontName) { m_fontName = fontName;  }
+	bool				IsFontStyleBold() const { return m_fontStyle == Gdiplus::FontStyleBold; }
+	void				SetFontStyleBold(bool f) { m_fontStyle = f ?  Gdiplus::FontStyleBold : Gdiplus::FontStyleRegular;  }
 	Gdiplus::GraphicsPath* GetPath(); 
 	std::unique_ptr<Gdiplus::GraphicsPath> GetPathCopy();
 
