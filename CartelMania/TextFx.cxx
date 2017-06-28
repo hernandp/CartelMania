@@ -293,7 +293,25 @@ void TextFxBlock::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect
 	DrawLineBackground(gr, lineRect);
 
 	Matrix mtx;
-	mtx.Translate(-BLOCKDEPTH * NUMBLOCKS, -BLOCKDEPTH * NUMBLOCKS);
+	switch (m_blockDir)
+	{
+		case BlockDirection::TopLeft:
+			mtx.Translate(-BLOCKDEPTH * NUMBLOCKS, -BLOCKDEPTH * NUMBLOCKS);
+			break;
+
+		case BlockDirection::TopRight:
+			mtx.Translate(BLOCKDEPTH * NUMBLOCKS, -BLOCKDEPTH * NUMBLOCKS);
+			break;
+
+		case BlockDirection::BottomLeft:
+			mtx.Translate(-BLOCKDEPTH * NUMBLOCKS, BLOCKDEPTH * NUMBLOCKS);
+			break;
+
+		case BlockDirection::BottomRight:
+			mtx.Translate(BLOCKDEPTH * NUMBLOCKS, BLOCKDEPTH * NUMBLOCKS);
+			break;
+	}
+	
 	backPath->Transform(&mtx);	
 	
 	//path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
@@ -324,7 +342,15 @@ void TextFxBlock::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect
 		}
 
 		mtx.Reset();
-		mtx.Translate((float) cx, slope * (float) cx);
+		if (m_blockDir == BlockDirection::TopLeft || m_blockDir == BlockDirection::BottomLeft)
+		{
+			mtx.Translate((float) cx, slope * (float) cx);
+		}
+		else // Top-right & bottom-right
+		{
+			mtx.Translate((float) -cx, -slope * (float) cx);
+		}
+			
 		backPath->Transform(&mtx);
 		
 		gr.FillPath(App()->GetBrushFromColorTable(blockColor), backPath.get());

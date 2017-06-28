@@ -27,6 +27,7 @@ enum  class AlignMode
 };
 
 enum class ShadowType { Rear, Fore, Baseline  };
+enum class BlockDirection { TopLeft, TopRight, BottomLeft, BottomRight };
 
 //----------------------------------------------------------------------------
 class TextFx
@@ -76,7 +77,7 @@ public:
 class TextFxBlock : public TextFx
 {
 public:
-	TextFxBlock() : TextFx() 
+	explicit TextFxBlock(BlockDirection blockDir) : m_blockDir(blockDir),TextFx() 
 	{
 		m_colorPropList.emplace_back(ColorPropertyClass::Face_Outline, L"Black");
 		m_colorPropList.emplace_back(ColorPropertyClass::Shade_1, L"Orange 1");
@@ -87,6 +88,8 @@ public:
 		m_colorPropList.emplace_back(ColorPropertyClass::Shade_6, L"Orange 6");	
 	}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
+private:
+	BlockDirection m_blockDir;
 };
 //----------------------------------------------------------------------------
 
