@@ -206,7 +206,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="ColorPalette.cxx">
+    <ClCompile Include="ColorScheme.cxx">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
+    <ClCompile Include="ColorSchemeTable.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
@@ -312,10 +318,11 @@
     <ClInclude Include="bannerline.h" />
     <ClInclude Include="CartelManiaApp.h" />
     <ClInclude Include="ColorComboBox.h" />
+    <ClInclude Include="ColorSchemeTable.h" />
     <ClInclude Include="ColorProps.h" />
     <ClInclude Include="ColorTable.h" />
     <ClInclude Include="ColorSelToolWnd.h" />
-    <ClInclude Include="ColorPalette.h" />
+    <ClInclude Include="ColorScheme.h" />
     <ClInclude Include="AppSettings.h" />
     <ClInclude Include="debug.h" />
     <ClInclude Include="EffectTable.h" />

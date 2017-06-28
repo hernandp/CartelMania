@@ -2,9 +2,10 @@
 #include "ColorProps.h"
 #include <vector>
 
-class ColorPalette
+class ColorScheme
 {
-	explicit ColorPalette(std::wstring name) : m_name(name) {}
+public:
+	explicit ColorScheme(const std::wstring& name) : m_name(name) {}
 
 private:
 	std::wstring				m_name;

@@ -213,6 +213,7 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 void TextFxShadow::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
 	auto path = line.GetPathCopy();
+	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
 	auto shadowPath = line.GetPathCopy();
 
 	RectF bounds;
@@ -237,7 +238,6 @@ void TextFxShadow::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRec
 	};
 	
 	shadowPath->Warp(destPoints, 3, bounds);
-
 	AlignScalePath({ path.get(), shadowPath.get() }, lineRect);
 	DrawLineBackground(gr, lineRect);
 
@@ -284,34 +284,57 @@ void TextFxShadow::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRec
 
 void TextFxBlock::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
-	//StringFormat format;
-	//format.SetAlignment(StringAlignmentCenter);
-	//format.SetLineAlignment(StringAlignmentCenter);
-	//format.SetTrimming(StringTrimmingNone);
-	//format.SetFormatFlags(StringFormatFlagsNoWrap);
+	const int BLOCKDEPTH = 16, NUMBLOCKS = 6;
+	auto path = line.GetPathCopy();
+	auto backPath = line.GetPathCopy();
+	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
+	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
 
-	//FontFamily family(line.GetFontName().c_str());
-	//unique_ptr<Font> fillFont = FindFontToFillTextInRect(gr, lineRect, family, line.GetText(), format);
+	DrawLineBackground(gr, lineRect);
 
-	//// Cheap block effect
+	Matrix mtx;
+	mtx.Translate(-BLOCKDEPTH * NUMBLOCKS, -BLOCKDEPTH * NUMBLOCKS);
+	backPath->Transform(&mtx);	
+	
+	//path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
+	
+	AlignScalePath({ path.get(), backPath.get() }, lineRect);
+	
+	RectF backPathBounds, pathBounds;
+	backPath->GetBounds(&backPathBounds);
+	path->GetBounds(&pathBounds);
 
-	//const int BLOCKDEPTH = 128;
+	int dist = static_cast<int>(Length(pathBounds.X, pathBounds.Y, backPathBounds.X, backPathBounds.Y));
+	
+	float slope = (pathBounds.Y - backPathBounds.Y) / (pathBounds.X - backPathBounds.X);
 
-	//for (int i = 0; i < BLOCKDEPTH; ++i)
-	//{
-	//	RectF rcBlock = lineRect;
-	//	const BYTE layerColorComp = BYTE(255.0f * ((BLOCKDEPTH - i) / REAL(BLOCKDEPTH)));
-	//	rcBlock.Offset(REAL(BLOCKDEPTH - i), REAL(BLOCKDEPTH - i));
+	int xDist = (int) fabs(backPathBounds.X - pathBounds.X);
+	std::wstring blockColor;
 
-	//	gr.DrawString(line.GetText().c_str(), -1, fillFont.get(), rcBlock, &format,
-	//		&SolidBrush(Gdiplus::Color(layerColorComp, layerColorComp, layerColorComp)));
-	//}
+	for (int cx = 0; cx < xDist; cx++)
+	{
+		switch (int(NUMBLOCKS * (float(cx) / xDist)))
+		{
+			case 0: blockColor = GetColorPropertyValue(ColorPropertyClass::Shade_1); break;
+			case 1: blockColor = GetColorPropertyValue(ColorPropertyClass::Shade_2); break;
+			case 2: blockColor = GetColorPropertyValue(ColorPropertyClass::Shade_3); break;
+			case 3: blockColor = GetColorPropertyValue(ColorPropertyClass::Shade_4); break;
+			case 4: blockColor = GetColorPropertyValue(ColorPropertyClass::Shade_5); break;
+			case 5: blockColor = GetColorPropertyValue(ColorPropertyClass::Shade_6); break;
+		}
 
-	//// Draw at the choosen font size
-	////
+		mtx.Reset();
+		mtx.Translate((float) cx, slope * (float) cx);
+		backPath->Transform(&mtx);
+		
+		gr.FillPath(App()->GetBrushFromColorTable(blockColor), backPath.get());
 
-	//gr.DrawString(line.GetText().c_str(), -1, fillFont.get(), lineRect, &format,
-	//	&HatchBrush(HatchStyle20Percent, Gdiplus::Color::Blue, Gdiplus::Color::Red));
+		mtx.Invert();
+		backPath->Transform(&mtx);	
+	}
+
+	gr.DrawPath(&Pen(App()->GetBrushFromColorTable(faceOutline), 1), path.get());
+	gr.FillPath(App()->GetBrushFromColorTable(faceColor), path.get());
 }
 
 //-----------------------------------------------------------------------------

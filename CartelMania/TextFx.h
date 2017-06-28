@@ -76,7 +76,16 @@ public:
 class TextFxBlock : public TextFx
 {
 public:
-	TextFxBlock() : TextFx() {}
+	TextFxBlock() : TextFx() 
+	{
+		m_colorPropList.emplace_back(ColorPropertyClass::Face_Outline, L"Black");
+		m_colorPropList.emplace_back(ColorPropertyClass::Shade_1, L"Orange 1");
+		m_colorPropList.emplace_back(ColorPropertyClass::Shade_2, L"Orange 2");
+		m_colorPropList.emplace_back(ColorPropertyClass::Shade_3, L"Orange 3");
+		m_colorPropList.emplace_back(ColorPropertyClass::Shade_4, L"Orange 4");
+		m_colorPropList.emplace_back(ColorPropertyClass::Shade_5, L"Orange 5 Pure");
+		m_colorPropList.emplace_back(ColorPropertyClass::Shade_6, L"Orange 6");	
+	}
 	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
 };
 //----------------------------------------------------------------------------

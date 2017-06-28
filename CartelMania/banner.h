@@ -2,6 +2,7 @@
 #include <map>
 #include <windows.h>
 #include <memory>
+#include "ColorScheme.h"
 
 class BannerLine;
 
@@ -105,6 +106,8 @@ public:
 	void			SetEasyGlueMarginVisible(bool f) { m_easyGlueMarginVisible = f; }
 	int 			GetEasyGlueMarginSizeMm() const { return m_easyGlueMarginMm; }
 	void			SetEasyGlueMarginSizeMm(int sizeInMillimeters) { m_easyGlueMarginMm = sizeInMillimeters; }
+	std::wstring	GetColorSchemeName() const { return m_colorSchemeName; }
+	void			SetColorSchemeName(const std::wstring& sch )  { m_colorSchemeName = sch;  }
 
 	BannerVerticalAlignment GetVerticalAlignment() const { return m_verticalAlign; }
 	BannerHorizontalAlignment GetHorizontalAlignment() const { return m_horizontalAlign; }
@@ -129,4 +132,5 @@ private:
 	bool										m_easyGluePrintActive;
 	bool										m_easyGlueMarginVisible;
 	int											m_easyGlueMarginMm;
+	std::wstring								m_colorSchemeName;
 };

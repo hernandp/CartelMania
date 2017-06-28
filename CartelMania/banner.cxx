@@ -21,6 +21,7 @@ const wchar_t* g_defaultShapeName = L"Rectangle";
 const wchar_t* g_defaultTopLineText =  L"CartelMania";
 const wchar_t* g_defaultBottomLineText = L"Line 2";
 const wchar_t* g_defaultFontFamilyName = L"Arial";
+const wchar_t* g_defaultColorSchemeName = L"Default";
 const int g_defaultVerticalFill = 50;
 const int g_defaultHorizontalFill = 100;
 const auto g_defaultVAlign = BannerVerticalAlignment::Center;
@@ -41,7 +42,8 @@ m_verticalAlign(g_defaultVAlign),
 m_horizontalAlign(g_defaultHAlign),
 m_easyGluePrintActive(true),
 m_easyGlueMarginVisible(true),
-m_easyGlueMarginMm(g_defaultEasyGlueMarginMm)
+m_easyGlueMarginMm(g_defaultEasyGlueMarginMm),
+m_colorSchemeName(g_defaultColorSchemeName)
 {	
 	
 }

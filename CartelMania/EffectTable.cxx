@@ -18,4 +18,5 @@ void EffectTable::Init()
 	m_table.push_back(make_pair(L"Two Outlines", [] { return make_unique<TextFxTwoOutlines>(); }));
 	m_table.push_back(make_pair(L"Rear Shadow", [] { return make_unique<TextFxShadow>(ShadowType::Rear); }));
 	m_table.push_back(make_pair(L"Fore Shadow", [] { return make_unique<TextFxShadow>(ShadowType::Fore); }));
+	m_table.push_back(make_pair(L"Block", [] {	return make_unique<TextFxBlock>();	}));
 }

@@ -84,7 +84,10 @@
     <ClInclude Include="EffectTable.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="ColorPalette.h">
+    <ClInclude Include="ColorSchemeTable.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="ColorScheme.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -160,7 +163,10 @@
     <ClCompile Include="EffectToolWnd.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ColorPalette.cxx">
+    <ClCompile Include="ColorSchemeTable.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="ColorScheme.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

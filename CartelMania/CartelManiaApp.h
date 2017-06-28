@@ -7,6 +7,7 @@
 #include "debug.h"
 #include "ShapeTable.h"
 #include "EffectTable.h"
+#include "ColorSchemeTable.h"
 #include <memory>
 
 const float MM_PER_INCH = 25.4f;
@@ -50,6 +51,7 @@ private:
 	ColorTable								m_colorTable;
 	ShapeTable								m_shapeTable;
 	EffectTable								m_effectTable;
+	ColorSchemeTable						m_colorSchemeTable;
 	std::unique_ptr<CManiaMainWnd>			m_mainWindow;
 	std::unique_ptr<Banner>					m_banner;
 	AppSettings								m_settings;
