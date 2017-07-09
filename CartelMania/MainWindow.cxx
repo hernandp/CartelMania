@@ -66,6 +66,11 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_TEXTEFFECT)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_PAGELAYOUT)));
 	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_SHAPETOOL)));
+	
+	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_PRINT)));
+	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_PRINTPREVIEW)));
+	m_imgList.AddIcon(LoadIcon(hMod, MAKEINTRESOURCE(IDI_PAGESETUP)));
+
 	m_toolbar.SetImageList(m_imgList, 0);
 
 	const DWORD buttonStyles = BTNS_AUTOSIZE;
@@ -74,17 +79,17 @@ LRESULT CManiaMainWnd::OnCreate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL & 
 		{ 0, ID_FILE_NEW,			TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"New" },
 		{ 1, ID_FILE_OPEN,			TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"Open" },
 		{ 2, ID_FILE_SAVE,			TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"Save" },
-		{ MAKELONG(0       ,      0), NULL, NULL, BTNS_SEP, {0}, 0, 0 },
+		{ 0, NULL, NULL, TBSTYLE_SEP, {0}, 0, 0 },
+		{ 9,  ID_CMD_PRINT,         TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"Print" },
+		{ 10, ID_CMD_PRINTPRE,      TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"Print Preview" },
+		{ 11, ID_CMD_PAGESETUP,     TBSTATE_ENABLED, buttonStyles, {0}, 0, (INT_PTR) L"Page Setup" },
+		{ 0, NULL, NULL, BTNS_SEP, {0}, 0, 0 },
 		{ 3, ID_CMD_COLORTOOL,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Color" },
 		{ 4, ID_CMD_EDITTEXT,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Text" },
 		{ 5, ID_CMD_LINELAYOUTTOOL,	TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Line Layout" },
 		{ 6, ID_CMD_EFFECTTOOL,		TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Effect" },
 		{ 8, ID_CMD_OPENSHAPETOOL,	TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Shape" },
-		{ 7, ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Page Layout" },
-		{ MAKELONG(0       ,      0), NULL, NULL, TBSTYLE_SEP, {0}, 0, 0 },
-		{ MAKELONG(STD_PRINTPRE,  0), ID_CMD_PRINTPRE, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ MAKELONG(STD_PRINT,     0), ID_CMD_PRINT, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 },
-		{ MAKELONG(STD_PRINT,     0), ID_CMD_PAGESETUP, TBSTATE_ENABLED, buttonStyles, {0}, 0, 0 }
+		{ 7, ID_CMD_LAYOUTSETUPTOOL,TBSTATE_ENABLED, buttonStyles | BTNS_CHECK, {0}, 0, (INT_PTR) L"Page Layout" }
 	};
 	m_toolbar.SetButtonStructSize(sizeof(TBBUTTON));
 	m_toolbar.AddButtons(_countof(tbButtons), tbButtons);
@@ -234,14 +239,22 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 	Gdiplus::RectF bannerRect = banner->CalcRect(&rcPageDA);
 	banner->GetLineRects(bannerRect, line1Rect, line2Rect, true);
 
-	if (App()->GetMainWindow()->GetLineSelState().first || App()->GetBanner()->GetLayout() == BannerLayout::SingleLine)
+	// Force selection to line 1 if SingleLine is selected. This is to workaround the case
+	// where the user has line-2 selected and changes to SingleLine layout.
+	//
+	if (App()->GetBanner()->GetLayout() == BannerLayout::SingleLine)
+	{
+		m_lineSelState.first = true;
+		m_lineSelState.second = false;
+	}
+
+	if (m_lineSelState.first )
 	{
 		gr.TranslateTransform(line1Rect.X, line1Rect.Y);
 		DrawSelectionMark(gr, line1Rect);
 		gr.TranslateTransform(-line1Rect.X, -line1Rect.Y);
 	}
-
-	if (App()->GetMainWindow()->GetLineSelState().second )
+	else if (m_lineSelState.second )
 	{
 		gr.TranslateTransform(line2Rect.X, line2Rect.Y);
 		DrawSelectionMark(gr, line2Rect);
