@@ -26,9 +26,9 @@ enum  class AlignMode
 	TopLeft
 };
 
-enum class ShadowType { Rear, Fore, Baseline  };
+enum class ShadowType { Rear, Fore, Baseline };
 enum class BlockDirection { TopLeft, TopRight, BottomLeft, BottomRight };
-
+enum class PerspectiveDirection { Down, Up };
 //----------------------------------------------------------------------------
 class TextFx
 {
@@ -106,6 +106,21 @@ public:
 
 private:
 	ShadowType m_shadowType;
+};
+//----------------------------------------------------------------------------
+
+class TextFxPerspective : public TextFx
+{
+public:
+	explicit TextFxPerspective(PerspectiveDirection dir) : m_direction(dir), TextFx()
+	{
+		m_colorPropList.emplace_back(ColorPropertyClass::Face_Outline, L"Black");
+		m_colorPropList.emplace_back(ColorPropertyClass::Sides, L"Black");
+	}
+
+	virtual void DrawLine(BannerLine& line, Gdiplus::Graphics& gr, const Gdiplus::RectF& rect) override;
+private:
+	PerspectiveDirection m_direction;
 };
 
 //----------------------------------------------------------------------------

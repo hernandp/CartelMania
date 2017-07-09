@@ -22,4 +22,6 @@ void EffectTable::Init()
 	m_table.push_back(make_pair(L"Block Top-Right",		[] { return make_unique<TextFxBlock>(BlockDirection::TopRight);	}));
 	m_table.push_back(make_pair(L"Block Bottom-Left",	[] { return make_unique<TextFxBlock>(BlockDirection::BottomLeft);	}));
 	m_table.push_back(make_pair(L"Block Bottom-Right",	[] { return make_unique<TextFxBlock>(BlockDirection::BottomRight);	}));
+	//m_table.push_back(make_pair(L"Perspective Up",		[] { return make_unique<TextFxPerspective>(PerspectiveDirection::Up);	}));
+	//m_table.push_back(make_pair(L"Perspective Down",	[] { return make_unique<TextFxPerspective>(PerspectiveDirection::Down);	}));
 }

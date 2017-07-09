@@ -205,7 +205,7 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 }
 
 //-----------------------------------------------------------------------------
-//
+// 
 // Shadow 
 //
 //-----------------------------------------------------------------------------
@@ -213,8 +213,9 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 void TextFxShadow::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
 	auto path = line.GetPathCopy();
-	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
+	path = unique_ptr<GraphicsPath>(ShapePath(*path.get(), App()->GetCurrentShapeFunc(), lineRect));
 	auto shadowPath = line.GetPathCopy();
+	shadowPath = unique_ptr<GraphicsPath>(ShapePath(*shadowPath.get(), App()->GetCurrentShapeFunc(), lineRect));
 
 	RectF bounds;
 	path->GetBounds(&bounds);
@@ -289,6 +290,9 @@ void TextFxBlock::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect
 	auto backPath = line.GetPathCopy();
 	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
 	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
+	
+	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
+	backPath = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
 
 	DrawLineBackground(gr, lineRect);
 
@@ -314,15 +318,11 @@ void TextFxBlock::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect
 	
 	backPath->Transform(&mtx);	
 	
-	//path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
-	
 	AlignScalePath({ path.get(), backPath.get() }, lineRect);
 	
 	RectF backPathBounds, pathBounds;
 	backPath->GetBounds(&backPathBounds);
 	path->GetBounds(&pathBounds);
-
-	int dist = static_cast<int>(Length(pathBounds.X, pathBounds.Y, backPathBounds.X, backPathBounds.Y));
 	
 	float slope = (pathBounds.Y - backPathBounds.Y) / (pathBounds.X - backPathBounds.X);
 
@@ -352,9 +352,7 @@ void TextFxBlock::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect
 		}
 			
 		backPath->Transform(&mtx);
-		
 		gr.FillPath(App()->GetBrushFromColorTable(blockColor), backPath.get());
-
 		mtx.Invert();
 		backPath->Transform(&mtx);	
 	}
@@ -363,35 +361,93 @@ void TextFxBlock::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect
 	gr.FillPath(App()->GetBrushFromColorTable(faceColor), path.get());
 }
 
+
+//-----------------------------------------------------------------------------
+
+void TextFxPerspective::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
+{
+	auto path = line.GetPathCopy();
+	auto backPath = line.GetPathCopy();
+	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
+	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
+	auto sideColor = GetColorPropertyValue(ColorPropertyClass::Sides);
+	const float YOFFSET = 180;
+
+	DrawLineBackground(gr, lineRect);
+
+	RectF backPathBounds, pathBounds;
+	backPath->GetBounds(&backPathBounds);
+	path->GetBounds(&pathBounds);
+
+	Matrix mtx;
+	mtx.Scale(0.5, 0.5);
+
+	switch (m_direction)
+	{
+		case PerspectiveDirection::Down:
+			//mtx.Translate(pathBounds.Width / 2.0f, YOFFSET * 2);
+			break;
+
+		case PerspectiveDirection::Up:
+			mtx.Translate(pathBounds.Width / 2.0f, -YOFFSET);
+			break;
+	}
+	backPath->Transform(&mtx);
+
+	//path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
+
+	AlignScalePath({ path.get(), backPath.get() }, lineRect);
+
+	backPath->GetBounds(&backPathBounds);
+	path->GetBounds(&pathBounds);
+
+	int yDist = (int) fabs(backPathBounds.Y - pathBounds.Y);
+
+	for (int cy = 0; cy < yDist; cy++)
+	{
+		/*	mtx.Reset();
+			mtx.Scale(1.0f + (0.5f * ((float) cy / yDist)), 1.0f + (0.5f * ((float) cy / yDist)));
+			backPath->GetBounds(&backPathBounds);
+			mtx.Translate( 0.0f , (float) cy);
+			backPath->Transform(&mtx);
+			gr.FillPath(App()->GetBrushFromColorTable(sideColor), backPath.get());
+			mtx.Invert();
+			backPath->Transform(&mtx);*/
+	}
+
+	
+
+	//float slope = (pathBounds.Y - backPathBounds.Y) / (pathBounds.X - backPathBounds.X);
+
+	//std::wstring blockColor;
+
+	//for (int cx = 0; cx < xDist; cx++)
+	//{
+	//	mtx.Reset();
+	//	if (m_direction == PerspectiveDirection::Down)
+	//	{
+	//		mtx.Translate((float) cx, slope * (float) cx);
+	//	}
+	//	else // Top-right & bottom-right
+	//	{
+	//		mtx.Translate((float) -cx, -slope * (float) cx);
+	//	}
+
+	//	backPath->Transform(&mtx);
+	//	gr.FillPath(App()->GetBrushFromColorTable(blockColor), backPath.get());
+	//	mtx.Invert();
+	//	backPath->Transform(&mtx);
+	//}
+
+
+	gr.DrawPath(&Pen(App()->GetBrushFromColorTable(faceOutline), 1), backPath.get());
+	gr.DrawPath(&Pen(App()->GetBrushFromColorTable(faceOutline), 1), path.get());
+	gr.FillPath(App()->GetBrushFromColorTable(faceColor), path.get());
+}
+
 //-----------------------------------------------------------------------------
 
 void TextFxBlend::DrawLine(BannerLine& line, Graphics& gr, const RectF& bannerRect)
 {
-	//StringFormat format;
-	//format.SetTrimming(StringTrimmingNone);
-	//format.SetFormatFlags(StringFormatFlagsNoWrap);
-	//format.SetAlignment(StringAlignmentCenter);
 
-	//RectF boundingBox;
-	//FontFamily family(line.GetFontName().c_str());
-	//unique_ptr<Font> font = FindFontToFillTextInRect(gr, bannerRect, family, line.GetText(), format, &boundingBox);
-
-	//// Center vertically [ user could choose other alignments ]
-	////
-	//Matrix mtx;
-	//mtx.Translate(0.0f, (bannerRect.Height / 2) - (boundingBox.Height / 2));
-
-	//auto fontSize = PointToPixels(gr, font->GetSize());
-	//auto fontStyle = font->GetStyle();
-
-	//GraphicsPath path;
-	//Pen penIn(Gdiplus::Color::Yellow, m_outlineWidth);
-	//Pen penOut(Gdiplus::Color::Blue, m_outlineWidth * 2);
-	//HatchBrush brush(g_Colors[2].m_hatch, g_Colors[2].m_fg, g_Colors[2].m_bg);
-	//path.AddString(line.GetText().c_str(), -1, &family, fontStyle, fontSize, boundingBox, &format);
-	//path.Transform(&mtx);
-
-	//gr.DrawPath(&penOut, &path);
-	//gr.DrawPath(&penIn, &path);
-	//gr.FillPath(&brush, &path);
 }
