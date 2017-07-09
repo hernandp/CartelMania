@@ -28,6 +28,7 @@ public:
 
 	void				SetTextFx(const std::wstring& fxName);
 	TextFx*				GetTextFx() const { return m_textFx.get(); }
+	const std::wstring& GetTextFxName() const { return m_textFxName;  }
 	void				DrawOn(Gdiplus::Graphics& gr, const Gdiplus::RectF& rect);
 	const std::wstring& GetText() const { return m_text; }
 	void				SetText(const std::wstring& text);
@@ -47,7 +48,9 @@ private:
 	void BuildPath();
 
 	std::unique_ptr<TextFx>					m_textFx;
-	std::wstring							m_text, m_defaultText;
+	std::wstring							m_textFxName;
+	std::wstring							m_text;
+	std::wstring							m_defaultText;
 	std::wstring							m_fontName;
 	std::wstring							m_shapeName;
 	Gdiplus::FontStyle						m_fontStyle;

@@ -261,24 +261,8 @@ bool Banner::Serialize(const std::wstring & file) const
 	pageLayoutNode.append_attribute(L"EasyGlueVisible").set_value(m_easyGlueMarginVisible);
 	pageLayoutNode.append_attribute(L"EasyGlueMarginMm").set_value(m_easyGlueMarginMm);
 
-	auto topLineNode = root.append_child(L"TopLine");
-	topLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(m_topLine->GetText().c_str());
-	topLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(m_topLine->GetFontName().c_str());
-	//topLineNode.append_attribute(L"Shape").set_value(m_shapeName.c_str());
-	auto fxNode = topLineNode.append_child(L"Effect");
-	//fxNode.append_attribute(L"Name").set_value(m_topLine->GetTextFx());
-	
-	//for (int i = 0; i < m_topLine->GetTextFx()->GetColorPropertyCount(); ++i)
-	//{
-	//	//m_topLine->GetTextFx->GetColorPropertyValue)
-	//}
-
-	auto bottomLineNode = root.append_child(L"BottomLine");
-	bottomLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(m_bottomLine->GetText().c_str());
-	bottomLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(m_bottomLine->GetFontName().c_str());
-	//bottomLineNode.append_attribute(L"ShapeId").set_value(m_shapeName.c_str());
-	bottomLineNode.append_attribute(L"EffectId").set_value(1);
-	fxNode = bottomLineNode.append_child(L"Effect");
+	SerializeBannerLine(root, L"TopLine", *m_topLine);
+	SerializeBannerLine(root, L"BottomLine", *m_bottomLine);
 	
 	if (!doc.save_file(file.c_str()))
 	{
@@ -286,6 +270,25 @@ bool Banner::Serialize(const std::wstring & file) const
 	}
 
 	return true;
+}
+
+void Banner::SerializeBannerLine(pugi::xml_node &root, const std::wstring nodeName, const BannerLine& bannerLine) const
+{
+	auto topLineNode = root.append_child(nodeName.c_str());
+	topLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(bannerLine.GetText().c_str());
+	topLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(bannerLine.GetFontName().c_str());
+	topLineNode.append_attribute(L"Shape").set_value(bannerLine.GetShapeName().c_str());
+	auto fxNode = topLineNode.append_child(L"Effect");
+	fxNode.append_attribute(L"Name").set_value(bannerLine.GetTextFxName().c_str());
+
+	for (int i = 0; i < bannerLine.GetTextFx()->GetColorPropertyCount(); ++i)
+	{
+		auto colorPropName = bannerLine.GetTextFx()->GetColorPropertyItem(i).GetClassString();
+		auto colorValueName = bannerLine.GetTextFx()->GetColorPropertyItem(i).GetValue();
+		auto colorPropNode = fxNode.append_child(L"ColorProperty");
+		colorPropNode.append_attribute(L"class").set_value(colorPropName);
+		colorPropNode.append_attribute(L"value").set_value(colorValueName.c_str());
+	}
 }
 
 bool Banner::Deserialize(const std::wstring& file, ptrdiff_t& error_offset)

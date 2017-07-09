@@ -25,6 +25,7 @@ BannerLine::BannerLine(
 
 void BannerLine::SetTextFx(const std::wstring& fxName)
 {
+	m_textFxName = fxName;
 	m_textFx = App()->GetEffectTable()->LookupName(fxName)();
 }
 
