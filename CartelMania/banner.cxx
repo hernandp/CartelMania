@@ -32,7 +32,6 @@ Banner::Banner() :
 m_layout(g_defaultBannerLayout),
 m_pageCountXAxis(g_defaultNumPagesWide),
 m_pageCountYAxis(g_defaultNumPagesTall),
-m_shapeName(g_defaultShapeName),
 m_topLine(make_unique<BannerLine>(g_defaultTopLineText, g_defaultTopLineText, g_defaultFontFamilyName, FontStyleRegular, g_defaultFxName)),
 m_bottomLine(make_unique<BannerLine>(g_defaultBottomLineText, g_defaultBottomLineText, g_defaultFontFamilyName, FontStyleRegular, g_defaultFxName)),
 m_scalePolicy(ScalePolicy::ScaleToFit),
@@ -265,7 +264,7 @@ bool Banner::Serialize(const std::wstring & file) const
 	auto topLineNode = root.append_child(L"TopLine");
 	topLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(m_topLine->GetText().c_str());
 	topLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(m_topLine->GetFontName().c_str());
-	topLineNode.append_attribute(L"Shape").set_value(m_shapeName.c_str());
+	//topLineNode.append_attribute(L"Shape").set_value(m_shapeName.c_str());
 	auto fxNode = topLineNode.append_child(L"Effect");
 	//fxNode.append_attribute(L"Name").set_value(m_topLine->GetTextFx());
 	
@@ -277,7 +276,7 @@ bool Banner::Serialize(const std::wstring & file) const
 	auto bottomLineNode = root.append_child(L"BottomLine");
 	bottomLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(m_bottomLine->GetText().c_str());
 	bottomLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(m_bottomLine->GetFontName().c_str());
-	bottomLineNode.append_attribute(L"ShapeId").set_value(m_shapeName.c_str());
+	//bottomLineNode.append_attribute(L"ShapeId").set_value(m_shapeName.c_str());
 	bottomLineNode.append_attribute(L"EffectId").set_value(1);
 	fxNode = bottomLineNode.append_child(L"Effect");
 	

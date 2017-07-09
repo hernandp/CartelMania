@@ -36,6 +36,8 @@ public:
 	void				SetFontName(const std::wstring& fontName) { m_fontName = fontName;  }
 	bool				IsFontStyleBold() const { return m_fontStyle == Gdiplus::FontStyleBold; }
 	void				SetFontStyleBold(bool f) { m_fontStyle = f ?  Gdiplus::FontStyleBold : Gdiplus::FontStyleRegular;  }
+	void				SetShapeName(const std::wstring& name) { m_shapeName = name;  }
+	const std::wstring&	GetShapeName() const {	return m_shapeName;	}
 	Gdiplus::GraphicsPath* GetPath(); 
 	std::unique_ptr<Gdiplus::GraphicsPath> GetPathCopy();
 
@@ -47,6 +49,7 @@ private:
 	std::unique_ptr<TextFx>					m_textFx;
 	std::wstring							m_text, m_defaultText;
 	std::wstring							m_fontName;
+	std::wstring							m_shapeName;
 	Gdiplus::FontStyle						m_fontStyle;
 	std::unique_ptr<Gdiplus::GraphicsPath>	m_path;
 	bool									m_needRegen;

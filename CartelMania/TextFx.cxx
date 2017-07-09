@@ -143,7 +143,10 @@ void TextFxSolid::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect
 {
     auto path = line.GetPathCopy();
 	
-	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
+	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), 
+		App()->GetShapeTable()->LookupName(line.GetShapeName()), 
+		lineRect));
+
 	AlignScalePath({ path.get() }, lineRect);
 
 	// Bounding rects
@@ -180,7 +183,9 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 {
 	auto path = line.GetPathCopy();
 
-	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
+	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), 
+		App()->GetShapeTable()->LookupName(line.GetShapeName()), 
+		lineRect));
 	AlignScalePath({ path.get() }, lineRect);
 
 	// Bounding rects
@@ -213,9 +218,14 @@ void TextFxTwoOutlines::DrawLine(BannerLine& line, Graphics& gr, const RectF& li
 void TextFxShadow::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect)
 {
 	auto path = line.GetPathCopy();
-	path = unique_ptr<GraphicsPath>(ShapePath(*path.get(), App()->GetCurrentShapeFunc(), lineRect));
+	path = unique_ptr<GraphicsPath>(ShapePath(*path.get(), 
+		App()->GetShapeTable()->LookupName(line.GetShapeName()), 
+		lineRect));
+
 	auto shadowPath = line.GetPathCopy();
-	shadowPath = unique_ptr<GraphicsPath>(ShapePath(*shadowPath.get(), App()->GetCurrentShapeFunc(), lineRect));
+	shadowPath = unique_ptr<GraphicsPath>(ShapePath(*shadowPath.get(), 
+		App()->GetShapeTable()->LookupName(line.GetShapeName()), 
+		lineRect));
 
 	RectF bounds;
 	path->GetBounds(&bounds);
@@ -291,8 +301,13 @@ void TextFxBlock::DrawLine(BannerLine& line, Graphics& gr, const RectF& lineRect
 	auto faceColor = GetColorPropertyValue(ColorPropertyClass::Face);
 	auto faceOutline = GetColorPropertyValue(ColorPropertyClass::Face_Outline);
 	
-	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
-	backPath = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), App()->GetCurrentShapeFunc(), lineRect));
+	path = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), 
+		App()->GetShapeTable()->LookupName(line.GetShapeName()),
+		lineRect));
+
+	backPath = unique_ptr<GraphicsPath>(ShapePath(*line.GetPath(), 
+		App()->GetShapeTable()->LookupName(line.GetShapeName()), 
+		lineRect));
 
 	DrawLineBackground(gr, lineRect);
 

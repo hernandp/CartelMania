@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CartelManiaApp.h"
 #include "ShapeSelToolWnd.h"
+#include "bannerline.h"
 
 HWND ShapeSelectToolWnd::Create(HWND hWndParent, RECT rcInitial)
 {
@@ -40,7 +41,7 @@ LRESULT ShapeSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 		{
 			auto textBuffer = std::make_unique<wchar_t[]>(lb.GetTextLen(iSel) + 1);
 			lb.GetText(iSel, textBuffer.get());
-			App()->GetBanner()->SetShapeName(textBuffer.get());
+			App()->GetMainWindow()->GetBannerLineFromSelState()->SetShapeName(textBuffer.get());
 			App()->GetBanner()->RegenPathAndRedraw();
 		}	
 	}

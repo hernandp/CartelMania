@@ -17,6 +17,7 @@ BannerLine::BannerLine(
 	m_text(text),
 	m_fontName(fontName),
 	m_fontStyle(fontStyle),
+	m_shapeName(L"Rectangle"),
 	m_needRegen(true)
 {
 	SetTextFx(effect);

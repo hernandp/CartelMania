@@ -91,8 +91,6 @@ public:
 	BannerLine*		GetBottomLine() const { return m_bottomLine.get(); }
 	BannerLayout	GetLayout() const { return m_layout; }
 	void			SetLayout(BannerLayout layout) { m_layout = layout; }
-	const std::wstring& GetShapeName() const { return m_shapeName; }
-	void			SetShapeName(const std::wstring& name) { m_shapeName = name; }
 	void			SetScalePolicy(ScalePolicy sp) { m_scalePolicy = sp; }
 	ScalePolicy		GetScalePolicy() const { return m_scalePolicy; }
 	Gdiplus::Size	GetSizeMm() const;
@@ -121,7 +119,6 @@ private:
 	BannerLayout								m_layout;
 	int											m_pageCountXAxis;
 	int											m_pageCountYAxis;
-	std::wstring								m_shapeName;
 	std::unique_ptr<BannerLine>					m_topLine;
 	std::unique_ptr<BannerLine>					m_bottomLine;
 	ScalePolicy									m_scalePolicy;
