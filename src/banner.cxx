@@ -291,6 +291,11 @@ void Banner::SerializeBannerLine(pugi::xml_node &root, const std::wstring nodeNa
 	}
 }
 
+void Banner::DeserializeBannerLine(pugi::xml_node &root, const std::wstring nodeName, BannerLine& bannerLine)
+{
+	
+}
+
 bool Banner::Deserialize(const std::wstring& file, ptrdiff_t& error_offset)
 {
 	pugi::xml_document doc;
@@ -305,7 +310,7 @@ bool Banner::Deserialize(const std::wstring& file, ptrdiff_t& error_offset)
 	auto root = doc.child(L"CartelManiaFile");
 	if (root.empty() || root.attribute(L"version").as_int() != 1)
 	{
-		return false;
+		//throw std::;
 	}
 
 	auto lineLayoutNode = root.child(L"LineLayout");
@@ -316,23 +321,11 @@ bool Banner::Deserialize(const std::wstring& file, ptrdiff_t& error_offset)
 	auto pageCountY = pageLayoutNode.attribute(L"PageCountY").as_int(g_defaultNumPagesTall);
 	auto vFill = pageLayoutNode.attribute(L"VFill").as_int(g_defaultVerticalFill);
 	auto hFill = pageLayoutNode.attribute(L"HFill").as_int(g_defaultHorizontalFill);
-	auto vAlign = pageLayoutNode.attribute(L"VAlign").as_int((int)g_defaultVAlign);
-	auto hAlign = pageLayoutNode.attribute(L"HAlign").as_int((int)g_defaultHAlign);
+	auto vAlign = pageLayoutNode.attribute(L"VAlign").as_int((int) g_defaultVAlign);
+	auto hAlign = pageLayoutNode.attribute(L"HAlign").as_int((int) g_defaultHAlign);
 	auto easyGlueActive = pageLayoutNode.attribute(L"EasyGlueEnable").as_bool(true);
 	auto easyGlueVisible = pageLayoutNode.attribute(L"EasyGlueVisible").as_bool(true);
 	auto easyGlueMarginMm = pageLayoutNode.attribute(L"EasyGlueMarginMm").as_int(g_defaultEasyGlueMarginMm);
-
-	auto topLineNode = root.append_child(L"TopLine");
-	auto text = topLineNode.child(L"Text").text();
-	auto font = topLineNode.child(L"Font").text();
-	auto shape = topLineNode.attribute(L"Shape").as_string(L"Rectangle");
-	auto fxNode = topLineNode.append_child(L"Effect");
-
-	auto bottomLineNode = root.append_child(L"TopLine");
-	text = bottomLineNode.child(L"Text").text();
-	font = bottomLineNode.child(L"Font").text();
-	shape = bottomLineNode.attribute(L"Shape").as_string(L"Rectangle");
-	fxNode = bottomLineNode.append_child(L"Effect");
-
+	
 	return true;
 }

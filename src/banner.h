@@ -114,9 +114,10 @@ public:
 
 	bool			Serialize(const std::wstring& file) const;
 	bool			Deserialize(const std::wstring & file, ptrdiff_t& error_offset);
-
+	
 private:
 	void			SerializeBannerLine(pugi::xml_node & root, const std::wstring name, const BannerLine & bannerLine) const;
+	void			DeserializeBannerLine(pugi::xml_node &root, const std::wstring nodeName, BannerLine& bannerLine);
 
 	BannerLayout								m_layout;
 	int											m_pageCountXAxis;
