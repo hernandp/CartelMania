@@ -178,6 +178,12 @@
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">PUGIXML_WCHAR_MODE;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <PreprocessorDefinitions Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">PUGIXML_WCHAR_MODE;WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <ClCompile Include="AboutDlg.cxx">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Use</PrecompiledHeader>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Use</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="AppSettings.cxx">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Use</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Use</PrecompiledHeader>
@@ -322,6 +328,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="AboutDlg.h" />
     <ClInclude Include="banner.h" />
     <ClInclude Include="bannerline.h" />
     <ClInclude Include="CartelManiaApp.h" />
@@ -353,10 +360,14 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\res\colorTool.ico" />
+    <Image Include="..\res\icon2.ico" />
     <Image Include="..\res\linelayout.ico" />
     <Image Include="..\res\new.ico" />
     <Image Include="..\res\open.ico" />
     <Image Include="..\res\pagelayout.ico" />
+    <Image Include="..\res\pagesetup.ico" />
+    <Image Include="..\res\print.ico" />
+    <Image Include="..\res\printpre.ico" />
     <Image Include="..\res\save.ico" />
     <Image Include="..\res\shapeedit.ico" />
     <Image Include="..\res\textedit.ico" />

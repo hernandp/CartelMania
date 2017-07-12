@@ -90,6 +90,9 @@
     <ClInclude Include="ColorScheme.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AboutDlg.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc">
@@ -169,6 +172,9 @@
     <ClCompile Include="ColorScheme.cxx">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="AboutDlg.cxx">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <Image Include="icon1.ico">
@@ -202,6 +208,18 @@
       <Filter>Resource Files</Filter>
     </Image>
     <Image Include="..\res\textfx.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\print.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\printpre.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\pagesetup.ico">
+      <Filter>Resource Files</Filter>
+    </Image>
+    <Image Include="..\res\icon2.ico">
       <Filter>Resource Files</Filter>
     </Image>
   </ItemGroup>

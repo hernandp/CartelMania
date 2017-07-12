@@ -55,6 +55,8 @@ public:
 		COMMAND_ID_HANDLER(ID_FILE_OPEN, OnFileOpen)
 		COMMAND_ID_HANDLER(ID_FILE_SAVE, OnFileSave)
 
+		COMMAND_ID_HANDLER(ID_HELP_ABOUT, OnHelpAbout)
+
 		COMMAND_ID_HANDLER(ID_CMD_EDITTEXT, OnEditText)
 
 		COMMAND_ID_HANDLER(ID_CMD_OPENSHAPETOOL, OnOpenShapeTool)
@@ -108,6 +110,8 @@ private:
 	LRESULT OnDebugDisablePathFill(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnDebugDisablePathSubdivision(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 	LRESULT OnDebugDrawBoundingRects(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
+
+	LRESULT OnHelpAbout(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);
 
 	LRESULT OnOpenEffectTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);
 	LRESULT OnOpenColorTool(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled);

@@ -28,6 +28,7 @@
 #include "TextFx.h"
 #include "ColorComboBox.h"
 #include "colorTable.h"
+#include "AboutDlg.h"
 #include "CartelManiaApp.h"
 #include "Geometry.h"
 
@@ -452,6 +453,13 @@ LRESULT CManiaMainWnd::OnFileExit(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL
 		CloseWindow(m_hWnd);
 		DestroyWindow();
 	}
+	return 0L;
+}
+
+LRESULT CManiaMainWnd::OnHelpAbout(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled)
+{
+	AboutDialog dlg;
+	dlg.DoModal();
 	return 0L;
 }
 
