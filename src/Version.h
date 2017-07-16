@@ -22,9 +22,7 @@
 /** Version Data -- this file is processed by VerStamp.ps1 Pre-build step 
     on release configurations by stamping data on _REVPLACEHOLDER and 
 	_BUILDPLACEHOLDER definitions. Do not mess this!	
-
-	Initial value should be 9999,0.
-
+	
 	The script should stamp "revision" field with year/month/day. Month
 	in hex (0-C), e.g: for 2017-11-30:  17B30.
 
@@ -35,14 +33,18 @@
 
 **/
 
+#define X_TO_STR(A) #A
+#define TO_STR(A) X_TO_STR(A)
 
-#define _REVPLACEHOLDER   196
-#define _BUILDPLACEHOLDER 1230
+#define _REVPLACEHOLDER   9999
+#define _BUILDPLACEHOLDER 9999
 
 // ---------------------------------------------------------------------------
 #define CMANIA_VERSION_MAJOR 0
 #define CMANIA_VERSION_MINOR 5
 #define CMANIA_VERSION_REV   _REVPLACEHOLDER
 #define CMANIA_VERSION_BUILD _BUILDPLACEHOLDER
+
+#define CMANIA_VERSION_STRING TO_STR(CMANIA_VERSION_MAJOR) L"." TO_STR(CMANIA_VERSION_MINOR) L"." TO_STR(CMANIA_VERSION_REV) L"." TO_STR(CMANIA_VERSION_BUILD)
 // ---------------------------------------------------------------------------
 
