@@ -148,6 +148,12 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PreBuildEvent>
+      <Command>powershell $(SolutionDir)\build\verstamp.ps1</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Version stamping</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -170,6 +176,12 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
     </Link>
+    <PreBuildEvent>
+      <Command>powershell $(SolutionDir)\build\verstamp.ps1</Command>
+    </PreBuildEvent>
+    <PreBuildEvent>
+      <Message>Version stamping</Message>
+    </PreBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\pugixml\pugixml.cpp">
@@ -354,6 +366,7 @@
     <ClInclude Include="TextFx.h" />
     <ClInclude Include="GdiPEngWrapper.h" />
     <ClInclude Include="TextEditToolWnd.h" />
+    <ClInclude Include="Version.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="CartelMania.rc" />
