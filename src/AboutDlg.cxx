@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "AboutDlg.h"
+#include "Version.h"
 
 BOOL AboutDialog::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 {
@@ -23,6 +24,7 @@ BOOL AboutDialog::OnInitDialog(CWindow wndFocus, LPARAM lInitParam)
 	HFONT hFontVersion = m_fontVersion.CreatePointFont(100, L"Arial", dc);
 	HFONT hFontLicense = m_fontLicense.CreatePointFont(80, L"Arial", dc);
 
+	sVersion.SetWindowTextW(CMANIA_VERSION_STRING);
 	sLicenseTerms.SetFont(hFontLicense);
 	sLicenseTerms.SetWindowTextW(szLicense);
 

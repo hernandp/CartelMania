@@ -36,8 +36,8 @@
 #define X_TO_STR(A) #A
 #define TO_STR(A) X_TO_STR(A)
 
-#define _REVPLACEHOLDER   9999
-#define _BUILDPLACEHOLDER 9999
+#define _REVPLACEHOLDER   196
+#define _BUILDPLACEHOLDER 1390
 
 // ---------------------------------------------------------------------------
 #define CMANIA_VERSION_MAJOR 0
