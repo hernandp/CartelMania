@@ -22,7 +22,7 @@
 #include "GdiPEngWrapper.h"
 
 // Use VisualLeak Detector 
-#include <vld.h>
+// #include <vld.h>
 using namespace std;
 using namespace Gdiplus;
 
