@@ -1,5 +1,6 @@
 # CartelMania for Windows
 
+![Main Display](https://github.com/hernandp/CartelMania/blob/master/README.res/main.png)
 
 ## Overview
 
@@ -42,16 +43,24 @@ See 'Issues' section for lacking and/or problematic areas.
 
 ### Selector with BannerMania-style 'vintage' colors
 
+![Color tool](https://github.com/hernandp/CartelMania/blob/master/README.res/colortool.png)
+![Colors1](https://github.com/hernandp/CartelMania/blob/master/README.res/colors1.png)
+![Colors2](https://github.com/hernandp/CartelMania/blob/master/README.res/colors2.png)
+
 ### Basic text editor
+![TextEditor](https://github.com/hernandp/CartelMania/blob/master/README.res/textedit.png)
 
 ### BannerMania layouts
+![layout](https://github.com/hernandp/CartelMania/blob/master/README.res/linelayout.png)
 
 ### Effects
+![fx](https://github.com/hernandp/CartelMania/blob/master/README.res/effecttool.png)
 
 ### Shape modifiers
+![fx](https://github.com/hernandp/CartelMania/blob/master/README.res/shapetool.png)
 
 ### Page layout 
-
+![fx](https://github.com/hernandp/CartelMania/blob/master/README.res/pagelayout.png)
 
 
 
