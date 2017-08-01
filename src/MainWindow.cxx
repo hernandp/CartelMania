@@ -43,7 +43,19 @@ LRESULT CManiaMainWnd::OnFileNew(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL 
 
 LRESULT CManiaMainWnd::OnFileOpen(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
 {
-	return LRESULT();
+	CFileDialog fd(FALSE, L".cmania", NULL, 6, L"Cartelmania Files (*.cmania)\0*.cmania\0\0", this->m_hWnd);
+	fd.m_bOpenFileDialog = TRUE;
+	fd.m_ofn.Flags |= OFN_FILEMUSTEXIST;
+	if ((fd.DoModal(m_hWnd) == IDOK) && fd.m_szFileName)
+	{
+		ptrdiff_t errorOffset;
+		if (!App()->GetBanner()->Deserialize(fd.m_szFileName, errorOffset))
+		{
+			MessageBox(L"Cannot open this file. Check if it's a valid CartelMania file.", L"Error", MB_OK | MB_ICONERROR);
+		}
+	}
+
+	return 0;
 }
 
 LRESULT CManiaMainWnd::OnFileSave(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL & bHandled)
@@ -145,14 +157,14 @@ LRESULT CManiaMainWnd::OnLButtonDown(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 		m_lineSelState.first = true;
 		m_lineSelState.second = false;
 		InvalidatePageDA();
-		NotifyActiveToolboxes();
+		NotifyActiveToolboxes(NOTIFY_ALL);
 	}
 	else if (banner->GetLayout() != BannerLayout::SingleLine && line2Rect.Contains((float)pt.x, (float)pt.y))
 	{
 		m_lineSelState.first = false;
 		m_lineSelState.second = true;
 		InvalidatePageDA();
-		NotifyActiveToolboxes();
+		NotifyActiveToolboxes(NOTIFY_ALL);
 	}
 
 	return 0L;
@@ -180,13 +192,19 @@ LRESULT CManiaMainWnd::OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOO
 	return DefWindowProc(WM_NCACTIVATE, wParam, lParam);
 }
 
-void CManiaMainWnd::NotifyActiveToolboxes()
+void CManiaMainWnd::NotifyActiveToolboxes(DWORD dwNotifyFlags)
 {
-	if (m_colorSelectToolWnd)
+	if ((dwNotifyFlags & NOTIFY_COLOR) && m_colorSelectToolWnd)
 		m_colorSelectToolWnd.UpdateUI();
 
-	if (m_textEditToolWnd)
+	if ((dwNotifyFlags & NOTIFY_TEXTEDIT) &&m_textEditToolWnd)
 		m_textEditToolWnd.UpdateUI();
+
+	if ((dwNotifyFlags & NOTIFY_SHAPE) && m_shapeSelectToolWnd)
+		m_shapeSelectToolWnd.UpdateUI();
+
+	if ((dwNotifyFlags & NOTIFY_EFFECT) && m_effectToolWnd)
+		m_effectToolWnd.UpdateUI();
 }
 
 void CManiaMainWnd::InvalidatePageDA()
@@ -258,15 +276,7 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 	Gdiplus::RectF line1Rect, line2Rect;
 	Gdiplus::RectF bannerRect = banner->CalcRect(&rcPageDA);
 	banner->GetLineRects(bannerRect, line1Rect, line2Rect, true);
-
-	// Force selection to line 1 if SingleLine is selected. This is to workaround the case
-	// where the user has line-2 selected and changes to SingleLine layout.
-	//
-	if (App()->GetBanner()->GetLayout() == BannerLayout::SingleLine)
-	{
-		m_lineSelState.first = true;
-		m_lineSelState.second = false;
-	}
+	FixupSelectionByLayout();
 
 	if (m_lineSelState.first )
 	{
@@ -275,10 +285,22 @@ void CManiaMainWnd::DoPaint(CDCHandle hDC)
 		gr.TranslateTransform(-line1Rect.X, -line1Rect.Y);
 	}
 	else if (m_lineSelState.second )
-	{
+	{		
 		gr.TranslateTransform(line2Rect.X, line2Rect.Y);
 		DrawSelectionMark(gr, line2Rect);
 		gr.TranslateTransform(-line2Rect.X, -line2Rect.Y);
+	}
+}
+
+void CManiaMainWnd::FixupSelectionByLayout()
+{
+	// Force selection to line 1 if SingleLine is selected. This is to workaround the case
+	// where the user has line-2 selected and changes to SingleLine layout.
+	//
+	if (App()->GetBanner()->GetLayout() == BannerLayout::SingleLine)
+	{
+		m_lineSelState.first = true;
+		m_lineSelState.second = false;
 	}
 }
 

@@ -30,19 +30,21 @@ HWND ShapeSelectToolWnd::Create(HWND hWndParent, RECT rcInitial)
 void ShapeSelectToolWnd::CreateControls()
 {
 	const auto shapeTable = App()->GetShapeTable();
-	lb.Create(m_hWnd, rcDefault, 0, WS_CHILD | LBS_NOTIFY | WS_BORDER | WS_VSCROLL | WS_VISIBLE);
+	m_listbox.Create(m_hWnd, rcDefault, 0, WS_CHILD | LBS_NOTIFY | WS_BORDER | WS_VSCROLL | WS_VISIBLE);
 
 	for (int i = 0; i < shapeTable->GetCount(); ++i)
 	{
-		lb.AddString(shapeTable->NameAt(i).c_str());
+		m_listbox.AddString(shapeTable->NameAt(i).c_str());
 	}
 	
-	lb.SetFont((HFONT) GetStockObject(DEFAULT_GUI_FONT));
-	lb.SetCurSel(0);
+	m_listbox.SetFont((HFONT) GetStockObject(DEFAULT_GUI_FONT));
+	m_listbox.SetCurSel(0);
 }
 
 void ShapeSelectToolWnd::UpdateUI()
 {
+	auto shapeName = App()->GetMainWindow()->GetBannerLineFromSelState()->GetShapeName();
+	m_listbox.SetCurSel(m_listbox.FindString(0, shapeName.c_str()));
 }
 
 void ShapeSelectToolWnd::OnClose()
@@ -55,11 +57,11 @@ LRESULT ShapeSelectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, B
 {	
 	if (HIWORD(wParam) == LBN_SELCHANGE)
 	{		
-		int iSel = lb.GetCurSel();
+		int iSel = m_listbox.GetCurSel();
 		if (iSel != LB_ERR)
 		{
-			auto textBuffer = std::make_unique<wchar_t[]>(lb.GetTextLen(iSel) + 1);
-			lb.GetText(iSel, textBuffer.get());
+			auto textBuffer = std::make_unique<wchar_t[]>(m_listbox.GetTextLen(iSel) + 1);
+			m_listbox.GetText(iSel, textBuffer.get());
 			App()->GetMainWindow()->GetBannerLineFromSelState()->SetShapeName(textBuffer.get());
 			App()->GetBanner()->RegenPathAndRedraw();
 		}	
@@ -86,5 +88,5 @@ void ShapeSelectToolWnd::OnWindowPosChanged(LPWINDOWPOS lpwp)
 	App()->GetSettings()->lastShapeEditToolPos.y = lpwp->y;
 	App()->GetSettings()->lastShapeEditToolSize.x = lpwp->cx;
 	App()->GetSettings()->lastShapeEditToolSize.y = lpwp->cy;
-	lb.SetWindowPos(NULL, 0, 0, lpwp->cx, lpwp->cy, SWP_NOMOVE);
+	m_listbox.SetWindowPos(NULL, 0, 0, lpwp->cx, lpwp->cy, SWP_NOMOVE);
 }

@@ -57,7 +57,9 @@ LRESULT LineLayoutToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BO
 		if (iSel != LB_ERR)
 		{
 			App()->GetBanner()->SetLayout(static_cast<BannerLayout>(iSel));
-			App()->GetMainWindow()->Invalidate(FALSE);
+			App()->GetMainWindow()->FixupSelectionByLayout();
+			App()->GetMainWindow()->Invalidate(TRUE);
+			App()->GetMainWindow()->NotifyActiveToolboxes(NOTIFY_ALL);
 		}
 	}
 	return 0L;

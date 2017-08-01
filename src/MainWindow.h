@@ -33,6 +33,14 @@
 #include "EffectToolWnd.h"
 #include "resource.h"
 
+// Notification flags for NotifyActiveToolboxes
+
+const int NOTIFY_COLOR = 1;
+const int NOTIFY_TEXTEDIT = 2;
+const int NOTIFY_EFFECT = 4;
+const int NOTIFY_SHAPE = 8;
+const int NOTIFY_ALL = NOTIFY_COLOR | NOTIFY_TEXTEDIT | NOTIFY_EFFECT | NOTIFY_SHAPE;
+
 class CManiaMainWnd : public CWindowImpl<CManiaMainWnd, CWindow, CFrameWinTraits>, public CDoubleBufferImpl<CManiaMainWnd>
 {
 	friend class CDoubleBufferImpl<CManiaMainWnd>;
@@ -81,6 +89,8 @@ public:
 	void					SetPageAreaDADirty() { m_pageDADirty = true; }
 	BannerLine*				GetBannerLineFromSelState();
 	void					NotifyToolboxClose(HWND hWnd);
+	void					NotifyActiveToolboxes(DWORD dwNotifyFlags);
+	void					FixupSelectionByLayout();
 
 private:
 	void	DoPaint(CDCHandle hDC);
@@ -89,7 +99,6 @@ private:
 	void	DrawClientArea(CDCHandle hDC);
 	bool	GetPageDisplayAreaRect(RECT*);
 	void	CalcPixelsPerMm(float& horizontalRatio, float& verticalRatio);
-	void	NotifyActiveToolboxes();
 	void	InvalidatePageDA();
 
 	LRESULT OnFileNew(WORD wNotifyCode, WORD wID, HWND hWndCtl, BOOL& bHandled);

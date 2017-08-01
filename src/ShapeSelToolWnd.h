@@ -48,10 +48,10 @@ private:
 
 	LRESULT OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
 	LRESULT OnNcActivate(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &bHandled);
-	int  OnCreate(LPCREATESTRUCT);
-	void OnWindowPosChanged(LPWINDOWPOS lpwp);
-	void CreateControls();
-	void OnClose();
+	int		OnCreate(LPCREATESTRUCT);
+	void	OnWindowPosChanged(LPWINDOWPOS lpwp);
+	void	CreateControls();
+	void	OnClose();
 
-	CListBox lb;
+	CListBox m_listbox;
 }; 

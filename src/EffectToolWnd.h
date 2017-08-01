@@ -34,5 +34,5 @@ private:
 	void CreateControls();
 	void OnClose();
 
-	CListBox lb;
+	CListBox m_listbox;
 }; 

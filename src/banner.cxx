@@ -293,11 +293,11 @@ bool Banner::Serialize(const std::wstring & file) const
 
 void Banner::SerializeBannerLine(pugi::xml_node &root, const std::wstring nodeName, const BannerLine& bannerLine) const
 {
-	auto topLineNode = root.append_child(nodeName.c_str());
-	topLineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(bannerLine.GetText().c_str());
-	topLineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(bannerLine.GetFontName().c_str());
-	topLineNode.append_attribute(L"Shape").set_value(bannerLine.GetShapeName().c_str());
-	auto fxNode = topLineNode.append_child(L"Effect");
+	auto lineNode = root.append_child(nodeName.c_str());
+	lineNode.append_child(L"Text").append_child(pugi::node_pcdata).set_value(bannerLine.GetText().c_str());
+	lineNode.append_child(L"Font").append_child(pugi::node_pcdata).set_value(bannerLine.GetFontName().c_str());
+	lineNode.append_attribute(L"Shape").set_value(bannerLine.GetShapeName().c_str());
+	auto fxNode = lineNode.append_child(L"Effect");
 	fxNode.append_attribute(L"Name").set_value(bannerLine.GetTextFxName().c_str());
 
 	for (int i = 0; i < bannerLine.GetTextFx()->GetColorPropertyCount(); ++i)
@@ -312,7 +312,19 @@ void Banner::SerializeBannerLine(pugi::xml_node &root, const std::wstring nodeNa
 
 void Banner::DeserializeBannerLine(pugi::xml_node &root, const std::wstring nodeName, BannerLine& bannerLine)
 {
-	
+	auto lineNode = root.child(nodeName.c_str());
+	auto shape = lineNode.attribute(L"Shape");
+	auto text = lineNode.child(L"Text").text();
+	auto font = lineNode.child(L"Font").text();
+
+	auto effectNode = lineNode.child(L"Effect");
+	auto effectName = effectNode.attribute(L"Name");
+
+	for (auto& fxNode : effectNode.children())
+	{
+		auto fxClass = fxNode.attribute(L"class");
+		auto fxClassValue = fxNode.attribute(L"value");
+	}
 }
 
 bool Banner::Deserialize(const std::wstring& file, ptrdiff_t& error_offset)
@@ -329,7 +341,7 @@ bool Banner::Deserialize(const std::wstring& file, ptrdiff_t& error_offset)
 	auto root = doc.child(L"CartelManiaFile");
 	if (root.empty() || root.attribute(L"version").as_int() != 1)
 	{
-		//throw std::;
+		return false;
 	}
 
 	auto lineLayoutNode = root.child(L"LineLayout");
@@ -346,5 +358,8 @@ bool Banner::Deserialize(const std::wstring& file, ptrdiff_t& error_offset)
 	auto easyGlueVisible = pageLayoutNode.attribute(L"EasyGlueVisible").as_bool(true);
 	auto easyGlueMarginMm = pageLayoutNode.attribute(L"EasyGlueMarginMm").as_int(g_defaultEasyGlueMarginMm);
 	
+	DeserializeBannerLine(root, L"TopLine", *m_topLine);
+	DeserializeBannerLine(root, L"BottomLine", *m_bottomLine);
+		
 	return true;
 }

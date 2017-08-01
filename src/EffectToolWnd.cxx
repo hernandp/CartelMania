@@ -30,19 +30,21 @@ HWND EffectToolWnd::Create(_In_ HWND hWndParent, _In_ RECT rcInitial)
 void EffectToolWnd::CreateControls()
 {
 	const auto effectTable = App()->GetEffectTable();
-	lb.Create(m_hWnd, rcDefault, 0, WS_CHILD | LBS_NOTIFY | WS_BORDER | WS_VSCROLL | WS_VISIBLE);
+	m_listbox.Create(m_hWnd, rcDefault, 0, WS_CHILD | LBS_NOTIFY | WS_BORDER | WS_VSCROLL | WS_VISIBLE);
 
 	for (int i = 0; i < effectTable->GetCount(); ++i)
 	{
-		lb.AddString(effectTable->NameAt(i).c_str());
+		m_listbox.AddString(effectTable->NameAt(i).c_str());
 	}
 
-	lb.SetFont((HFONT) GetStockObject(DEFAULT_GUI_FONT));
-	lb.SetCurSel(0);
+	m_listbox.SetFont((HFONT) GetStockObject(DEFAULT_GUI_FONT));
+	m_listbox.SetCurSel(0);
 }
 
 void EffectToolWnd::UpdateUI()
 {
+	auto fxName = App()->GetMainWindow()->GetBannerLineFromSelState()->GetTextFxName();
+	m_listbox.SetCurSel(m_listbox.FindString(0, fxName.c_str()));
 }
 
 void EffectToolWnd::OnClose()
@@ -55,16 +57,17 @@ LRESULT EffectToolWnd::OnCommand(UINT uMsg, WPARAM wParam, LPARAM lParam, BOOL &
 {
 	if (HIWORD(wParam) == LBN_SELCHANGE)
 	{
-		int iSel = lb.GetCurSel();
+		int iSel = m_listbox.GetCurSel();
 		if (iSel != LB_ERR)
 		{
 			auto bannerLine = App()->GetMainWindow()->GetBannerLineFromSelState();
-			auto textBuffer = std::make_unique<wchar_t[]>(lb.GetTextLen(iSel) + 1);
-			lb.GetText(iSel, textBuffer.get());
+			auto textBuffer = std::make_unique<wchar_t[]>(m_listbox.GetTextLen(iSel) + 1);
+			m_listbox.GetText(iSel, textBuffer.get());
 			bannerLine->SetTextFx(textBuffer.get());
 			App()->GetBanner()->Redraw();
+			App()->GetMainWindow()->NotifyActiveToolboxes(NOTIFY_ALL & ~NOTIFY_EFFECT);
 		}
-	}
+	} 
 	return 0L;
 }
 
@@ -87,5 +90,5 @@ void EffectToolWnd::OnWindowPosChanged(LPWINDOWPOS lpwp)
 	App()->GetSettings()->lastShapeEditToolPos.y = lpwp->y;
 	App()->GetSettings()->lastShapeEditToolSize.x = lpwp->cx;
 	App()->GetSettings()->lastShapeEditToolSize.y = lpwp->cy;
-	lb.SetWindowPos(NULL, 0, 0, lpwp->cx, lpwp->cy, SWP_NOMOVE);
+	m_listbox.SetWindowPos(NULL, 0, 0, lpwp->cx, lpwp->cy, SWP_NOMOVE);
 }
